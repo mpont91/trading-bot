@@ -1,0 +1,62 @@
+{
+  "name": "trading-bot",
+  "version": "1.0.0",
+  "description": "Trading bot",
+  "scripts": {
+    "dev": "nodemon --watch src --exec ts-node src/index.ts",
+    "dev:server": "nodemon --watch src --exec ts-node src/index.ts -- --only-server",
+    "dev:bot": "nodemon --watch src --exec ts-node src/index.ts -- --only-bot",
+    "build": "tsc",
+    "serve": "node dist/index.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts}' --fix",
+    "migrate": "prisma migrate deploy",
+    "server:status": "pm2 status trading-bot",
+    "server:start": "pm2 start dist/index.js --name trading-bot",
+    "server:stop": "pm2 stop trading-bot",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watchAll"
+  },
+  "author": "Marc Pont",
+  "license": "ISC",
+  "dependencies": {
+    "@binance/connector-typescript": "^0.3.15",
+    "@prisma/client": "^6.3.0",
+    "bitmart-api": "^2.1.11",
+    "bottleneck": "^2.19.5",
+    "cors": "^2.8.5",
+    "decimal.js": "^10.5.0",
+    "dotenv-safe": "^9.1.0",
+    "express": "^4.21.2",
+    "pm2": "^5.4.3",
+    "technicalindicators": "^3.1.0",
+    "typescript": "^5.7.3",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv-safe": "^8.1.6",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^8.22.0",
+    "@typescript-eslint/parser": "^8.22.0",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "globals": "^15.14.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
+    "prisma": "^6.3.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.22.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

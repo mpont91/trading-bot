@@ -1,0 +1,7 @@
+.idea
+dist/
+node_modules/
+.env
+prisma/trading-bot.db
+prisma/trading-bot.db-journal
+logs
