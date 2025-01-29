@@ -17,7 +17,9 @@
     "server:start": "pm2 start dist/index.js --name trading-bot",
     "server:stop": "pm2 stop trading-bot",
     "test": "jest --runInBand",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "binance:get-price": "ts-node src/scripts/binance/binance-get-price.ts",
+    "binance:get-price-history": "ts-node src/scripts/binance/binance-get-price-history.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",
