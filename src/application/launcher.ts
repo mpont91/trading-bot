@@ -1,14 +1,17 @@
 import { settings } from './settings'
 import { logger } from '../infrastructure/logger/winston-logger'
+import { AccountManager } from '../domain/managers/account-manager'
 
-export class LauncherFutures {
-  constructor(
-    private readonly intervalReportingTime: number = settings.intervalReportingTime,
-    private readonly intervalExecutionTime: number = settings.intervalExecutionTime,
-  ) {}
+export class Launcher {
+  private readonly intervalReportingTime: number =
+    settings.intervalReportingTime
+  private readonly intervalExecutionTime: number =
+    settings.intervalExecutionTime
+
+  constructor(private readonly accountManager: AccountManager) {}
 
   async start(): Promise<void> {
-    logger.info('Launcher futures is about to start for the first time.')
+    logger.info('Launcher is about to start for the first time.')
     await this.report()
     await this.execute()
     setInterval(async (): Promise<void> => {
@@ -20,7 +23,7 @@ export class LauncherFutures {
   }
 
   private async execute(): Promise<void> {
-    logger.info('Launcher futures is going to start the execution managers.')
+    logger.info('Launcher is going to start the execution managers.')
     try {
       console.log('TODO: implement them')
     } catch (error: unknown) {
@@ -30,9 +33,9 @@ export class LauncherFutures {
   }
 
   private async report(): Promise<void> {
-    logger.info('Launcher futures is going to start the reporting managers.')
+    logger.info('Launcher is going to start the reporting managers.')
     try {
-      console.log('TODO: implement them')
+      await this.accountManager.start()
     } catch (error: unknown) {
       logger.error('Something went wrong with reporting managers', error)
       console.error('Something went wrong with reporting managers', error)
