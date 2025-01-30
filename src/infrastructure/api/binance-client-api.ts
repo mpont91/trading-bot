@@ -1,28 +1,64 @@
-import { Interval, RestMarketTypes, Spot } from '@binance/connector-typescript'
+import {
+  Interval,
+  RestMarketTypes,
+  RestTradeTypes,
+  Spot,
+} from '@binance/connector-typescript'
 import { BinanceApi } from '../../application/api/binance-api'
 import { BinanceSettings, settings } from '../../application/settings'
 import Bottleneck from 'bottleneck'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { Kline, KlineInterval } from '../../domain/types/kline'
 import {
-  domainMapBinanceKlineInterval,
-  mapBinanceKline,
+  mapBinanceToDomainKline,
+  mapDomainToBinanceKlineInterval,
 } from './mappers/kline-mapper'
+import { Balance } from '../../domain/types/balance'
 
 export class BinanceClientApi implements BinanceApi {
-  private readonly client: Spot
   private readonly settings: BinanceSettings = settings.binance
-  private readonly limiter: Bottleneck
+  private readonly client: Spot = new Spot(
+    this.settings.binanceApiKey,
+    this.settings.binanceApiSecret,
+  )
+  private readonly limiter: Bottleneck = new Bottleneck({
+    maxConcurrent: this.settings.bottleneckMaxConcurrent,
+    minTime: this.settings.bottleneckMinTime,
+  })
 
-  constructor() {
-    this.client = new Spot(
-      this.settings.binanceApiKey,
-      this.settings.binanceApiSecret,
-    )
-    this.limiter = new Bottleneck({
-      maxConcurrent: 1,
-      minTime: 500,
-    })
+  async getBalance(): Promise<Balance> {
+    const params: RestTradeTypes.accountInformationOptions = {
+      omitZeroBalances: true,
+    }
+    const response: RestTradeTypes.accountInformationResponse =
+      await this.client.accountInformation(params)
+
+    let equity: number = 0
+    let available: number = 0
+
+    for (const balance of response.balances) {
+      if (balance.asset === this.settings.feeCurrency) {
+        continue
+      }
+
+      const quantity: number = parseFloat(balance.free)
+
+      if (balance.asset === this.settings.baseCurrency) {
+        equity += quantity
+        available += quantity
+        continue
+      }
+
+      const price: number = await this.getPrice(
+        balance.asset + this.settings.baseCurrency,
+      )
+      equity += parseFloat(balance.free) * price
+    }
+
+    return {
+      equity: equity,
+      available: available,
+    }
   }
 
   async getPrice(symbol: string): Promise<number> {
@@ -53,7 +89,7 @@ export class BinanceClientApi implements BinanceApi {
         endTime: end.getTime(),
       }
       const binanceKlineInterval: Interval =
-        domainMapBinanceKlineInterval(interval)
+        mapDomainToBinanceKlineInterval(interval)
       const response: RestMarketTypes.klineCandlestickDataResponse[] =
         await this.client.klineCandlestickData(
           symbol,
@@ -61,7 +97,7 @@ export class BinanceClientApi implements BinanceApi {
           options,
         )
 
-      return response.map(mapBinanceKline)
+      return response.map(mapBinanceToDomainKline)
     }
     return executeWithRateLimit(this.limiter, task)
   }

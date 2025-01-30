@@ -18,8 +18,10 @@
     "server:stop": "pm2 stop trading-bot",
     "test": "jest --runInBand",
     "test:watch": "jest --watchAll",
+    "binance:get-balance": "ts-node src/scripts/binance/binance-get-balance.ts",
     "binance:get-price": "ts-node src/scripts/binance/binance-get-price.ts",
-    "binance:get-price-history": "ts-node src/scripts/binance/binance-get-price-history.ts"
+    "binance:get-price-history": "ts-node src/scripts/binance/binance-get-price-history.ts",
+    "bitmart:get-balance": "ts-node src/scripts/bitmart/bitmart-get-balance.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",
