@@ -11,12 +11,15 @@ import { EquityRepository } from './domain/repositories/equity-repository'
 import { PrismaFuturesEquityRepository } from './infrastructure/repositories/prisma-futures-equity-repository'
 import { PrismaSpotEquityRepository } from './infrastructure/repositories/prisma-spot-equity-repository'
 import { AccountManager } from './domain/managers/account-manager'
+import { ApiService } from './domain/services/api-service'
 
 class Container {
   private static launcherSpot: Launcher
   private static launcherFutures: Launcher
   private static bitmartApiService: BitmartApiService
   private static binanceApiService: BinanceApiService
+  private static apiSpotService: ApiService
+  private static apiFuturesService: ApiService
   private static equitySpotService: EquityService
   private static equityFuturesService: EquityService
 
@@ -32,14 +35,18 @@ class Container {
 
     this.bitmartApiService = new BitmartApiService(bitmartApi)
     this.binanceApiService = new BinanceApiService(binanceApi)
+    this.apiSpotService = new ApiService(binanceApi)
+    this.apiFuturesService = new ApiService(bitmartApi)
     this.equitySpotService = new EquityService(equitySpotRepository)
     this.equityFuturesService = new EquityService(equityFuturesRepository)
 
     const accountSpotManager: AccountManager = new AccountManager(
+      this.apiSpotService,
       this.equitySpotService,
     )
 
     const accountFuturesManager: AccountManager = new AccountManager(
+      this.apiFuturesService,
       this.equityFuturesService,
     )
 
@@ -61,6 +68,14 @@ class Container {
 
   static getBinanceApiService(): BinanceApiService {
     return this.binanceApiService
+  }
+
+  static getApiSpotService(): ApiService {
+    return this.apiSpotService
+  }
+
+  static getApiFuturesService(): ApiService {
+    return this.apiFuturesService
   }
 
   static getEquitySpotService(): EquityService {

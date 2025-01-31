@@ -1,5 +1,3 @@
-import { Balance } from '../../domain/types/balance'
+import { Api } from './api'
 
-export interface BitmartApi {
-  getBalance(): Promise<Balance>
-}
+export interface BitmartApi extends Api {}

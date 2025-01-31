@@ -1,14 +1,12 @@
 import { BinanceApi } from '../../application/api/binance-api'
 import { Kline, KlineInterval } from '../types/kline'
 import { settings, ApiSettings } from '../../application/settings'
-import { Balance } from '../types/balance'
+import { ApiService } from './api-service'
 
-export class BinanceApiService {
+export class BinanceApiService extends ApiService {
   private readonly settings: ApiSettings = settings.api
-  constructor(private readonly binanceApi: BinanceApi) {}
-
-  async getBalance(): Promise<Balance> {
-    return this.binanceApi.getBalance()
+  constructor(private readonly binanceApi: BinanceApi) {
+    super(binanceApi)
   }
 
   async getPrice(symbol: string): Promise<number> {

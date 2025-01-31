@@ -1,9 +1,8 @@
 import { BitmartApi } from '../../application/api/bitmart-api'
-import { Balance } from '../types/balance'
+import { ApiService } from './api-service'
 
-export class BitmartApiService {
-  constructor(private readonly bitmartApi: BitmartApi) {}
-  async getBalance(): Promise<Balance> {
-    return await this.bitmartApi.getBalance()
+export class BitmartApiService extends ApiService {
+  constructor(private readonly bitmartApi: BitmartApi) {
+    super(bitmartApi)
   }
 }

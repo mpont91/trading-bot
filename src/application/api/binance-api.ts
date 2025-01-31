@@ -1,8 +1,7 @@
 import { Kline, KlineInterval } from '../../domain/types/kline'
-import { Balance } from '../../domain/types/balance'
+import { Api } from './api'
 
-export interface BinanceApi {
-  getBalance(): Promise<Balance>
+export interface BinanceApi extends Api {
   getPrice(symbol: string): Promise<number>
   getKline(
     symbol: string,
