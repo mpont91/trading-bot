@@ -1,6 +1,7 @@
 import { Balance } from '../../domain/types/balance'
+import { Symbol } from '../../domain/types/symbol'
 
 export interface Api {
   getBalance(): Promise<Balance>
-  getStepSize(symbol: string): Promise<number>
+  getSymbol(symbol: string): Promise<Symbol>
 }

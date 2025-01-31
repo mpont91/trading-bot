@@ -14,6 +14,8 @@ import {
   mapDomainToBinanceKlineInterval,
 } from './mappers/kline-mapper'
 import { Balance } from '../../domain/types/balance'
+import { Symbol } from '../../domain/types/symbol'
+import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly settings: BinanceSettings = settings.binance
@@ -102,28 +104,15 @@ export class BinanceClientApi implements BinanceApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async getStepSize(symbol: string): Promise<number> {
-    const task = async (): Promise<number> => {
+  async getSymbol(symbol: string): Promise<Symbol> {
+    const task = async (): Promise<Symbol> => {
       const params: RestMarketTypes.exchangeInformationOptions = {
         symbol: symbol,
       }
       const exchangeInfo: RestMarketTypes.exchangeInformationResponse =
         await this.client.exchangeInformation(params)
 
-      if (exchangeInfo.symbols.length === 0) {
-        throw new Error(`Symbol ${symbol} not found.`)
-      }
-
-      const lotSize: RestMarketTypes.lotSize =
-        exchangeInfo.symbols[0].filters.find(
-          (filter): boolean => filter.filterType === 'LOT_SIZE',
-        ) as RestMarketTypes.lotSize
-
-      if (!lotSize) {
-        throw new Error(`Lot size filter not found for ${symbol}.`)
-      }
-
-      return parseFloat(lotSize.stepSize)
+      return mapBinanceToDomainSymbol(exchangeInfo.symbols[0])
     }
     return executeWithRateLimit(this.limiter, task)
   }

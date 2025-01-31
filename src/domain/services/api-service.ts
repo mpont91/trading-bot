@@ -1,5 +1,6 @@
 import { Balance } from '../types/balance'
 import { Api } from '../../application/api/api'
+import { Symbol } from '../types/symbol'
 
 export class ApiService {
   constructor(private readonly api: Api) {}
@@ -8,7 +9,7 @@ export class ApiService {
     return this.api.getBalance()
   }
 
-  async getStepSize(symbol: string): Promise<number> {
-    return this.api.getStepSize(symbol)
+  async getSymbol(symbol: string): Promise<Symbol> {
+    return this.api.getSymbol(symbol)
   }
 }

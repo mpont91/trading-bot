@@ -1,6 +1,7 @@
 import { ApiService } from './api-service'
 import { Balance } from '../types/balance'
 import { TradingSettings } from '../../application/settings'
+import { Symbol } from '../types/symbol'
 
 export class InvestmentService {
   constructor(
@@ -29,5 +30,26 @@ export class InvestmentService {
     }
 
     return totalInvestmentForSymbol
+  }
+
+  async getQuantityAdjustedFromAmount(
+    symbol: string,
+    amount: number,
+  ): Promise<number> {
+    const symbolInformation: Symbol = await this.apiService.getSymbol(symbol)
+
+    let rawQuantity: number = amount / symbolInformation.price
+
+    rawQuantity = rawQuantity / symbolInformation.contractSize
+
+    let adjustedQuantity: number =
+      Math.floor(rawQuantity / symbolInformation.stepSize) *
+      symbolInformation.stepSize
+
+    if (adjustedQuantity <= 0) {
+      throw new Error(`Calculated quantity is too small for ${symbol}.`)
+    }
+
+    return adjustedQuantity
   }
 }

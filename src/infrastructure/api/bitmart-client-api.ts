@@ -11,6 +11,11 @@ import Bottleneck from 'bottleneck'
 import { Balance } from '../../domain/types/balance'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { mapBitmartToDomainBalance } from './mappers/balance-mapper'
+import { Symbol } from '../../domain/types/symbol'
+import {
+  mapBinanceToDomainSymbol,
+  mapBitmartToDomainSymbol,
+} from './mappers/symbol-mapper'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly settings: BitmartSettings = settings.bitmart
@@ -36,15 +41,15 @@ export class BitmartClientApi implements BitmartApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async getStepSize(symbol: string): Promise<number> {
-    const task = async (): Promise<number> => {
+  async getSymbol(symbol: string): Promise<Symbol> {
+    const task = async (): Promise<Symbol> => {
       const response: APIResponse<{
         symbols: FuturesContractDetails[]
       }> = await this.client.getFuturesContractDetails({ symbol: symbol })
 
       this.validateResponse(response)
 
-      return parseFloat(response.data.symbols[0].vol_precision)
+      return mapBitmartToDomainSymbol(response.data.symbols[0])
     }
 
     return executeWithRateLimit(this.limiter, task)
