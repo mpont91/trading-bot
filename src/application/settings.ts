@@ -9,6 +9,8 @@ export interface Settings {
   bitmart: BitmartSettings
   binance: BinanceSettings
   api: ApiSettings
+  spotTrading: TradingSettings
+  futuresTrading: TradingSettings
 }
 
 export interface BitmartSettings {
@@ -34,6 +36,11 @@ export interface ApiSettings {
   priceHistoryKlineLimit: number
 }
 
+export interface TradingSettings {
+  symbols: string[]
+  safetyCapitalMargin: number
+}
+
 export const settings: Settings = {
   intervalExecutionTime: parseInt(process.env.INTERVAL_EXECUTION_TIME!),
   intervalReportingTime: parseInt(process.env.INTERVAL_REPORTING_TIME!),
@@ -56,5 +63,13 @@ export const settings: Settings = {
   api: {
     priceHistoryKlineInterval: 5, // 5 minutes
     priceHistoryKlineLimit: 240, // 5 minutes * 120 candles = 10 hours price history
+  },
+  spotTrading: {
+    symbols: ['BTCUSDC'],
+    safetyCapitalMargin: 0.3,
+  },
+  futuresTrading: {
+    symbols: ['ETHUSDT'],
+    safetyCapitalMargin: 0.3,
   },
 }
