@@ -1,5 +1,10 @@
 import { BitmartApi } from '../../application/api/bitmart-api'
-import { APIResponse, FuturesAccountAsset, FuturesClientV2 } from 'bitmart-api'
+import {
+  APIResponse,
+  FuturesAccountAsset,
+  FuturesClientV2,
+  FuturesContractDetails,
+} from 'bitmart-api'
 import { BitmartSettings } from '../../application/settings'
 import { settings } from '../../application/settings'
 import Bottleneck from 'bottleneck'
@@ -26,6 +31,20 @@ export class BitmartClientApi implements BitmartApi {
 
       this.validateResponse(response)
       return mapBitmartToDomainBalance(response.data[0])
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async getStepSize(symbol: string): Promise<number> {
+    const task = async (): Promise<number> => {
+      const response: APIResponse<{
+        symbols: FuturesContractDetails[]
+      }> = await this.client.getFuturesContractDetails({ symbol: symbol })
+
+      this.validateResponse(response)
+
+      return parseFloat(response.data.symbols[0].vol_precision)
     }
 
     return executeWithRateLimit(this.limiter, task)

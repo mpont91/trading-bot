@@ -7,4 +7,8 @@ export class ApiService {
   async getBalance(): Promise<Balance> {
     return this.api.getBalance()
   }
+
+  async getStepSize(symbol: string): Promise<number> {
+    return this.api.getStepSize(symbol)
+  }
 }
