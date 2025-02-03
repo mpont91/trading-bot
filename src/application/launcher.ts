@@ -1,14 +1,16 @@
 import { settings } from './settings'
 import { logger } from '../infrastructure/logger/winston-logger'
-import { AccountManager } from '../domain/managers/account-manager'
+import { ManagerInterface } from '../domain/managers/manager-interface'
 
 export class Launcher {
-  private readonly intervalReportingTime: number =
-    settings.intervalReportingTime
+  private readonly intervalReportTime: number = settings.intervalReportTime
   private readonly intervalExecutionTime: number =
     settings.intervalExecutionTime
 
-  constructor(private readonly accountManager: AccountManager) {}
+  constructor(
+    private readonly executionManagers: ManagerInterface[],
+    private readonly reportManagers: ManagerInterface[],
+  ) {}
 
   async start(): Promise<void> {
     logger.info('Launcher is about to start for the first time.')
@@ -16,7 +18,7 @@ export class Launcher {
     await this.execute()
     setInterval(async (): Promise<void> => {
       await this.report()
-    }, this.intervalReportingTime)
+    }, this.intervalReportTime)
     setInterval(async (): Promise<void> => {
       await this.execute()
     }, this.intervalExecutionTime)
@@ -25,7 +27,9 @@ export class Launcher {
   private async execute(): Promise<void> {
     logger.info('Launcher is going to start the execution managers.')
     try {
-      console.log('TODO: implement them')
+      for (const manager of this.executionManagers) {
+        await manager.start()
+      }
     } catch (error: unknown) {
       logger.error('Something went wrong with execution managers', error)
       console.error('Something went wrong with execution managers', error)
@@ -33,12 +37,14 @@ export class Launcher {
   }
 
   private async report(): Promise<void> {
-    logger.info('Launcher is going to start the reporting managers.')
+    logger.info('Launcher is going to start the report managers.')
     try {
-      await this.accountManager.start()
+      for (const manager of this.reportManagers) {
+        await manager.start()
+      }
     } catch (error: unknown) {
-      logger.error('Something went wrong with reporting managers', error)
-      console.error('Something went wrong with reporting managers', error)
+      logger.error('Something went wrong with report managers', error)
+      console.error('Something went wrong with report managers', error)
     }
   }
 }

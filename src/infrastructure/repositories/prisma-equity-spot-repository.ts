@@ -8,7 +8,7 @@ import type { Equity, EquityCreate } from '../../domain/models/equity'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartDateFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 
-export class PrismaSpotEquityRepository implements EquityRepository {
+export class PrismaEquitySpotRepository implements EquityRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(equity: EquityCreate): Promise<void> {

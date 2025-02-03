@@ -5,7 +5,7 @@ config()
 
 export interface Settings {
   intervalExecutionTime: number
-  intervalReportingTime: number
+  intervalReportTime: number
   bitmart: BitmartSettings
   binance: BinanceSettings
   api: ApiSettings
@@ -43,7 +43,7 @@ export interface TradingSettings {
 
 export const settings: Settings = {
   intervalExecutionTime: parseInt(process.env.INTERVAL_EXECUTION_TIME!),
-  intervalReportingTime: parseInt(process.env.INTERVAL_REPORTING_TIME!),
+  intervalReportTime: parseInt(process.env.INTERVAL_REPORT_TIME!),
   bitmart: {
     bitmartApiKey: process.env.BITMART_API_KEY!,
     bitmartApiSecret: process.env.BITMART_SECRET_KEY!,

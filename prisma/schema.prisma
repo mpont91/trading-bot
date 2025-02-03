@@ -16,6 +16,14 @@ model SpotEquity {
   created_at DateTime @default(now())
 }
 
+model SpotCommissionEquity {
+  id         Int      @id @default(autoincrement())
+  currency   String
+  quantity   Decimal
+  amount     Decimal
+  created_at DateTime @default(now())
+}
+
 model FuturesEquity {
   id         Int      @id @default(autoincrement())
   amount     Decimal

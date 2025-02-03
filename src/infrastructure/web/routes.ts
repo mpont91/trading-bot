@@ -3,6 +3,7 @@ import {
   getEquityFuturesGraph,
   getEquitySpotGraph,
 } from './controllers/equity-controller'
+import { getCommissionEquitySpot } from './controllers/commission-equity-controller'
 
 const router: Router = Router()
 
@@ -16,6 +17,7 @@ router.get('/uptime', (req: Request, res: Response): void => {
 
 const spotRouter: Router = Router()
 spotRouter.get('/graph/equity', getEquitySpotGraph)
+spotRouter.get('/commission-equity', getCommissionEquitySpot)
 
 const futuresRouter: Router = Router()
 futuresRouter.get('/graph/equity', getEquityFuturesGraph)

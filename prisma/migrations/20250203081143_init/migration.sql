@@ -6,6 +6,15 @@ CREATE TABLE "SpotEquity" (
 );
 
 -- CreateTable
+CREATE TABLE "SpotCommissionEquity" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "currency" TEXT NOT NULL,
+    "quantity" DECIMAL NOT NULL,
+    "amount" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "FuturesEquity" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "amount" DECIMAL NOT NULL,

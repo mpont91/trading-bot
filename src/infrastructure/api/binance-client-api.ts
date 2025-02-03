@@ -16,6 +16,7 @@ import {
 import { Balance } from '../../domain/types/balance'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
+import { CommissionEquityCreate } from '../../domain/models/commission-equity'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly settings: BinanceSettings = settings.binance
@@ -60,6 +61,40 @@ export class BinanceClientApi implements BinanceApi {
     return {
       equity: equity,
       available: available,
+    }
+  }
+
+  async getCommissionEquity(): Promise<CommissionEquityCreate> {
+    const params: RestTradeTypes.accountInformationOptions = {
+      omitZeroBalances: true,
+    }
+    const response: RestTradeTypes.accountInformationResponse =
+      await this.client.accountInformation(params)
+
+    const balance: RestTradeTypes.accountInformationBalances | undefined =
+      response.balances.find(
+        (balance: RestTradeTypes.accountInformationBalances): boolean =>
+          balance.asset === this.settings.feeCurrency,
+      )
+
+    if (!balance) {
+      return {
+        currency: this.settings.feeCurrency,
+        quantity: 0,
+        amount: 0,
+      }
+    }
+
+    const price: number = await this.getPrice(
+      balance.asset + this.settings.baseCurrency,
+    )
+    const quantity: number = parseFloat(balance.free)
+    const amount: number = quantity * price
+
+    return {
+      currency: this.settings.feeCurrency,
+      quantity: quantity,
+      amount: amount,
     }
   }
 
