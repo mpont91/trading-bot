@@ -112,7 +112,8 @@ export class BinanceClientApi implements BinanceApi {
       const exchangeInfo: RestMarketTypes.exchangeInformationResponse =
         await this.client.exchangeInformation(params)
 
-      return mapBinanceToDomainSymbol(exchangeInfo.symbols[0])
+      const price: number = await this.getPrice(symbol)
+      return mapBinanceToDomainSymbol(exchangeInfo.symbols[0], price)
     }
     return executeWithRateLimit(this.limiter, task)
   }

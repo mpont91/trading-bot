@@ -12,10 +12,7 @@ import { Balance } from '../../domain/types/balance'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { mapBitmartToDomainBalance } from './mappers/balance-mapper'
 import { Symbol } from '../../domain/types/symbol'
-import {
-  mapBinanceToDomainSymbol,
-  mapBitmartToDomainSymbol,
-} from './mappers/symbol-mapper'
+import { mapBitmartToDomainSymbol } from './mappers/symbol-mapper'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly settings: BitmartSettings = settings.bitmart

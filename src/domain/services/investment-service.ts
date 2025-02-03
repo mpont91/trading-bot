@@ -29,7 +29,7 @@ export class InvestmentService {
       )
     }
 
-    return totalInvestmentForSymbol
+    return this.roundQuantity(totalInvestmentForSymbol)
   }
 
   async getQuantityAdjustedFromAmount(
@@ -38,18 +38,21 @@ export class InvestmentService {
   ): Promise<number> {
     const symbolInformation: Symbol = await this.apiService.getSymbol(symbol)
 
-    let rawQuantity: number = amount / symbolInformation.price
-
-    rawQuantity = rawQuantity / symbolInformation.contractSize
-
-    let adjustedQuantity: number =
-      Math.floor(rawQuantity / symbolInformation.stepSize) *
+    const quantity: number = amount / symbolInformation.price
+    const quantityContractSize: number =
+      quantity / symbolInformation.contractSize
+    const adjustedQuantity: number =
+      Math.floor(quantityContractSize / symbolInformation.stepSize) *
       symbolInformation.stepSize
 
     if (adjustedQuantity <= 0) {
       throw new Error(`Calculated quantity is too small for ${symbol}.`)
     }
 
-    return adjustedQuantity
+    return this.roundQuantity(adjustedQuantity)
+  }
+
+  private roundQuantity(number: number): number {
+    return Math.round(number * 1e6) / 1e6
   }
 }

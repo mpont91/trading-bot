@@ -4,6 +4,7 @@ import { FuturesContractDetails } from 'bitmart-api'
 
 export function mapBinanceToDomainSymbol(
   binanceSymbol: RestMarketTypes.exchangeInformationSymbols,
+  price: number,
 ): Symbol {
   const lotSize: RestMarketTypes.lotSize = binanceSymbol.filters.find(
     (filter): boolean => filter.filterType === 'LOT_SIZE',
@@ -13,14 +14,11 @@ export function mapBinanceToDomainSymbol(
     throw new Error(`Lot size filter not found for ${binanceSymbol.symbol}.`)
   }
 
-  console.log(binanceSymbol)
-
   return {
     name: binanceSymbol.symbol,
-    price: 1,
+    price: price,
     stepSize: parseFloat(lotSize.stepSize),
-    contractSize: 0,
-    pricePrecision: 1,
+    contractSize: 1,
   }
 }
 
@@ -32,6 +30,5 @@ export function mapBitmartToDomainSymbol(
     price: parseFloat(bitmartSymbol.last_price),
     stepSize: parseFloat(bitmartSymbol.vol_precision),
     contractSize: parseFloat(bitmartSymbol.contract_size),
-    pricePrecision: parseFloat(bitmartSymbol.price_precision),
   }
 }

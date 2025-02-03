@@ -3,5 +3,4 @@ export interface Symbol {
   price: number
   contractSize: number
   stepSize: number
-  pricePrecision: number
 }
