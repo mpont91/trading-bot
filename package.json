@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
     "dev:server": "nodemon --watch src --exec ts-node src/index.ts -- --only-server",
-    "dev:bot": "nodemon --watch src --exec ts-node src/index.ts -- --only-bot",
+    "dev:bot-spot": "nodemon --watch src --exec ts-node src/index.ts -- --only-bot-spot",
+    "dev:bot-futures": "nodemon --watch src --exec ts-node src/index.ts -- --only-bot-futures",
     "build": "tsc",
     "serve": "node dist/index.js",
     "format": "prettier --write .",

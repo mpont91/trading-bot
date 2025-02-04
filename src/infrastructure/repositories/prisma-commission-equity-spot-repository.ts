@@ -16,7 +16,7 @@ export class PrismaCommissionEquitySpotRepository
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(commissionEquityCreate: CommissionEquityCreate): Promise<void> {
-    await this.prisma.spotEquity.create({
+    await this.prisma.spotCommissionEquity.create({
       data: commissionEquityCreate,
     })
   }
