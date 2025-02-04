@@ -17,6 +17,7 @@
     "server:status": "pm2 status trading-bot",
     "server:start": "pm2 start dist/index.js --name trading-bot",
     "server:stop": "pm2 stop trading-bot",
+    "server:restart": "pm2 restart trading-bot",
     "test": "jest --runInBand",
     "test:watch": "jest --watchAll",
     "binance:get-balance": "ts-node src/scripts/binance/binance-get-balance.ts",
