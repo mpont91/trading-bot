@@ -17,6 +17,7 @@ import { Balance } from '../../domain/types/balance'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
 import { CommissionEquityCreate } from '../../domain/models/commission-equity'
+import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-spot-helper'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly settings: BinanceSettings = settings.binance
@@ -30,72 +31,76 @@ export class BinanceClientApi implements BinanceApi {
   })
 
   async getBalance(): Promise<Balance> {
-    const params: RestTradeTypes.accountInformationOptions = {
-      omitZeroBalances: true,
-    }
-    const response: RestTradeTypes.accountInformationResponse =
-      await this.client.accountInformation(params)
+    const task = async (): Promise<Balance> => {
+      const params: RestTradeTypes.accountInformationOptions = {
+        omitZeroBalances: true,
+      }
+      const response: RestTradeTypes.accountInformationResponse =
+        await this.client.accountInformation(params)
 
-    let equity: number = 0
-    let available: number = 0
+      let equity: number = 0
+      let available: number = 0
 
-    for (const balance of response.balances) {
-      if (balance.asset === this.settings.feeCurrency) {
-        continue
+      for (const balance of response.balances) {
+        if (balance.asset === this.settings.feeCurrency) {
+          continue
+        }
+
+        const quantity: number = parseFloat(balance.free)
+
+        if (balance.asset === this.settings.baseCurrency) {
+          equity += quantity
+          available += quantity
+          continue
+        }
+
+        const price: number = await this.getPrice(
+          balance.asset + this.settings.baseCurrency,
+        )
+        equity += parseFloat(balance.free) * price
       }
 
-      const quantity: number = parseFloat(balance.free)
+      return {
+        equity: equity,
+        available: available,
+      }
+    }
 
-      if (balance.asset === this.settings.baseCurrency) {
-        equity += quantity
-        available += quantity
-        continue
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async getCommissionEquity(): Promise<CommissionEquityCreate> {
+    const task = async (): Promise<CommissionEquityCreate> => {
+      const params: RestTradeTypes.accountInformationOptions = {
+        omitZeroBalances: true,
+      }
+      const response: RestTradeTypes.accountInformationResponse =
+        await this.client.accountInformation(params)
+
+      const balance: RestTradeTypes.accountInformationBalances | undefined =
+        response.balances.find(
+          (balance: RestTradeTypes.accountInformationBalances): boolean =>
+            balance.asset === this.settings.feeCurrency,
+        )
+
+      if (!balance) {
+        return getEmptyCommissionEquityCreate()
       }
 
       const price: number = await this.getPrice(
         balance.asset + this.settings.baseCurrency,
       )
-      equity += parseFloat(balance.free) * price
-    }
+      const quantity: number = parseFloat(balance.free)
+      const amount: number = quantity * price
 
-    return {
-      equity: equity,
-      available: available,
-    }
-  }
-
-  async getCommissionEquity(): Promise<CommissionEquityCreate> {
-    const params: RestTradeTypes.accountInformationOptions = {
-      omitZeroBalances: true,
-    }
-    const response: RestTradeTypes.accountInformationResponse =
-      await this.client.accountInformation(params)
-
-    const balance: RestTradeTypes.accountInformationBalances | undefined =
-      response.balances.find(
-        (balance: RestTradeTypes.accountInformationBalances): boolean =>
-          balance.asset === this.settings.feeCurrency,
-      )
-
-    if (!balance) {
       return {
         currency: this.settings.feeCurrency,
-        quantity: 0,
-        amount: 0,
+        quantity: quantity,
+        amount: amount,
       }
     }
 
-    const price: number = await this.getPrice(
-      balance.asset + this.settings.baseCurrency,
-    )
-    const quantity: number = parseFloat(balance.free)
-    const amount: number = quantity * price
-
-    return {
-      currency: this.settings.feeCurrency,
-      quantity: quantity,
-      amount: amount,
-    }
+    return executeWithRateLimit(this.limiter, task)
   }
 
   async getPrice(symbol: string): Promise<number> {
@@ -136,6 +141,7 @@ export class BinanceClientApi implements BinanceApi {
 
       return response.map(mapBinanceToDomainKline)
     }
+
     return executeWithRateLimit(this.limiter, task)
   }
 
@@ -150,6 +156,7 @@ export class BinanceClientApi implements BinanceApi {
       const price: number = await this.getPrice(symbol)
       return mapBinanceToDomainSymbol(exchangeInfo.symbols[0], price)
     }
+
     return executeWithRateLimit(this.limiter, task)
   }
 }

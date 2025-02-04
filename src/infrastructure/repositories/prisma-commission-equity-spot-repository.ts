@@ -8,7 +8,7 @@ import {
   CommissionEquityCreate,
 } from '../../domain/models/commission-equity'
 import { CommissionEquityRepository } from '../../domain/repositories/commission-equity-repository'
-import { settings } from '../../application/settings'
+import { getEmptyCommissionEquity } from '../../domain/helpers/commission-spot-helper'
 
 export class PrismaCommissionEquitySpotRepository
   implements CommissionEquityRepository
@@ -29,20 +29,10 @@ export class PrismaCommissionEquitySpotRepository
     })
 
     if (!commissionEquity) {
-      return this.getEmptyCommissionEquity()
+      return getEmptyCommissionEquity()
     }
 
     return this.toDomain(commissionEquity as PrismaSpotCommissionEquity)
-  }
-
-  private getEmptyCommissionEquity(): CommissionEquity {
-    return {
-      id: 1,
-      currency: settings.binance.feeCurrency,
-      quantity: 0,
-      amount: 0,
-      createdAt: new Date(),
-    }
   }
 
   private toDomain(
