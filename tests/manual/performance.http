@@ -1,0 +1,2 @@
+GET http://localhost:3000/spot/performance
+Accept: application/json

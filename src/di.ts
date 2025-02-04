@@ -16,6 +16,7 @@ import { CommissionEquityService } from './domain/services/commission-equity-ser
 import { CommissionEquityRepository } from './domain/repositories/commission-equity-repository'
 import { PrismaCommissionEquitySpotRepository } from './infrastructure/repositories/prisma-commission-equity-spot-repository'
 import { CommissionSpotManager } from './domain/managers/commission-spot-manager'
+import { PerformanceService } from './domain/services/performance-service'
 
 class Container {
   private static launcherSpot: Launcher
@@ -27,6 +28,7 @@ class Container {
   private static equitySpotService: EquityService
   private static commissionEquitySpotService: CommissionEquityService
   private static equityFuturesService: EquityService
+  private static performanceService: PerformanceService
 
   static initialize(): void {
     const bitmartApi: BitmartApi = new BitmartClientApi()
@@ -49,6 +51,7 @@ class Container {
       commissionEquitySpotRepository,
     )
     this.equityFuturesService = new EquityService(equityFuturesRepository)
+    this.performanceService = new PerformanceService()
 
     const accountSpotManager: AccountManager = new AccountManager(
       this.apiSpotService,
@@ -107,6 +110,10 @@ class Container {
 
   static getEquityFuturesService(): EquityService {
     return this.equityFuturesService
+  }
+
+  static getPerformanceService(): PerformanceService {
+    return this.performanceService
   }
 }
 

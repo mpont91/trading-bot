@@ -16,7 +16,7 @@ export function getEmptyCommissionEquity(): CommissionEquity {
 
 export function getEmptyCommissionEquityCreate(): CommissionEquityCreate {
   return {
-    currency: this.settings.feeCurrency,
+    currency: settings.binance.feeCurrency,
     quantity: 0,
     amount: 0,
   }
