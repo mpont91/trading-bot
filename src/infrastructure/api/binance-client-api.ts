@@ -1,7 +1,9 @@
 import {
   Interval,
+  OrderType,
   RestMarketTypes,
   RestTradeTypes,
+  Side,
   Spot,
 } from '@binance/connector-typescript'
 import { BinanceApi } from '../../application/api/binance-api'
@@ -18,6 +20,8 @@ import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
 import { CommissionEquityCreate } from '../../domain/models/commission-equity'
 import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-spot-helper'
+import { OrderRequest } from '../../domain/types/order-request'
+import { mapDomainToBinanceSide } from './mappers/side-mapper'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly settings: BinanceSettings = settings.binance
@@ -155,6 +159,26 @@ export class BinanceClientApi implements BinanceApi {
 
       const price: number = await this.getPrice(symbol)
       return mapBinanceToDomainSymbol(exchangeInfo.symbols[0], price)
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async submitOrder(orderRequest: OrderRequest): Promise<void> {
+    const task = async (): Promise<void> => {
+      const options: RestTradeTypes.newOrderOptions = {
+        quantity: orderRequest.quantity,
+      }
+
+      const response: RestTradeTypes.newOrderResponse =
+        await this.client.newOrder(
+          orderRequest.symbol,
+          mapDomainToBinanceSide(orderRequest.side),
+          <OrderType>'MARKET',
+          options,
+        )
+
+      console.log(response)
     }
 
     return executeWithRateLimit(this.limiter, task)

@@ -4,7 +4,9 @@ import {
   FuturesAccountAsset,
   FuturesClientV2,
   FuturesContractDetails,
+  FuturesOrderSubmitResult,
   SetFuturesLeverageRequest,
+  SubmitFuturesOrderRequest,
 } from 'bitmart-api'
 import { BitmartSettings } from '../../application/settings'
 import { settings } from '../../application/settings'
@@ -14,6 +16,8 @@ import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { mapBitmartToDomainBalance } from './mappers/balance-mapper'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBitmartToDomainSymbol } from './mappers/symbol-mapper'
+import { OrderRequest } from '../../domain/types/order-request'
+import { mapDomainToBitmartSide } from './mappers/side-mapper'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly settings: BitmartSettings = settings.bitmart
@@ -62,6 +66,31 @@ export class BitmartClientApi implements BitmartApi {
       }
 
       this.validateResponse(await this.client.setFuturesLeverage(params))
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async submitOrder(orderRequest: OrderRequest): Promise<void> {
+    const task = async (): Promise<void> => {
+      const params: SubmitFuturesOrderRequest = {
+        type: 'market',
+        open_type: 'isolated',
+        symbol: orderRequest.symbol,
+        side: mapDomainToBitmartSide(
+          orderRequest.side,
+          orderRequest.isClosePosition,
+        ),
+        leverage: orderRequest.leverage.toString() ?? undefined,
+        size: orderRequest.quantity,
+      }
+
+      const response: APIResponse<FuturesOrderSubmitResult> =
+        await this.client.submitFuturesOrder(params)
+
+      this.validateResponse(response)
+
+      console.log(response)
     }
 
     return executeWithRateLimit(this.limiter, task)

@@ -24,9 +24,11 @@
     "binance:get-symbol": "ts-node src/scripts/binance/binance-get-symbol.ts",
     "binance:get-price": "ts-node src/scripts/binance/binance-get-price.ts",
     "binance:get-price-history": "ts-node src/scripts/binance/binance-get-price-history.ts",
+    "binance:submit-order": "ts-node src/scripts/binance/binance-submit-order.ts",
     "bitmart:get-balance": "ts-node src/scripts/bitmart/bitmart-get-balance.ts",
     "bitmart:get-symbol": "ts-node src/scripts/bitmart/bitmart-get-symbol.ts",
-    "bitmart:set-leverage": "ts-node src/scripts/bitmart/bitmart-set-leverage.ts"
+    "bitmart:set-leverage": "ts-node src/scripts/bitmart/bitmart-set-leverage.ts",
+    "bitmart:submit-order": "ts-node src/scripts/bitmart/bitmart-submit-order.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",
