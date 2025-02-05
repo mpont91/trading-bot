@@ -2,6 +2,8 @@ import { BitmartApi } from '../../application/api/bitmart-api'
 import {
   APIResponse,
   FuturesAccountAsset,
+  FuturesAccountOrder,
+  FuturesAccountOrderRequest,
   FuturesClientV2,
   FuturesContractDetails,
   FuturesOrderSubmitResult,
@@ -18,6 +20,10 @@ import { Symbol } from '../../domain/types/symbol'
 import { mapBitmartToDomainSymbol } from './mappers/symbol-mapper'
 import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBitmartSide } from './mappers/side-mapper'
+import { FuturesAccountTradesRequest } from 'bitmart-api/dist/mjs/types/request/futures.types'
+import { FuturesAccountTrade } from 'bitmart-api/dist/mjs/types/response/futures.types'
+import { OrderCreate } from '../../domain/models/order'
+import { mapBitmartToDomainOrder } from './mappers/order-mapper'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly settings: BitmartSettings = settings.bitmart
@@ -91,6 +97,51 @@ export class BitmartClientApi implements BitmartApi {
       this.validateResponse(response)
 
       console.log(response)
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
+    const tradesResponse: FuturesAccountTrade[] = await this.getTrades(
+      symbol,
+      new Date(),
+      new Date(),
+    )
+
+    const task = async (): Promise<OrderCreate> => {
+      const params: FuturesAccountOrderRequest = {
+        symbol: symbol,
+        order_id: orderId,
+      }
+      const orderResponse: APIResponse<FuturesAccountOrder> =
+        await this.client.getFuturesAccountOrder(params)
+
+      this.validateResponse(orderResponse)
+
+      return mapBitmartToDomainOrder(orderResponse.data, tradesResponse)
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  private async getTrades(
+    symbol: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<FuturesAccountTrade[]> {
+    const task = async (): Promise<FuturesAccountTrade[]> => {
+      const params: FuturesAccountTradesRequest = {
+        symbol: symbol,
+        start_time: Math.floor(startDate.getTime() / 1000),
+        end_time: Math.floor(endDate.getTime() / 1000),
+      }
+      const response: APIResponse<FuturesAccountTrade[]> =
+        await this.client.getFuturesAccountTrades(params)
+
+      this.validateResponse(response)
+
+      return response.data
     }
 
     return executeWithRateLimit(this.limiter, task)

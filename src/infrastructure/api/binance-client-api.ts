@@ -3,7 +3,6 @@ import {
   OrderType,
   RestMarketTypes,
   RestTradeTypes,
-  Side,
   Spot,
 } from '@binance/connector-typescript'
 import { BinanceApi } from '../../application/api/binance-api'
@@ -22,6 +21,8 @@ import { CommissionEquityCreate } from '../../domain/models/commission-equity'
 import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-spot-helper'
 import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
+import { OrderCreate } from '../../domain/models/order'
+import { mapBinanceToDomainOrder } from './mappers/order-mapper'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly settings: BinanceSettings = settings.binance
@@ -179,6 +180,39 @@ export class BinanceClientApi implements BinanceApi {
         )
 
       console.log(response)
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
+    const tradesResponse: RestTradeTypes.accountTradeListResponse[] =
+      await this.getTrades(symbol, orderId)
+
+    const task = async (): Promise<OrderCreate> => {
+      const options: RestTradeTypes.getOrderOptions = {
+        orderId: parseInt(orderId),
+      }
+      const orderResponse: RestTradeTypes.getOrderResponse =
+        await this.client.getOrder(symbol, options)
+
+      return mapBinanceToDomainOrder(orderResponse, tradesResponse)
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  private async getTrades(
+    symbol: string,
+    orderId: string,
+  ): Promise<RestTradeTypes.accountTradeListResponse[]> {
+    const task = async (): Promise<
+      RestTradeTypes.accountTradeListResponse[]
+    > => {
+      const options: RestTradeTypes.accountTradeListOptions = {
+        orderId: parseInt(orderId),
+      }
+      return await this.client.accountTradeList(symbol, options)
     }
 
     return executeWithRateLimit(this.limiter, task)

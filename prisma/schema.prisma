@@ -24,8 +24,62 @@ model SpotCommissionEquity {
   created_at DateTime @default(now())
 }
 
+model SpotOrder {
+  id         Int      @id @default(autoincrement())
+  order_id   String
+  symbol     String
+  side       String
+  quantity   Decimal
+  price      Decimal
+  fees       Decimal
+  created_at DateTime
+}
+
+model SpotTrade {
+  id             Int      @id @default(autoincrement())
+  symbol         String
+  side           String
+  quantity       Decimal
+  entry_order_id String
+  entry_price    Decimal
+  entry_at       DateTime
+  exit_order_id  String
+  exit_price     Decimal
+  exit_at        DateTime
+  fees           Decimal
+  pnl            Decimal
+}
+
 model FuturesEquity {
   id         Int      @id @default(autoincrement())
   amount     Decimal
   created_at DateTime @default(now())
+}
+
+model FuturesOrder {
+  id         Int      @id @default(autoincrement())
+  order_id   String
+  symbol     String
+  side       String
+  quantity   Decimal
+  leverage   Decimal
+  price      Decimal
+  fees       Decimal
+  created_at DateTime
+}
+
+model FuturesTrade {
+  id             Int      @id @default(autoincrement())
+  symbol         String
+  side           String
+  quantity       Decimal
+  leverage       Decimal
+  entry_order_id String
+  entry_price    Decimal
+  entry_at       DateTime
+  exit_order_id  String
+  exit_price     Decimal
+  exit_at        DateTime
+  fees           Decimal
+  pnl            Decimal
 }
