@@ -4,6 +4,7 @@ import {
   FuturesAccountAsset,
   FuturesClientV2,
   FuturesContractDetails,
+  SetFuturesLeverageRequest,
 } from 'bitmart-api'
 import { BitmartSettings } from '../../application/settings'
 import { settings } from '../../application/settings'
@@ -47,6 +48,20 @@ export class BitmartClientApi implements BitmartApi {
       this.validateResponse(response)
 
       return mapBitmartToDomainSymbol(response.data.symbols[0])
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async setLeverage(symbol: string, leverage: number): Promise<void> {
+    const task = async (): Promise<void> => {
+      const params: SetFuturesLeverageRequest = {
+        symbol: symbol,
+        leverage: leverage.toString(),
+        open_type: 'isolated',
+      }
+
+      this.validateResponse(await this.client.setFuturesLeverage(params))
     }
 
     return executeWithRateLimit(this.limiter, task)

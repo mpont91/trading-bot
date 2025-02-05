@@ -25,7 +25,8 @@
     "binance:get-price": "ts-node src/scripts/binance/binance-get-price.ts",
     "binance:get-price-history": "ts-node src/scripts/binance/binance-get-price-history.ts",
     "bitmart:get-balance": "ts-node src/scripts/bitmart/bitmart-get-balance.ts",
-    "bitmart:get-symbol": "ts-node src/scripts/bitmart/bitmart-get-symbol.ts"
+    "bitmart:get-symbol": "ts-node src/scripts/bitmart/bitmart-get-symbol.ts",
+    "bitmart:set-leverage": "ts-node src/scripts/bitmart/bitmart-set-leverage.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",
