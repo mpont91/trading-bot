@@ -6,7 +6,7 @@ import {
 import { EquityRepository } from '../../domain/repositories/equity-repository'
 import type { Equity, EquityCreate } from '../../domain/models/equity'
 import { TimeInterval } from '../../domain/types/time-interval'
-import { getStartDateFromTimeInterval } from '../../domain/helpers/time-interval-helper'
+import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 
 export class PrismaEquityFuturesRepository implements EquityRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -18,13 +18,13 @@ export class PrismaEquityFuturesRepository implements EquityRepository {
   }
 
   async get(interval: TimeInterval): Promise<Equity[]> {
-    const startDate: Date = getStartDateFromTimeInterval(interval)
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
 
     const equities: PrismaFuturesEquity[] =
       await this.prisma.futuresEquity.findMany({
         where: {
           created_at: {
-            gte: startDate,
+            gte: startTime,
           },
         },
         orderBy: {

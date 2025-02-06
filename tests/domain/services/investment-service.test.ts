@@ -2,6 +2,8 @@ import { InvestmentService } from '../../../src/domain/services/investment-servi
 import { TradingSettings } from '../../../src/application/settings'
 import { ApiService } from '../../../src/domain/services/api-service'
 import { Api } from '../../../src/application/api/api'
+import { OrderRequest } from '../../../src/domain/types/order-request'
+import { OrderCreate } from '../../../src/domain/models/order'
 
 let mockApi: jest.Mocked<Api>
 let mockApiService: ApiService
@@ -12,6 +14,8 @@ function initialize(): void {
   mockApi = {
     getBalance: jest.fn().mockResolvedValue({ equity: 100, available: 100 }),
     getSymbol: jest.fn(),
+    submitOrder: jest.fn(),
+    getOrder: jest.fn(),
   } as jest.Mocked<Api>
 
   mockApiService = new ApiService(mockApi)

@@ -1,31 +1,27 @@
 import { TimeInterval } from '../types/time-interval'
 
-export function getStartDateFromTimeInterval(timeInterval: TimeInterval): Date {
+export function getStartTimeFromTimeInterval(timeInterval: TimeInterval): Date {
   const now: Date = new Date()
-  let startDate: Date | undefined
+  let startTime: Date = new Date(now)
 
   switch (timeInterval) {
     case 'day':
-      startDate = new Date(now)
-      startDate.setDate(now.getDate() - 1)
+      startTime.setDate(now.getDate() - 1)
       break
     case 'week':
-      startDate = new Date(now)
-      startDate.setDate(now.getDate() - 7)
+      startTime.setDate(now.getDate() - 7)
       break
     case 'month':
-      startDate = new Date(now)
-      startDate.setMonth(now.getMonth() - 1)
+      startTime.setMonth(now.getMonth() - 1)
       break
     case 'year':
-      startDate = new Date(now)
-      startDate.setFullYear(now.getFullYear() - 1)
+      startTime.setFullYear(now.getFullYear() - 1)
       break
     case 'all':
     default:
-      startDate = new Date(0)
+      startTime = new Date(0)
       break
   }
 
-  return startDate
+  return startTime
 }

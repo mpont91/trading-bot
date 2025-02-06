@@ -103,38 +103,54 @@ export class BitmartClientApi implements BitmartApi {
   }
 
   async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
-    const tradesResponse: FuturesAccountTrade[] = await this.getTrades(
+    const orderResponse: FuturesAccountOrder = await this.getBitmartOrder(
       symbol,
-      new Date(),
-      new Date(),
+      orderId,
     )
 
-    const task = async (): Promise<OrderCreate> => {
+    const orderTime: Date = new Date(orderResponse.create_time)
+    const startTime: Date = new Date(orderTime.getTime() - 5 * 60 * 1000)
+    const endTime: Date = new Date(orderTime.getTime() + 5 * 60 * 1000)
+
+    const tradesResponse: FuturesAccountTrade[] = await this.getBitmartTrades(
+      symbol,
+      startTime,
+      endTime,
+    )
+
+    return mapBitmartToDomainOrder(orderResponse, tradesResponse)
+  }
+
+  private async getBitmartOrder(
+    symbol: string,
+    orderId: string,
+  ): Promise<FuturesAccountOrder> {
+    const task = async (): Promise<FuturesAccountOrder> => {
       const params: FuturesAccountOrderRequest = {
         symbol: symbol,
         order_id: orderId,
       }
-      const orderResponse: APIResponse<FuturesAccountOrder> =
+      const response: APIResponse<FuturesAccountOrder> =
         await this.client.getFuturesAccountOrder(params)
 
-      this.validateResponse(orderResponse)
+      this.validateResponse(response)
 
-      return mapBitmartToDomainOrder(orderResponse.data, tradesResponse)
+      return response.data
     }
 
     return executeWithRateLimit(this.limiter, task)
   }
 
-  private async getTrades(
+  private async getBitmartTrades(
     symbol: string,
-    startDate: Date,
-    endDate: Date,
+    startTime: Date,
+    endTime: Date,
   ): Promise<FuturesAccountTrade[]> {
     const task = async (): Promise<FuturesAccountTrade[]> => {
       const params: FuturesAccountTradesRequest = {
         symbol: symbol,
-        start_time: Math.floor(startDate.getTime() / 1000),
-        end_time: Math.floor(endDate.getTime() / 1000),
+        start_time: Math.floor(startTime.getTime() / 1000),
+        end_time: Math.floor(endTime.getTime() / 1000),
       }
       const response: APIResponse<FuturesAccountTrade[]> =
         await this.client.getFuturesAccountTrades(params)

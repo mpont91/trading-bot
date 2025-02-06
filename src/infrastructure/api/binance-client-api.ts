@@ -186,23 +186,36 @@ export class BinanceClientApi implements BinanceApi {
   }
 
   async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
+    const orderResponse: RestTradeTypes.getOrderResponse =
+      await this.getBinanceOrder(symbol, orderId)
     const tradesResponse: RestTradeTypes.accountTradeListResponse[] =
-      await this.getTrades(symbol, orderId)
+      await this.getBinanceTrades(symbol, orderId)
+    const feeCurrencyPrice: number = await this.getPrice(
+      this.settings.feeCurrency + this.settings.baseCurrency,
+    )
 
-    const task = async (): Promise<OrderCreate> => {
+    return mapBinanceToDomainOrder(
+      orderResponse,
+      tradesResponse,
+      feeCurrencyPrice,
+    )
+  }
+
+  private async getBinanceOrder(
+    symbol: string,
+    orderId: string,
+  ): Promise<RestTradeTypes.getOrderResponse> {
+    const task = async (): Promise<RestTradeTypes.getOrderResponse> => {
       const options: RestTradeTypes.getOrderOptions = {
         orderId: parseInt(orderId),
       }
-      const orderResponse: RestTradeTypes.getOrderResponse =
-        await this.client.getOrder(symbol, options)
-
-      return mapBinanceToDomainOrder(orderResponse, tradesResponse)
+      return await this.client.getOrder(symbol, options)
     }
 
     return executeWithRateLimit(this.limiter, task)
   }
 
-  private async getTrades(
+  private async getBinanceTrades(
     symbol: string,
     orderId: string,
   ): Promise<RestTradeTypes.accountTradeListResponse[]> {
