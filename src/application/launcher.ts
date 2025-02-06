@@ -1,13 +1,10 @@
-import { settings } from './settings'
 import { logger } from '../infrastructure/logger/winston-logger'
 import { ManagerInterface } from '../domain/managers/manager-interface'
 
 export class Launcher {
-  private readonly intervalReportTime: number = settings.intervalReportTime
-  private readonly intervalExecutionTime: number =
-    settings.intervalExecutionTime
-
   constructor(
+    private readonly intervalReportTime: number,
+    private readonly intervalExecutionTime: number,
     private readonly executionManagers: ManagerInterface[],
     private readonly reportManagers: ManagerInterface[],
   ) {}

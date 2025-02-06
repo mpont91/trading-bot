@@ -6,7 +6,7 @@ import {
   Spot,
 } from '@binance/connector-typescript'
 import { BinanceApi } from '../../application/api/binance-api'
-import { BinanceSettings, settings } from '../../application/settings'
+import { BinanceSettings } from '../../application/settings'
 import Bottleneck from 'bottleneck'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { Kline, KlineInterval } from '../../domain/types/kline'
@@ -26,15 +26,19 @@ import { PositionSpot } from '../../domain/types/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 
 export class BinanceClientApi implements BinanceApi {
-  private readonly settings: BinanceSettings = settings.binance
-  private readonly client: Spot = new Spot(
-    this.settings.binanceApiKey,
-    this.settings.binanceApiSecret,
-  )
-  private readonly limiter: Bottleneck = new Bottleneck({
-    maxConcurrent: this.settings.bottleneckMaxConcurrent,
-    minTime: this.settings.bottleneckMinTime,
-  })
+  private readonly client: Spot
+  private readonly limiter: Bottleneck
+
+  constructor(private readonly settings: BinanceSettings) {
+    this.client = new Spot(
+      this.settings.binanceApiKey,
+      this.settings.binanceApiSecret,
+    )
+    this.limiter = new Bottleneck({
+      maxConcurrent: this.settings.bottleneckMaxConcurrent,
+      minTime: this.settings.bottleneckMinTime,
+    })
+  }
 
   async getBalance(): Promise<Balance> {
     const balances: RestTradeTypes.accountInformationBalances[] =

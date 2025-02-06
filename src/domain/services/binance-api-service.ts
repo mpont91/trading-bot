@@ -1,12 +1,14 @@
 import { BinanceApi } from '../../application/api/binance-api'
 import { Kline, KlineInterval } from '../types/kline'
-import { settings, ApiSettings } from '../../application/settings'
+import { ApiSettings } from '../../application/settings'
 import { ApiService } from './api-service'
 import { CommissionEquityCreate } from '../models/commission-equity'
 
 export class BinanceApiService extends ApiService {
-  private readonly settings: ApiSettings = settings.api
-  constructor(private readonly binanceApi: BinanceApi) {
+  constructor(
+    private readonly settings: ApiSettings,
+    private readonly binanceApi: BinanceApi,
+  ) {
     super(binanceApi)
   }
 

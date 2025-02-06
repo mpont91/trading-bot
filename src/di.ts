@@ -27,7 +27,13 @@ import { PrismaTradeFuturesRepository } from './infrastructure/repositories/pris
 import { PrismaOrderFuturesRepository } from './infrastructure/repositories/prisma-order-futures-repository'
 import { PositionService } from './domain/services/position-service'
 import { InvestmentService } from './domain/services/investment-service'
-import { settings, TradingSettings } from './application/settings'
+import {
+  ApiSettings,
+  BinanceSettings,
+  BitmartSettings,
+  settings,
+  TradingSettings,
+} from './application/settings'
 import { PositionFuturesService } from './domain/services/position-futures-service'
 import { PositionSpotService } from './domain/services/position-spot-service'
 
@@ -52,10 +58,13 @@ class Container {
   private static performanceService: PerformanceService
 
   static initialize(): void {
+    const bitmartSettings: BitmartSettings = settings.bitmart
+    const binanceSettings: BinanceSettings = settings.binance
+    const apiSettings: ApiSettings = settings.api
     const tradingSpotSettings: TradingSettings = settings.spotTrading
     const tradingFuturesSettings: TradingSettings = settings.futuresTrading
-    const bitmartApi: BitmartApi = new BitmartClientApi()
-    const binanceApi: BinanceApi = new BinanceClientApi()
+    const bitmartApi: BitmartApi = new BitmartClientApi(bitmartSettings)
+    const binanceApi: BinanceApi = new BinanceClientApi(binanceSettings)
     const prisma: PrismaClient = new PrismaClient()
 
     const equitySpotRepository: EquityRepository =
@@ -76,7 +85,7 @@ class Container {
       new PrismaTradeFuturesRepository(prisma)
 
     this.bitmartApiService = new BitmartApiService(bitmartApi)
-    this.binanceApiService = new BinanceApiService(binanceApi)
+    this.binanceApiService = new BinanceApiService(apiSettings, binanceApi)
     this.apiSpotService = new ApiService(binanceApi)
     this.apiFuturesService = new ApiService(bitmartApi)
     this.equitySpotService = new EquityService(equitySpotRepository)
@@ -105,29 +114,33 @@ class Container {
       this.investmentFuturesService,
     )
     this.performanceService = new PerformanceService()
-
     const accountSpotManager: AccountManager = new AccountManager(
       this.apiSpotService,
       this.equitySpotService,
     )
-
     const commissionSpotManager: CommissionSpotManager =
       new CommissionSpotManager(
         this.binanceApiService,
         this.commissionEquitySpotService,
       )
-
     const accountFuturesManager: AccountManager = new AccountManager(
       this.apiFuturesService,
       this.equityFuturesService,
     )
-
     this.launcherSpot = new Launcher(
+      settings.intervalReportTime,
+      settings.intervalExecutionTime,
       [],
       [accountSpotManager, commissionSpotManager],
     )
-    this.launcherFutures = new Launcher([], [accountFuturesManager])
+    this.launcherFutures = new Launcher(
+      settings.intervalReportTime,
+      settings.intervalExecutionTime,
+      [],
+      [accountFuturesManager],
+    )
   }
+
   static getLauncherSpot(): Launcher {
     return this.launcherSpot
   }

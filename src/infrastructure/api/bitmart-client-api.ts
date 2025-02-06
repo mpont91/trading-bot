@@ -14,7 +14,6 @@ import {
   FuturesAccountTradesRequest,
 } from 'bitmart-api'
 import { BitmartSettings } from '../../application/settings'
-import { settings } from '../../application/settings'
 import Bottleneck from 'bottleneck'
 import { Balance } from '../../domain/types/balance'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
@@ -31,16 +30,19 @@ import { PositionFutures } from '../../domain/types/position'
 import { mapBitmartToDomainPosition } from './mappers/position-mapper'
 
 export class BitmartClientApi implements BitmartApi {
-  private readonly settings: BitmartSettings = settings.bitmart
-  private readonly client: FuturesClientV2 = new FuturesClientV2({
-    apiKey: this.settings.bitmartApiKey,
-    apiSecret: this.settings.bitmartApiSecret,
-    apiMemo: this.settings.bitmartApiMemo,
-  })
-  private readonly limiter: Bottleneck = new Bottleneck({
-    maxConcurrent: this.settings.bottleneckMaxConcurrent,
-    minTime: this.settings.bottleneckMinTime,
-  })
+  private readonly client: FuturesClientV2
+  private readonly limiter: Bottleneck
+  constructor(private readonly settings: BitmartSettings) {
+    this.client = new FuturesClientV2({
+      apiKey: this.settings.bitmartApiKey,
+      apiSecret: this.settings.bitmartApiSecret,
+      apiMemo: this.settings.bitmartApiMemo,
+    })
+    this.limiter = new Bottleneck({
+      maxConcurrent: this.settings.bottleneckMaxConcurrent,
+      minTime: this.settings.bottleneckMinTime,
+    })
+  }
 
   async getBalance(): Promise<Balance> {
     const task = async (): Promise<Balance> => {
