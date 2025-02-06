@@ -1,7 +1,7 @@
 import { Balance } from '../types/balance'
 import { Api } from '../../application/api/api'
 import { Symbol } from '../types/symbol'
-import { OrderRequest } from '../types/order-request'
+import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
 import { Position } from '../types/position'
 

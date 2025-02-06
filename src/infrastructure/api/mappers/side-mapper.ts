@@ -3,7 +3,7 @@ import { Side as BinanceSide } from '@binance/connector-typescript'
 
 export function mapDomainToBitmartSide(
   side: Side,
-  isClosePosition: boolean = false,
+  isClosePosition: boolean,
 ): 1 | 2 | 3 | 4 {
   switch (side) {
     case 'long':

@@ -28,6 +28,8 @@ import { PrismaOrderFuturesRepository } from './infrastructure/repositories/pris
 import { PositionService } from './domain/services/position-service'
 import { InvestmentService } from './domain/services/investment-service'
 import { settings, TradingSettings } from './application/settings'
+import { PositionFuturesService } from './domain/services/position-futures-service'
+import { PositionSpotService } from './domain/services/position-spot-service'
 
 class Container {
   private static launcherSpot: Launcher
@@ -94,11 +96,11 @@ class Container {
     this.orderFuturesService = new OrderService(orderFuturesRepository)
     this.tradeSpotService = new TradeService(tradeSpotRepository)
     this.tradeFuturesService = new TradeService(tradeFuturesRepository)
-    this.positionSpotService = new PositionService(
+    this.positionSpotService = new PositionSpotService(
       this.apiSpotService,
       this.investmentSpotService,
     )
-    this.positionFuturesService = new PositionService(
+    this.positionFuturesService = new PositionFuturesService(
       this.apiFuturesService,
       this.investmentFuturesService,
     )

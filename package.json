@@ -31,8 +31,8 @@
     "bitmart:get-order": "ts-node src/scripts/bitmart/bitmart-get-order.ts",
     "bitmart:set-leverage": "ts-node src/scripts/bitmart/bitmart-set-leverage.ts",
     "bitmart:submit-order": "ts-node src/scripts/bitmart/bitmart-submit-order.ts",
-    "spot:get-position":  "ts-node src/scripts/spot/spot-get-position.ts",
-    "futures:get-position":  "ts-node src/scripts/futures/futures-get-position.ts"
+    "spot:get-position": "ts-node src/scripts/spot/spot-get-position.ts",
+    "futures:get-position": "ts-node src/scripts/futures/futures-get-position.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",

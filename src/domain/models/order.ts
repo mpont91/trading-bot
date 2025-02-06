@@ -23,3 +23,19 @@ export interface OrderFutures extends Order {
 export type OrderCreate = Omit<Order, 'id'>
 export type OrderSpotCreate = Omit<OrderSpot, 'id'>
 export type OrderFuturesCreate = Omit<OrderFutures, 'id'>
+
+export interface OrderRequest {
+  symbol: string
+  side: Side
+  quantity: number
+}
+
+export interface OrderSpotRequest extends OrderRequest {
+  type: 'spot'
+}
+
+export interface OrderFuturesRequest extends OrderRequest {
+  type: 'futures'
+  leverage: number
+  isClosePosition: boolean
+}

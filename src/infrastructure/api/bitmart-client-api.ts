@@ -10,6 +10,8 @@ import {
   FuturesOrderSubmitResult,
   SetFuturesLeverageRequest,
   SubmitFuturesOrderRequest,
+  FuturesAccountTrade,
+  FuturesAccountTradesRequest,
 } from 'bitmart-api'
 import { BitmartSettings } from '../../application/settings'
 import { settings } from '../../application/settings'
@@ -19,19 +21,13 @@ import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { mapBitmartToDomainBalance } from './mappers/balance-mapper'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBitmartToDomainSymbol } from './mappers/symbol-mapper'
-import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBitmartSide } from './mappers/side-mapper'
 import {
-  FuturesAccountOpenOrdersRequest,
-  FuturesAccountTradesRequest,
-} from 'bitmart-api/dist/mjs/types/request/futures.types'
-import {
-  FuturesAccountOpenOrder,
-  FuturesAccountTrade,
-} from 'bitmart-api/dist/mjs/types/response/futures.types'
-import { OrderFuturesCreate } from '../../domain/models/order'
+  OrderFuturesCreate,
+  OrderFuturesRequest,
+} from '../../domain/models/order'
 import { mapBitmartToDomainOrder } from './mappers/order-mapper'
-import { Position, PositionFutures } from '../../domain/types/position'
+import { PositionFutures } from '../../domain/types/position'
 import { mapBitmartToDomainPosition } from './mappers/position-mapper'
 
 export class BitmartClientApi implements BitmartApi {
@@ -86,7 +82,7 @@ export class BitmartClientApi implements BitmartApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async submitOrder(orderRequest: OrderRequest): Promise<string> {
+  async submitOrder(orderRequest: OrderFuturesRequest): Promise<string> {
     const task = async (): Promise<string> => {
       const params: SubmitFuturesOrderRequest = {
         type: 'market',
@@ -96,7 +92,7 @@ export class BitmartClientApi implements BitmartApi {
           orderRequest.side,
           orderRequest.isClosePosition,
         ),
-        leverage: orderRequest.leverage.toString() ?? undefined,
+        leverage: orderRequest.leverage.toString(),
         size: orderRequest.quantity,
       }
 

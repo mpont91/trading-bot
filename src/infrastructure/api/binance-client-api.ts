@@ -19,9 +19,8 @@ import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
 import { CommissionEquityCreate } from '../../domain/models/commission-equity'
 import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-spot-helper'
-import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
-import { OrderSpotCreate } from '../../domain/models/order'
+import { OrderSpotCreate, OrderSpotRequest } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
 import { PositionSpot } from '../../domain/types/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
@@ -160,7 +159,7 @@ export class BinanceClientApi implements BinanceApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async submitOrder(orderRequest: OrderRequest): Promise<string> {
+  async submitOrder(orderRequest: OrderSpotRequest): Promise<string> {
     const task = async (): Promise<string> => {
       const options: RestTradeTypes.newOrderOptions = {
         quantity: orderRequest.quantity,

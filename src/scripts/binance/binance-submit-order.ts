@@ -1,7 +1,7 @@
 import { Container } from '../../di'
 import { sideRule } from '../../application/rules/side-rule'
 import { BinanceApiService } from '../../domain/services/binance-api-service'
-import { OrderRequest } from '../../domain/types/order-request'
+import { OrderSpotRequest } from '../../domain/models/order'
 import { Side } from '../../domain/types/side'
 
 async function start(): Promise<void> {
@@ -12,11 +12,11 @@ async function start(): Promise<void> {
 
   sideRule(side)
 
-  const orderRequest: OrderRequest = {
+  const orderRequest: OrderSpotRequest = {
+    type: 'spot',
     symbol: symbol,
     side: side as Side,
     quantity: parseFloat(quantity),
-    leverage: 1,
   }
 
   await binanceApiService.submitOrder(orderRequest)

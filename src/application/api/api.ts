@@ -1,7 +1,6 @@
 import { Balance } from '../../domain/types/balance'
 import { Symbol } from '../../domain/types/symbol'
-import { OrderRequest } from '../../domain/types/order-request'
-import { OrderCreate } from '../../domain/models/order'
+import { OrderRequest, OrderCreate } from '../../domain/models/order'
 import { Position } from '../../domain/types/position'
 
 export interface Api {
