@@ -15,13 +15,24 @@ export function mapDomainToBitmartSide(
   }
 }
 
-export function mapBitmartToDomainSide(bitmartSide: 1 | 2 | 3 | 4): Side {
+export function mapBitmartToDomainOrderSide(bitmartSide: 1 | 2 | 3 | 4): Side {
   switch (bitmartSide) {
     case 1:
     case 2:
       return 'long'
     case 3:
     case 4:
+      return 'short'
+    default:
+      throw new Error('Invalid side: ' + bitmartSide)
+  }
+}
+
+export function mapBitmartToDomainPositionSide(bitmartSide: 1 | 2): Side {
+  switch (bitmartSide) {
+    case 1:
+      return 'long'
+    case 2:
       return 'short'
     default:
       throw new Error('Invalid side: ' + bitmartSide)

@@ -23,6 +23,8 @@ import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
 import { OrderSpotCreate } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
+import { PositionSpot } from '../../domain/types/position'
+import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly settings: BinanceSettings = settings.binance
@@ -36,42 +38,35 @@ export class BinanceClientApi implements BinanceApi {
   })
 
   async getBalance(): Promise<Balance> {
-    const task = async (): Promise<Balance> => {
-      const params: RestTradeTypes.accountInformationOptions = {
-        omitZeroBalances: true,
-      }
-      const response: RestTradeTypes.accountInformationResponse =
-        await this.client.accountInformation(params)
+    const balances: RestTradeTypes.accountInformationBalances[] =
+      await this.getBinanceBalance()
 
-      let equity: number = 0
-      let available: number = 0
+    let equity: number = 0
+    let available: number = 0
 
-      for (const balance of response.balances) {
-        if (balance.asset === this.settings.feeCurrency) {
-          continue
-        }
-
-        const quantity: number = parseFloat(balance.free)
-
-        if (balance.asset === this.settings.baseCurrency) {
-          equity += quantity
-          available += quantity
-          continue
-        }
-
-        const price: number = await this.getPrice(
-          balance.asset + this.settings.baseCurrency,
-        )
-        equity += parseFloat(balance.free) * price
+    for (const balance of balances) {
+      if (balance.asset === this.settings.feeCurrency) {
+        continue
       }
 
-      return {
-        equity: equity,
-        available: available,
+      const quantity: number = parseFloat(balance.free)
+
+      if (balance.asset === this.settings.baseCurrency) {
+        equity += quantity
+        available += quantity
+        continue
       }
+
+      const price: number = await this.getPrice(
+        balance.asset + this.settings.baseCurrency,
+      )
+      equity += parseFloat(balance.free) * price
     }
 
-    return executeWithRateLimit(this.limiter, task)
+    return {
+      equity: equity,
+      available: available,
+    }
   }
 
   async getCommissionEquity(): Promise<CommissionEquityCreate> {
@@ -201,6 +196,43 @@ export class BinanceClientApi implements BinanceApi {
     )
   }
 
+  async getPosition(symbol: string): Promise<PositionSpot | null> {
+    const balances: RestTradeTypes.accountInformationBalances[] =
+      await this.getBinanceBalance()
+
+    const currency: string = symbol.replace(
+      new RegExp(`${this.settings.baseCurrency}$`),
+      '',
+    )
+
+    const balance: RestTradeTypes.accountInformationBalances | undefined =
+      balances.find(
+        (b: RestTradeTypes.accountInformationBalances): boolean =>
+          b.asset === currency,
+      )
+
+    if (!balance) {
+      return null
+    }
+
+    const order: RestTradeTypes.allOrdersResponse | null =
+      await this.getBinanceLastOrder(symbol)
+
+    if (!order) {
+      throw Error(
+        'There is amount in currency but no order. Something is broken!',
+      )
+    }
+
+    if (order.executedQty !== balance.free) {
+      throw Error(
+        'The amount in currency does not match with the order quantity. Something is broken!',
+      )
+    }
+
+    return mapBinanceToDomainPosition(order)
+  }
+
   private async getBinanceOrder(
     symbol: string,
     orderId: string,
@@ -228,6 +260,43 @@ export class BinanceClientApi implements BinanceApi {
       return await this.client.accountTradeList(symbol, options)
     }
 
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  private async getBinanceBalance(): Promise<
+    RestTradeTypes.accountInformationBalances[]
+  > {
+    const task = async (): Promise<
+      RestTradeTypes.accountInformationBalances[]
+    > => {
+      const params: RestTradeTypes.accountInformationOptions = {
+        omitZeroBalances: true,
+      }
+      const response: RestTradeTypes.accountInformationResponse =
+        await this.client.accountInformation(params)
+
+      return response.balances
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  private async getBinanceLastOrder(
+    symbol: string,
+  ): Promise<RestTradeTypes.allOrdersResponse | null> {
+    const task = async (): Promise<RestTradeTypes.allOrdersResponse | null> => {
+      const options: RestTradeTypes.allOrdersOptions = {
+        limit: 1,
+      }
+      const orders: RestTradeTypes.allOrdersResponse[] =
+        await this.client.allOrders(symbol, options)
+
+      if (orders.length === 0) {
+        return null
+      }
+
+      return orders[0]
+    }
     return executeWithRateLimit(this.limiter, task)
   }
 }

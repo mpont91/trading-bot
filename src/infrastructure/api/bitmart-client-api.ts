@@ -4,6 +4,7 @@ import {
   FuturesAccountAsset,
   FuturesAccountOrder,
   FuturesAccountOrderRequest,
+  FuturesAccountPosition,
   FuturesClientV2,
   FuturesContractDetails,
   FuturesOrderSubmitResult,
@@ -20,10 +21,18 @@ import { Symbol } from '../../domain/types/symbol'
 import { mapBitmartToDomainSymbol } from './mappers/symbol-mapper'
 import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBitmartSide } from './mappers/side-mapper'
-import { FuturesAccountTradesRequest } from 'bitmart-api/dist/mjs/types/request/futures.types'
-import { FuturesAccountTrade } from 'bitmart-api/dist/mjs/types/response/futures.types'
+import {
+  FuturesAccountOpenOrdersRequest,
+  FuturesAccountTradesRequest,
+} from 'bitmart-api/dist/mjs/types/request/futures.types'
+import {
+  FuturesAccountOpenOrder,
+  FuturesAccountTrade,
+} from 'bitmart-api/dist/mjs/types/response/futures.types'
 import { OrderFuturesCreate } from '../../domain/models/order'
 import { mapBitmartToDomainOrder } from './mappers/order-mapper'
+import { Position, PositionFutures } from '../../domain/types/position'
+import { mapBitmartToDomainPosition } from './mappers/position-mapper'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly settings: BitmartSettings = settings.bitmart
@@ -119,6 +128,23 @@ export class BitmartClientApi implements BitmartApi {
     )
 
     return mapBitmartToDomainOrder(orderResponse, tradesResponse)
+  }
+
+  async getPosition(symbol: string): Promise<PositionFutures | null> {
+    const task = async (): Promise<PositionFutures | null> => {
+      const response: APIResponse<FuturesAccountPosition[]> =
+        await this.client.getFuturesAccountPositions({ symbol: symbol })
+
+      this.validateResponse(response)
+
+      if (response.data.length === 0) {
+        return null
+      }
+
+      return mapBitmartToDomainPosition(response.data[0])
+    }
+
+    return executeWithRateLimit(this.limiter, task)
   }
 
   private async getBitmartOrder(

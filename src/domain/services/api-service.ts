@@ -3,6 +3,7 @@ import { Api } from '../../application/api/api'
 import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../types/order-request'
 import { OrderCreate } from '../models/order'
+import { Position } from '../types/position'
 
 export class ApiService {
   constructor(private readonly api: Api) {}
@@ -21,5 +22,9 @@ export class ApiService {
 
   async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
     return this.api.getOrder(symbol, orderId)
+  }
+
+  async getPosition(symbol: string): Promise<Position | null> {
+    return this.api.getPosition(symbol)
   }
 }

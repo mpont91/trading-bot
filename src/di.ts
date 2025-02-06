@@ -25,6 +25,9 @@ import { TradeRepository } from './domain/repositories/trade-repository'
 import { PrismaTradeSpotRepository } from './infrastructure/repositories/prisma-trade-spot-repository'
 import { PrismaTradeFuturesRepository } from './infrastructure/repositories/prisma-trade-futures-repository'
 import { PrismaOrderFuturesRepository } from './infrastructure/repositories/prisma-order-futures-repository'
+import { PositionService } from './domain/services/position-service'
+import { InvestmentService } from './domain/services/investment-service'
+import { settings, TradingSettings } from './application/settings'
 
 class Container {
   private static launcherSpot: Launcher
@@ -36,13 +39,19 @@ class Container {
   private static equitySpotService: EquityService
   private static equityFuturesService: EquityService
   private static commissionEquitySpotService: CommissionEquityService
+  private static investmentSpotService: InvestmentService
+  private static investmentFuturesService: InvestmentService
   private static orderSpotService: OrderService
   private static orderFuturesService: OrderService
   private static tradeSpotService: TradeService
   private static tradeFuturesService: TradeService
+  private static positionSpotService: PositionService
+  private static positionFuturesService: PositionService
   private static performanceService: PerformanceService
 
   static initialize(): void {
+    const tradingSpotSettings: TradingSettings = settings.spotTrading
+    const tradingFuturesSettings: TradingSettings = settings.futuresTrading
     const bitmartApi: BitmartApi = new BitmartClientApi()
     const binanceApi: BinanceApi = new BinanceClientApi()
     const prisma: PrismaClient = new PrismaClient()
@@ -73,10 +82,26 @@ class Container {
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
+    this.investmentSpotService = new InvestmentService(
+      tradingSpotSettings,
+      this.apiSpotService,
+    )
+    this.investmentFuturesService = new InvestmentService(
+      tradingFuturesSettings,
+      this.apiFuturesService,
+    )
     this.orderSpotService = new OrderService(orderSpotRepository)
     this.orderFuturesService = new OrderService(orderFuturesRepository)
     this.tradeSpotService = new TradeService(tradeSpotRepository)
     this.tradeFuturesService = new TradeService(tradeFuturesRepository)
+    this.positionSpotService = new PositionService(
+      this.apiSpotService,
+      this.investmentSpotService,
+    )
+    this.positionFuturesService = new PositionService(
+      this.apiFuturesService,
+      this.investmentFuturesService,
+    )
     this.performanceService = new PerformanceService()
 
     const accountSpotManager: AccountManager = new AccountManager(
@@ -128,6 +153,12 @@ class Container {
   static getCommissionEquitySpotService(): CommissionEquityService {
     return this.commissionEquitySpotService
   }
+  static getInvestmentSpotService(): InvestmentService {
+    return this.investmentSpotService
+  }
+  static getInvestmentFuturesService(): InvestmentService {
+    return this.investmentFuturesService
+  }
   static getOrderSpotService(): OrderService {
     return this.orderSpotService
   }
@@ -139,6 +170,12 @@ class Container {
   }
   static getTradeFuturesService(): TradeService {
     return this.tradeFuturesService
+  }
+  static getPositionSpotService(): PositionService {
+    return this.positionSpotService
+  }
+  static getPositionFuturesService(): PositionService {
+    return this.positionFuturesService
   }
   static getPerformanceService(): PerformanceService {
     return this.performanceService

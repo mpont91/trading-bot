@@ -3,7 +3,10 @@ import {
   OrderSpotCreate,
 } from '../../../domain/models/order'
 import { RestTradeTypes } from '@binance/connector-typescript'
-import { mapBinanceToDomainSide, mapBitmartToDomainSide } from './side-mapper'
+import {
+  mapBinanceToDomainSide,
+  mapBitmartToDomainOrderSide,
+} from './side-mapper'
 import { Side } from '@binance/connector-typescript'
 import { FuturesAccountTrade } from 'bitmart-api/dist/mjs/types/response/futures.types'
 import { FuturesAccountOrder } from 'bitmart-api'
@@ -62,11 +65,11 @@ export function mapBitmartToDomainOrder(
     type: 'futures',
     orderId: bitmartOrder.order_id,
     symbol: bitmartOrder.symbol,
-    side: mapBitmartToDomainSide(bitmartOrder.side),
+    side: mapBitmartToDomainOrderSide(bitmartOrder.side),
     quantity: parseInt(bitmartOrder.size),
     leverage: parseInt(bitmartOrder.leverage),
     price: parseFloat(bitmartOrder.price),
     fees: fees,
-    createdAt: new Date(),
+    createdAt: new Date(bitmartOrder.create_time),
   }
 }
