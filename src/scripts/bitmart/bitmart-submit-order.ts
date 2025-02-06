@@ -15,7 +15,7 @@ async function start(): Promise<void> {
 
   const orderRequest: OrderRequest = {
     symbol: symbol,
-    side: <Side>side,
+    side: side as Side,
     quantity: parseFloat(quantity),
     leverage: parseInt(leverage),
   }

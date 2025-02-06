@@ -175,7 +175,7 @@ export class BinanceClientApi implements BinanceApi {
         await this.client.newOrder(
           orderRequest.symbol,
           mapDomainToBinanceSide(orderRequest.side),
-          <OrderType>'MARKET',
+          'MARKET' as OrderType,
           options,
         )
 

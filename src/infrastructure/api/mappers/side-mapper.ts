@@ -31,9 +31,9 @@ export function mapBitmartToDomainSide(bitmartSide: 1 | 2 | 3 | 4): Side {
 export function mapDomainToBinanceSide(side: Side): BinanceSide {
   switch (side) {
     case 'long':
-      return <BinanceSide>'BUY'
+      return 'BUY' as BinanceSide
     case 'short':
-      return <BinanceSide>'SELL'
+      return 'SELL' as BinanceSide
     default:
       throw new Error('Invalid side: ' + side)
   }
@@ -41,9 +41,9 @@ export function mapDomainToBinanceSide(side: Side): BinanceSide {
 
 export function mapBinanceToDomainSide(binanceSide: BinanceSide): Side {
   switch (binanceSide) {
-    case <BinanceSide>'BUY':
+    case 'BUY' as BinanceSide:
       return 'long'
-    case <BinanceSide>'SELL':
+    case 'SELL' as BinanceSide:
       return 'short'
     default:
       throw new Error('Invalid side: ' + binanceSide)

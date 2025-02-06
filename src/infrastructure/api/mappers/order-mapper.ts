@@ -37,7 +37,7 @@ export function mapBinanceToDomainOrder(
   return {
     orderId: binanceOrder.orderId.toString(),
     symbol: binanceOrder.symbol,
-    side: mapBinanceToDomainSide(<Side>binanceOrder.side),
+    side: mapBinanceToDomainSide(binanceOrder.side as Side),
     quantity: quantity,
     leverage: 1,
     price: price,
