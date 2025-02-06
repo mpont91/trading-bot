@@ -69,37 +69,30 @@ export class BinanceClientApi implements BinanceApi {
   }
 
   async getCommissionEquity(): Promise<CommissionEquityCreate> {
-    const task = async (): Promise<CommissionEquityCreate> => {
-      const params: RestTradeTypes.accountInformationOptions = {
-        omitZeroBalances: true,
-      }
-      const response: RestTradeTypes.accountInformationResponse =
-        await this.client.accountInformation(params)
+    const balances: RestTradeTypes.accountInformationBalances[] =
+      await this.getBinanceBalance()
 
-      const balance: RestTradeTypes.accountInformationBalances | undefined =
-        response.balances.find(
-          (balance: RestTradeTypes.accountInformationBalances): boolean =>
-            balance.asset === this.settings.feeCurrency,
-        )
-
-      if (!balance) {
-        return getEmptyCommissionEquityCreate()
-      }
-
-      const price: number = await this.getPrice(
-        balance.asset + this.settings.baseCurrency,
+    const balance: RestTradeTypes.accountInformationBalances | undefined =
+      balances.find(
+        (balance: RestTradeTypes.accountInformationBalances): boolean =>
+          balance.asset === this.settings.feeCurrency,
       )
-      const quantity: number = parseFloat(balance.free)
-      const amount: number = quantity * price
 
-      return {
-        currency: this.settings.feeCurrency,
-        quantity: quantity,
-        amount: amount,
-      }
+    if (!balance) {
+      return getEmptyCommissionEquityCreate()
     }
 
-    return executeWithRateLimit(this.limiter, task)
+    const price: number = await this.getPrice(
+      balance.asset + this.settings.baseCurrency,
+    )
+    const quantity: number = parseFloat(balance.free)
+    const amount: number = quantity * price
+
+    return {
+      currency: this.settings.feeCurrency,
+      quantity: quantity,
+      amount: amount,
+    }
   }
 
   async getPrice(symbol: string): Promise<number> {
