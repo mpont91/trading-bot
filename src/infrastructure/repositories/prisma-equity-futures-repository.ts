@@ -1,5 +1,5 @@
 import {
-  FuturesEquity as PrismaFuturesEquity,
+  EquityFutures as PrismaEquityFutures,
   Prisma,
   PrismaClient,
 } from '@prisma/client'
@@ -7,21 +7,22 @@ import { EquityRepository } from '../../domain/repositories/equity-repository'
 import type { Equity, EquityCreate } from '../../domain/models/equity'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
+import Decimal from 'decimal.js'
 
 export class PrismaEquityFuturesRepository implements EquityRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(equity: EquityCreate): Promise<void> {
-    await this.prisma.futuresEquity.create({
-      data: equity,
+    await this.prisma.equityFutures.create({
+      data: this.toPrisma(equity),
     })
   }
 
   async get(interval: TimeInterval): Promise<Equity[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const equities: PrismaFuturesEquity[] =
-      await this.prisma.futuresEquity.findMany({
+    const equities: PrismaEquityFutures[] =
+      await this.prisma.equityFutures.findMany({
         where: {
           created_at: {
             gte: startTime,
@@ -35,15 +36,23 @@ export class PrismaEquityFuturesRepository implements EquityRepository {
     return this.toDomainList(equities)
   }
 
-  private toDomain(prismaFuturesEquity: PrismaFuturesEquity): Equity {
+  private toDomain(prismaEquityFutures: PrismaEquityFutures): Equity {
     return {
-      id: prismaFuturesEquity.id,
-      amount: prismaFuturesEquity.amount.toNumber(),
-      createdAt: prismaFuturesEquity.created_at,
+      id: prismaEquityFutures.id,
+      amount: prismaEquityFutures.amount.toNumber(),
+      createdAt: prismaEquityFutures.created_at,
     }
   }
 
-  private toDomainList(prismaFuturesEquities: PrismaFuturesEquity[]): Equity[] {
-    return prismaFuturesEquities.map(this.toDomain)
+  private toPrisma(
+    equityCreate: EquityCreate,
+  ): Prisma.EquityFuturesCreateInput {
+    return {
+      amount: new Decimal(equityCreate.amount),
+    }
+  }
+
+  private toDomainList(prismaEquitiesFutures: PrismaEquityFutures[]): Equity[] {
+    return prismaEquitiesFutures.map(this.toDomain)
   }
 }

@@ -6,8 +6,4 @@ export interface CommissionEquity {
   createdAt: Date
 }
 
-export interface CommissionEquityCreate {
-  currency: string
-  quantity: number
-  amount: number
-}
+export type CommissionEquityCreate = Omit<CommissionEquity, 'id' | 'createdAt'>

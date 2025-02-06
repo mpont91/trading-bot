@@ -22,7 +22,7 @@ import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBitmartSide } from './mappers/side-mapper'
 import { FuturesAccountTradesRequest } from 'bitmart-api/dist/mjs/types/request/futures.types'
 import { FuturesAccountTrade } from 'bitmart-api/dist/mjs/types/response/futures.types'
-import { OrderCreate } from '../../domain/models/order'
+import { OrderFuturesCreate } from '../../domain/models/order'
 import { mapBitmartToDomainOrder } from './mappers/order-mapper'
 
 export class BitmartClientApi implements BitmartApi {
@@ -77,8 +77,8 @@ export class BitmartClientApi implements BitmartApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async submitOrder(orderRequest: OrderRequest): Promise<void> {
-    const task = async (): Promise<void> => {
+  async submitOrder(orderRequest: OrderRequest): Promise<string> {
+    const task = async (): Promise<string> => {
       const params: SubmitFuturesOrderRequest = {
         type: 'market',
         open_type: 'isolated',
@@ -96,13 +96,13 @@ export class BitmartClientApi implements BitmartApi {
 
       this.validateResponse(response)
 
-      console.log(response)
+      return response.data.order_id.toString()
     }
 
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
+  async getOrder(symbol: string, orderId: string): Promise<OrderFuturesCreate> {
     const orderResponse: FuturesAccountOrder = await this.getBitmartOrder(
       symbol,
       orderId,

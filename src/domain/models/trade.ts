@@ -5,7 +5,6 @@ export interface Trade {
   symbol: string
   side: Side
   quantity: number
-  leverage?: number
   entryOrderId: string
   entryPrice: number
   entryAt: Date
@@ -16,17 +15,15 @@ export interface Trade {
   pnl: number
 }
 
-export interface TradeCreate {
-  symbol: string
-  side: Side
-  quantity: number
-  leverage?: number
-  entryOrderId: string
-  entryPrice: number
-  entryAt: Date
-  exitOrderId: string
-  exitPrice: number
-  exitAt: Date
-  fees: number
-  pnl: number
+export interface TradeSpot extends Trade {
+  type: 'spot'
 }
+
+export interface TradeFutures extends Trade {
+  type: 'futures'
+  leverage: number
+}
+
+export type TradeCreate = Omit<Trade, 'id'>
+export type TradeSpotCreate = Omit<TradeSpot, 'id'>
+export type TradeFuturesCreate = Omit<TradeFutures, 'id'>

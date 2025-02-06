@@ -10,13 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model SpotEquity {
+model EquitySpot {
   id         Int      @id @default(autoincrement())
   amount     Decimal
   created_at DateTime @default(now())
 }
 
-model SpotCommissionEquity {
+model EquityFutures {
+  id         Int      @id @default(autoincrement())
+  amount     Decimal
+  created_at DateTime @default(now())
+}
+
+model CommissionEquitySpot {
   id         Int      @id @default(autoincrement())
   currency   String
   quantity   Decimal
@@ -24,7 +30,7 @@ model SpotCommissionEquity {
   created_at DateTime @default(now())
 }
 
-model SpotOrder {
+model OrderSpot {
   id         Int      @id @default(autoincrement())
   order_id   String
   symbol     String
@@ -35,7 +41,19 @@ model SpotOrder {
   created_at DateTime
 }
 
-model SpotTrade {
+model OrderFutures {
+  id         Int      @id @default(autoincrement())
+  order_id   String
+  symbol     String
+  side       String
+  quantity   Decimal
+  leverage   Int
+  price      Decimal
+  fees       Decimal
+  created_at DateTime
+}
+
+model TradeSpot {
   id             Int      @id @default(autoincrement())
   symbol         String
   side           String
@@ -50,30 +68,12 @@ model SpotTrade {
   pnl            Decimal
 }
 
-model FuturesEquity {
-  id         Int      @id @default(autoincrement())
-  amount     Decimal
-  created_at DateTime @default(now())
-}
-
-model FuturesOrder {
-  id         Int      @id @default(autoincrement())
-  order_id   String
-  symbol     String
-  side       String
-  quantity   Decimal
-  leverage   Decimal
-  price      Decimal
-  fees       Decimal
-  created_at DateTime
-}
-
-model FuturesTrade {
+model TradeFutures {
   id             Int      @id @default(autoincrement())
   symbol         String
   side           String
   quantity       Decimal
-  leverage       Decimal
+  leverage       Int
   entry_order_id String
   entry_price    Decimal
   entry_at       DateTime

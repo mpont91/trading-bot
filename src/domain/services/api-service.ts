@@ -15,7 +15,7 @@ export class ApiService {
     return this.api.getSymbol(symbol)
   }
 
-  async submitOrder(orderRequest: OrderRequest): Promise<void> {
+  async submitOrder(orderRequest: OrderRequest): Promise<string> {
     return this.api.submitOrder(orderRequest)
   }
 

@@ -1,0 +1,2 @@
+GET http://localhost:3000/spot/latest-trades
+Accept: application/json

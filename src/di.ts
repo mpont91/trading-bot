@@ -17,6 +17,14 @@ import { CommissionEquityRepository } from './domain/repositories/commission-equ
 import { PrismaCommissionEquitySpotRepository } from './infrastructure/repositories/prisma-commission-equity-spot-repository'
 import { CommissionSpotManager } from './domain/managers/commission-spot-manager'
 import { PerformanceService } from './domain/services/performance-service'
+import { OrderService } from './domain/services/order-service'
+import { TradeService } from './domain/services/trade-service'
+import { OrderRepository } from './domain/repositories/order-repository'
+import { PrismaOrderSpotRepository } from './infrastructure/repositories/prisma-order-spot-repository'
+import { TradeRepository } from './domain/repositories/trade-repository'
+import { PrismaTradeSpotRepository } from './infrastructure/repositories/prisma-trade-spot-repository'
+import { PrismaTradeFuturesRepository } from './infrastructure/repositories/prisma-trade-futures-repository'
+import { PrismaOrderFuturesRepository } from './infrastructure/repositories/prisma-order-futures-repository'
 
 class Container {
   private static launcherSpot: Launcher
@@ -26,8 +34,12 @@ class Container {
   private static apiSpotService: ApiService
   private static apiFuturesService: ApiService
   private static equitySpotService: EquityService
-  private static commissionEquitySpotService: CommissionEquityService
   private static equityFuturesService: EquityService
+  private static commissionEquitySpotService: CommissionEquityService
+  private static orderSpotService: OrderService
+  private static orderFuturesService: OrderService
+  private static tradeSpotService: TradeService
+  private static tradeFuturesService: TradeService
   private static performanceService: PerformanceService
 
   static initialize(): void {
@@ -37,20 +49,34 @@ class Container {
 
     const equitySpotRepository: EquityRepository =
       new PrismaEquitySpotRepository(prisma)
-    const commissionEquitySpotRepository: CommissionEquityRepository =
-      new PrismaCommissionEquitySpotRepository(prisma)
     const equityFuturesRepository: EquityRepository =
       new PrismaEquityFuturesRepository(prisma)
+    const commissionEquitySpotRepository: CommissionEquityRepository =
+      new PrismaCommissionEquitySpotRepository(prisma)
+    const orderSpotRepository: OrderRepository = new PrismaOrderSpotRepository(
+      prisma,
+    )
+    const orderFuturesRepository: OrderRepository =
+      new PrismaOrderFuturesRepository(prisma)
+    const tradeSpotRepository: TradeRepository = new PrismaTradeSpotRepository(
+      prisma,
+    )
+    const tradeFuturesRepository: TradeRepository =
+      new PrismaTradeFuturesRepository(prisma)
 
     this.bitmartApiService = new BitmartApiService(bitmartApi)
     this.binanceApiService = new BinanceApiService(binanceApi)
     this.apiSpotService = new ApiService(binanceApi)
     this.apiFuturesService = new ApiService(bitmartApi)
     this.equitySpotService = new EquityService(equitySpotRepository)
+    this.equityFuturesService = new EquityService(equityFuturesRepository)
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
-    this.equityFuturesService = new EquityService(equityFuturesRepository)
+    this.orderSpotService = new OrderService(orderSpotRepository)
+    this.orderFuturesService = new OrderService(orderFuturesRepository)
+    this.tradeSpotService = new TradeService(tradeSpotRepository)
+    this.tradeFuturesService = new TradeService(tradeFuturesRepository)
     this.performanceService = new PerformanceService()
 
     const accountSpotManager: AccountManager = new AccountManager(
@@ -75,43 +101,45 @@ class Container {
     )
     this.launcherFutures = new Launcher([], [accountFuturesManager])
   }
-
   static getLauncherSpot(): Launcher {
     return this.launcherSpot
   }
-
   static getLauncherFutures(): Launcher {
     return this.launcherFutures
   }
-
   static getBitmartApiService(): BitmartApiService {
     return this.bitmartApiService
   }
-
   static getBinanceApiService(): BinanceApiService {
     return this.binanceApiService
   }
-
   static getApiSpotService(): ApiService {
     return this.apiSpotService
   }
-
   static getApiFuturesService(): ApiService {
     return this.apiFuturesService
   }
-
   static getEquitySpotService(): EquityService {
     return this.equitySpotService
   }
-
-  static getCommissionEquitySpotService(): CommissionEquityService {
-    return this.commissionEquitySpotService
-  }
-
   static getEquityFuturesService(): EquityService {
     return this.equityFuturesService
   }
-
+  static getCommissionEquitySpotService(): CommissionEquityService {
+    return this.commissionEquitySpotService
+  }
+  static getOrderSpotService(): OrderService {
+    return this.orderSpotService
+  }
+  static getOrderFuturesService(): OrderService {
+    return this.orderFuturesService
+  }
+  static getTradeSpotService(): TradeService {
+    return this.tradeSpotService
+  }
+  static getTradeFuturesService(): TradeService {
+    return this.tradeFuturesService
+  }
   static getPerformanceService(): PerformanceService {
     return this.performanceService
   }

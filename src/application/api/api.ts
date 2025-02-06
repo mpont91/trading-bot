@@ -6,6 +6,6 @@ import { OrderCreate } from '../../domain/models/order'
 export interface Api {
   getBalance(): Promise<Balance>
   getSymbol(symbol: string): Promise<Symbol>
-  submitOrder(orderRequest: OrderRequest): Promise<void>
+  submitOrder(orderRequest: OrderRequest): Promise<string>
   getOrder(symbol: string, orderId: string): Promise<OrderCreate>
 }

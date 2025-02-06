@@ -21,7 +21,7 @@ import { CommissionEquityCreate } from '../../domain/models/commission-equity'
 import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-spot-helper'
 import { OrderRequest } from '../../domain/types/order-request'
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
-import { OrderCreate } from '../../domain/models/order'
+import { OrderSpotCreate } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
 
 export class BinanceClientApi implements BinanceApi {
@@ -165,8 +165,8 @@ export class BinanceClientApi implements BinanceApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async submitOrder(orderRequest: OrderRequest): Promise<void> {
-    const task = async (): Promise<void> => {
+  async submitOrder(orderRequest: OrderRequest): Promise<string> {
+    const task = async (): Promise<string> => {
       const options: RestTradeTypes.newOrderOptions = {
         quantity: orderRequest.quantity,
       }
@@ -179,13 +179,13 @@ export class BinanceClientApi implements BinanceApi {
           options,
         )
 
-      console.log(response)
+      return response.orderId.toString()
     }
 
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
+  async getOrder(symbol: string, orderId: string): Promise<OrderSpotCreate> {
     const orderResponse: RestTradeTypes.getOrderResponse =
       await this.getBinanceOrder(symbol, orderId)
     const tradesResponse: RestTradeTypes.accountTradeListResponse[] =

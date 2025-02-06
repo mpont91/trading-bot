@@ -17,18 +17,19 @@ deploy:
 	$(SSH_CMD) '$(LOAD_NVM_CMD) && cd trading-bot && make production'
 
 check:
+	npm run build && \
 	npm run format:check && \
 	npm run lint && \
-	npm run test && \
-	npm run build
+	npm run test
+
 
 production:
 	git pull && \
 	npm --silent ci --no-progress && \
+	npm run build && \
 	npm run format:check && \
 	npm run lint && \
 	npm run test && \
-	npm run build && \
 	npm run migrate && \
 	npm run server:restart && \
 	npm run server:status

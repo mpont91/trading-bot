@@ -1,4 +1,7 @@
-import { OrderCreate } from '../../../domain/models/order'
+import {
+  OrderFuturesCreate,
+  OrderSpotCreate,
+} from '../../../domain/models/order'
 import { RestTradeTypes } from '@binance/connector-typescript'
 import { mapBinanceToDomainSide, mapBitmartToDomainSide } from './side-mapper'
 import { Side } from '@binance/connector-typescript'
@@ -10,7 +13,7 @@ export function mapBinanceToDomainOrder(
   binanceOrder: RestTradeTypes.getOrderResponse,
   binanceTrades: RestTradeTypes.accountTradeListResponse[],
   feeCurrencyPrice: number,
-): OrderCreate {
+): OrderSpotCreate {
   let quantity: number = 0
   let fees: number = 0
   let weightedPrice: number = 0
@@ -35,11 +38,11 @@ export function mapBinanceToDomainOrder(
     quantity > 0 ? weightedPrice / quantity : parseFloat(binanceOrder.price)
 
   return {
+    type: 'spot',
     orderId: binanceOrder.orderId.toString(),
     symbol: binanceOrder.symbol,
     side: mapBinanceToDomainSide(binanceOrder.side as Side),
     quantity: quantity,
-    leverage: 1,
     price: price,
     fees: fees,
     createdAt: new Date(binanceOrder.time),
@@ -48,7 +51,7 @@ export function mapBinanceToDomainOrder(
 export function mapBitmartToDomainOrder(
   bitmartOrder: FuturesAccountOrder,
   bitmartTrades: FuturesAccountTrade[],
-): OrderCreate {
+): OrderFuturesCreate {
   const fees: number = bitmartTrades.reduce(
     (total: number, bitmartTrade: FuturesAccountTrade) =>
       total + parseFloat(bitmartTrade.paid_fees),
@@ -56,6 +59,7 @@ export function mapBitmartToDomainOrder(
   )
 
   return {
+    type: 'futures',
     orderId: bitmartOrder.order_id,
     symbol: bitmartOrder.symbol,
     side: mapBitmartToDomainSide(bitmartOrder.side),

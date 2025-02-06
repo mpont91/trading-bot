@@ -1,5 +1,5 @@
 import {
-  SpotEquity as PrismaSpotEquity,
+  EquitySpot as PrismaEquitySpot,
   Prisma,
   PrismaClient,
 } from '@prisma/client'
@@ -7,20 +7,21 @@ import { EquityRepository } from '../../domain/repositories/equity-repository'
 import type { Equity, EquityCreate } from '../../domain/models/equity'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
+import Decimal from 'decimal.js'
 
 export class PrismaEquitySpotRepository implements EquityRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(equity: EquityCreate): Promise<void> {
-    await this.prisma.spotEquity.create({
-      data: equity,
+    await this.prisma.equitySpot.create({
+      data: this.toPrisma(equity),
     })
   }
 
   async get(interval: TimeInterval): Promise<Equity[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const equities: PrismaSpotEquity[] = await this.prisma.spotEquity.findMany({
+    const equities: PrismaEquitySpot[] = await this.prisma.equitySpot.findMany({
       where: {
         created_at: {
           gte: startTime,
@@ -34,15 +35,21 @@ export class PrismaEquitySpotRepository implements EquityRepository {
     return this.toDomainList(equities)
   }
 
-  private toDomain(prismaSpotEquity: PrismaSpotEquity): Equity {
+  private toDomain(prismaEquitySpot: PrismaEquitySpot): Equity {
     return {
-      id: prismaSpotEquity.id,
-      amount: prismaSpotEquity.amount.toNumber(),
-      createdAt: prismaSpotEquity.created_at,
+      id: prismaEquitySpot.id,
+      amount: prismaEquitySpot.amount.toNumber(),
+      createdAt: prismaEquitySpot.created_at,
     }
   }
 
-  private toDomainList(prismaSpotEquities: PrismaSpotEquity[]): Equity[] {
-    return prismaSpotEquities.map(this.toDomain)
+  private toPrisma(equityCreate: EquityCreate): Prisma.EquitySpotCreateInput {
+    return {
+      amount: new Decimal(equityCreate.amount),
+    }
+  }
+
+  private toDomainList(prismaEquitiesSpot: PrismaEquitySpot[]): Equity[] {
+    return prismaEquitiesSpot.map(this.toDomain)
   }
 }

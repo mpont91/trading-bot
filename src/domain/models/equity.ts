@@ -4,6 +4,4 @@ export interface Equity {
   createdAt: Date
 }
 
-export interface EquityCreate {
-  amount: number
-}
+export type EquityCreate = Omit<Equity, 'id' | 'createdAt'>
