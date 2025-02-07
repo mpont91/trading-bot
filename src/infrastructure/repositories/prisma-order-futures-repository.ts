@@ -36,8 +36,10 @@ export class PrismaOrderFuturesRepository implements OrderRepository {
       symbol: prismaOrderFutures.symbol,
       side: prismaOrderFutures.side as Side,
       quantity: prismaOrderFutures.quantity.toNumber(),
+      contractSize: prismaOrderFutures.contract_size.toNumber(),
       leverage: prismaOrderFutures.leverage,
       price: prismaOrderFutures.price.toNumber(),
+      amount: prismaOrderFutures.amount.toNumber(),
       fees: prismaOrderFutures.fees.toNumber(),
       createdAt: prismaOrderFutures.created_at,
     }
@@ -51,8 +53,10 @@ export class PrismaOrderFuturesRepository implements OrderRepository {
       symbol: orderCreate.symbol,
       side: orderCreate.side,
       quantity: new Decimal(orderCreate.quantity),
+      contract_size: new Decimal(orderCreate.contractSize),
       leverage: orderCreate.leverage,
       price: new Decimal(orderCreate.price),
+      amount: new Decimal(orderCreate.amount),
       fees: new Decimal(orderCreate.fees),
       created_at: orderCreate.createdAt,
     }

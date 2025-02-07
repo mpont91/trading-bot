@@ -112,6 +112,7 @@ export class BitmartClientApi implements BitmartApi {
   }
 
   async getOrder(symbol: string, orderId: string): Promise<OrderFuturesCreate> {
+    const symbolInformation: Symbol = await this.getSymbol(symbol)
     const orderResponse: FuturesAccountOrder = await this.getBitmartOrder(
       symbol,
       orderId,
@@ -127,7 +128,11 @@ export class BitmartClientApi implements BitmartApi {
       endTime,
     )
 
-    return mapBitmartToDomainOrder(orderResponse, tradesResponse)
+    return mapBitmartToDomainOrder(
+      orderResponse,
+      tradesResponse,
+      symbolInformation,
+    )
   }
 
   async getPosition(symbol: string): Promise<PositionFutures | null> {

@@ -29,6 +29,7 @@ CREATE TABLE "OrderSpot" (
     "side" TEXT NOT NULL,
     "quantity" DECIMAL NOT NULL,
     "price" DECIMAL NOT NULL,
+    "amount" DECIMAL NOT NULL,
     "fees" DECIMAL NOT NULL,
     "created_at" DATETIME NOT NULL
 );
@@ -40,8 +41,10 @@ CREATE TABLE "OrderFutures" (
     "symbol" TEXT NOT NULL,
     "side" TEXT NOT NULL,
     "quantity" DECIMAL NOT NULL,
+    "contract_size" DECIMAL NOT NULL,
     "leverage" INTEGER NOT NULL,
     "price" DECIMAL NOT NULL,
+    "amount" DECIMAL NOT NULL,
     "fees" DECIMAL NOT NULL,
     "created_at" DATETIME NOT NULL
 );
@@ -68,6 +71,7 @@ CREATE TABLE "TradeFutures" (
     "symbol" TEXT NOT NULL,
     "side" TEXT NOT NULL,
     "quantity" DECIMAL NOT NULL,
+    "contract_size" DECIMAL NOT NULL,
     "leverage" INTEGER NOT NULL,
     "entry_order_id" TEXT NOT NULL,
     "entry_price" DECIMAL NOT NULL,
@@ -78,3 +82,12 @@ CREATE TABLE "TradeFutures" (
     "fees" DECIMAL NOT NULL,
     "pnl" DECIMAL NOT NULL
 );
+
+-- CreateIndex
+CREATE INDEX "OrderSpot_symbol_side_idx" ON "OrderSpot"("symbol", "side");
+
+-- CreateIndex
+CREATE INDEX "OrderSpot_symbol_idx" ON "OrderSpot"("symbol");
+
+-- CreateIndex
+CREATE INDEX "OrderSpot_side_idx" ON "OrderSpot"("side");

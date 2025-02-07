@@ -37,6 +37,7 @@ export class PrismaOrderSpotRepository implements OrderRepository {
       side: prismaOrderSpot.side as Side,
       quantity: prismaOrderSpot.quantity.toNumber(),
       price: prismaOrderSpot.price.toNumber(),
+      amount: prismaOrderSpot.amount.toNumber(),
       fees: prismaOrderSpot.fees.toNumber(),
       createdAt: prismaOrderSpot.created_at,
     }
@@ -49,6 +50,7 @@ export class PrismaOrderSpotRepository implements OrderRepository {
       side: orderCreate.side,
       quantity: new Decimal(orderCreate.quantity),
       price: new Decimal(orderCreate.price),
+      amount: new Decimal(orderCreate.amount),
       fees: new Decimal(orderCreate.fees),
       created_at: orderCreate.createdAt,
     }

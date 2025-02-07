@@ -11,6 +11,7 @@ import { Side } from '@binance/connector-typescript'
 import { FuturesAccountTrade } from 'bitmart-api/dist/mjs/types/response/futures.types'
 import { FuturesAccountOrder } from 'bitmart-api'
 import { settings } from '../../../application/settings'
+import { Symbol } from '../../../domain/types/symbol'
 
 export function mapBinanceToDomainOrder(
   binanceOrder: RestTradeTypes.getOrderResponse,
@@ -47,6 +48,7 @@ export function mapBinanceToDomainOrder(
     side: mapBinanceToDomainSide(binanceOrder.side as Side),
     quantity: quantity,
     price: price,
+    amount: quantity * price,
     fees: fees,
     createdAt: new Date(binanceOrder.time),
   }
@@ -54,7 +56,11 @@ export function mapBinanceToDomainOrder(
 export function mapBitmartToDomainOrder(
   bitmartOrder: FuturesAccountOrder,
   bitmartTrades: FuturesAccountTrade[],
+  symbol: Symbol,
 ): OrderFuturesCreate {
+  const price: number = parseFloat(bitmartOrder.deal_avg_price)
+  const quantity: number = parseInt(bitmartOrder.deal_size)
+  const contractSize: number = symbol.contractSize
   const fees: number = bitmartTrades.reduce(
     (total: number, bitmartTrade: FuturesAccountTrade) =>
       total + parseFloat(bitmartTrade.paid_fees),
@@ -66,9 +72,11 @@ export function mapBitmartToDomainOrder(
     orderId: bitmartOrder.order_id,
     symbol: bitmartOrder.symbol,
     side: mapBitmartToDomainOrderSide(bitmartOrder.side),
-    quantity: parseInt(bitmartOrder.size),
+    quantity: quantity,
+    contractSize: contractSize,
     leverage: parseInt(bitmartOrder.leverage),
-    price: parseFloat(bitmartOrder.price),
+    price: price,
+    amount: quantity * contractSize * price,
     fees: fees,
     createdAt: new Date(bitmartOrder.create_time),
   }

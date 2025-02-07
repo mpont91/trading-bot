@@ -7,6 +7,7 @@ export interface Order {
   side: Side
   quantity: number
   price: number
+  amount: number
   fees: number
   createdAt: Date
 }
@@ -17,6 +18,7 @@ export interface OrderSpot extends Order {
 
 export interface OrderFutures extends Order {
   type: 'futures'
+  contractSize: number
   leverage: number
 }
 

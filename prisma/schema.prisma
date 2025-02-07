@@ -37,20 +37,27 @@ model OrderSpot {
   side       String
   quantity   Decimal
   price      Decimal
+  amount     Decimal
   fees       Decimal
   created_at DateTime
+
+  @@index([symbol, side])
+  @@index([symbol])
+  @@index([side])
 }
 
 model OrderFutures {
-  id         Int      @id @default(autoincrement())
-  order_id   String
-  symbol     String
-  side       String
-  quantity   Decimal
-  leverage   Int
-  price      Decimal
-  fees       Decimal
-  created_at DateTime
+  id            Int      @id @default(autoincrement())
+  order_id      String
+  symbol        String
+  side          String
+  quantity      Decimal
+  contract_size Decimal
+  leverage      Int
+  price         Decimal
+  amount        Decimal
+  fees          Decimal
+  created_at    DateTime
 }
 
 model TradeSpot {
@@ -73,6 +80,7 @@ model TradeFutures {
   symbol         String
   side           String
   quantity       Decimal
+  contract_size  Decimal
   leverage       Int
   entry_order_id String
   entry_price    Decimal

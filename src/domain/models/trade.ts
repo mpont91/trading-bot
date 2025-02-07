@@ -21,6 +21,7 @@ export interface TradeSpot extends Trade {
 
 export interface TradeFutures extends Trade {
   type: 'futures'
+  contractSize: number
   leverage: number
 }
 
