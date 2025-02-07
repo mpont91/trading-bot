@@ -36,6 +36,8 @@ import {
 } from './application/settings'
 import { PositionFuturesService } from './domain/services/position-futures-service'
 import { PositionSpotService } from './domain/services/position-spot-service'
+import { LeverageService } from './domain/services/leverage-service'
+import { InvestmentFuturesService } from './domain/services/investment-futures-service'
 
 class Container {
   private static launcherSpot: Launcher
@@ -56,6 +58,7 @@ class Container {
   private static positionSpotService: PositionService
   private static positionFuturesService: PositionService
   private static performanceService: PerformanceService
+  private static leverageService: LeverageService
 
   static initialize(): void {
     const bitmartSettings: BitmartSettings = settings.bitmart
@@ -93,13 +96,15 @@ class Container {
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
+    this.leverageService = new LeverageService()
     this.investmentSpotService = new InvestmentService(
       tradingSpotSettings,
       this.apiSpotService,
     )
-    this.investmentFuturesService = new InvestmentService(
+    this.investmentFuturesService = new InvestmentFuturesService(
       tradingFuturesSettings,
       this.apiFuturesService,
+      this.leverageService,
     )
     this.orderSpotService = new OrderService(orderSpotRepository)
     this.orderFuturesService = new OrderService(orderFuturesRepository)
@@ -114,6 +119,7 @@ class Container {
       this.apiFuturesService,
       this.investmentFuturesService,
       this.orderFuturesService,
+      this.leverageService,
     )
     this.performanceService = new PerformanceService()
     const accountSpotManager: AccountManager = new AccountManager(
@@ -196,6 +202,9 @@ class Container {
   }
   static getPerformanceService(): PerformanceService {
     return this.performanceService
+  }
+  static getLeverageService(): LeverageService {
+    return this.leverageService
   }
 }
 

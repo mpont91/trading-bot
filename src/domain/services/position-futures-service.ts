@@ -2,18 +2,32 @@ import { PositionService } from './position-service'
 import { OrderFuturesRequest } from '../models/order'
 import { PositionFutures } from '../types/position'
 import { inverseSide } from '../helpers/side-helper'
+import { ApiService } from './api-service'
+import { InvestmentService } from './investment-service'
+import { OrderService } from './order-service'
+import { LeverageService } from './leverage-service'
 
 export class PositionFuturesService extends PositionService {
+  constructor(
+    apiService: ApiService,
+    investmentService: InvestmentService,
+    orderService: OrderService,
+    private readonly leverageService: LeverageService,
+  ) {
+    super(apiService, investmentService, orderService)
+  }
+
   createOpenPositionOrderRequest(
     symbol: string,
     quantity: number,
   ): OrderFuturesRequest {
+    const leverage: number = this.leverageService.getLeverage()
     return {
       type: 'futures',
       symbol: symbol,
       side: 'long',
       quantity: quantity,
-      leverage: 1,
+      leverage: leverage,
       isClosePosition: false,
     }
   }

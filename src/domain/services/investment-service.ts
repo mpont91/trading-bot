@@ -57,7 +57,7 @@ export class InvestmentService {
     return this.roundQuantity(adjustedQuantity)
   }
 
-  private roundQuantity(number: number): number {
+  protected roundQuantity(number: number): number {
     return Math.round(number * 1e6) / 1e6
   }
 }
