@@ -28,6 +28,19 @@ export class PrismaOrderSpotRepository implements OrderRepository {
     return this.toDomainList(orders)
   }
 
+  async getLastOrderForSymbol(symbol: string): Promise<OrderSpot | null> {
+    const order = await this.prisma.orderSpot.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!order) {
+      return null
+    }
+
+    return this.toDomain(order as PrismaOrderSpot)
+  }
+
   private toDomain(prismaOrderSpot: PrismaOrderSpot): OrderSpot {
     return {
       type: 'spot',

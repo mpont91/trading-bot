@@ -9,6 +9,10 @@ export class OrderService {
   }
 
   async getLatest(): Promise<Order[]> {
-    return await this.orderRepository.getLatest()
+    return this.orderRepository.getLatest()
+  }
+
+  async getLastOrderForSymbol(symbol: string): Promise<Order | null> {
+    return this.orderRepository.getLastOrderForSymbol(symbol)
   }
 }

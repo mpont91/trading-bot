@@ -114,11 +114,13 @@ class Container {
       this.apiSpotService,
       this.investmentSpotService,
       this.orderSpotService,
+      this.tradeSpotService,
     )
     this.positionFuturesService = new PositionFuturesService(
       this.apiFuturesService,
       this.investmentFuturesService,
       this.orderFuturesService,
+      this.tradeFuturesService,
       this.leverageService,
     )
     this.performanceService = new PerformanceService()

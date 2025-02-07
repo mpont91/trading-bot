@@ -214,13 +214,13 @@ export class BinanceClientApi implements BinanceApi {
       await this.getBinanceLastOrder(symbol)
 
     if (!order) {
-      throw Error(
+      throw new Error(
         'There is amount in currency but no order. Something is broken!',
       )
     }
 
     if (order.executedQty !== balance.free) {
-      throw Error(
+      throw new Error(
         'The amount in currency does not match with the order quantity. Something is broken!',
       )
     }
