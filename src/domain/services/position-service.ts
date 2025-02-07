@@ -1,12 +1,14 @@
 import { Position } from '../types/position'
 import { ApiService } from './api-service'
 import { InvestmentService } from './investment-service'
-import { OrderRequest } from '../models/order'
+import { OrderCreate, OrderRequest } from '../models/order'
+import { OrderService } from './order-service'
 
 export abstract class PositionService {
   constructor(
-    protected readonly apiService: ApiService,
-    protected readonly investmentService: InvestmentService,
+    private readonly apiService: ApiService,
+    private readonly investmentService: InvestmentService,
+    private readonly orderService: OrderService,
   ) {}
 
   async getPosition(symbol: string): Promise<Position | null> {
@@ -14,20 +16,14 @@ export abstract class PositionService {
   }
 
   async openPosition(symbol: string): Promise<void> {
-    const investmentAmount: number =
-      await this.investmentService.getInvestmentAmount()
-    const investmentQuantity: number =
-      await this.investmentService.getQuantityAdjustedFromAmount(
-        symbol,
-        investmentAmount,
-      )
-
+    const quantity: number =
+      await this.investmentService.getInvestmentQuantityFromSymbol(symbol)
     const orderRequest: OrderRequest = this.createOpenPositionOrderRequest(
       symbol,
-      investmentQuantity,
+      quantity,
     )
 
-    await this.apiService.submitOrder(orderRequest)
+    await this.submitOrder(orderRequest)
   }
 
   async closePosition(symbol: string): Promise<void> {
@@ -39,7 +35,7 @@ export abstract class PositionService {
     const orderRequest: OrderRequest =
       this.createClosePositionOrderRequest(position)
 
-    await this.apiService.submitOrder(orderRequest)
+    await this.submitOrder(orderRequest)
   }
 
   abstract createOpenPositionOrderRequest(
@@ -47,4 +43,13 @@ export abstract class PositionService {
     quantity: number,
   ): OrderRequest
   abstract createClosePositionOrderRequest(position: Position): OrderRequest
+
+  private async submitOrder(orderRequest: OrderRequest): Promise<void> {
+    const orderId: string = await this.apiService.submitOrder(orderRequest)
+    const order: OrderCreate = await this.apiService.getOrder(
+      orderRequest.symbol,
+      orderId,
+    )
+    await this.orderService.store(order)
+  }
 }

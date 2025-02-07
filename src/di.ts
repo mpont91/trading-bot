@@ -108,10 +108,12 @@ class Container {
     this.positionSpotService = new PositionSpotService(
       this.apiSpotService,
       this.investmentSpotService,
+      this.orderSpotService,
     )
     this.positionFuturesService = new PositionFuturesService(
       this.apiFuturesService,
       this.investmentFuturesService,
+      this.orderFuturesService,
     )
     this.performanceService = new PerformanceService()
     const accountSpotManager: AccountManager = new AccountManager(

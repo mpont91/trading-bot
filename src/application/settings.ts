@@ -65,7 +65,7 @@ export const settings: Settings = {
     priceHistoryKlineLimit: 240, // 5 minutes * 120 candles = 10 hours price history
   },
   spotTrading: {
-    symbols: ['BTCUSDC'],
+    symbols: ['ETHUSDT'],
     safetyCapitalMargin: 0.3,
   },
   futuresTrading: {

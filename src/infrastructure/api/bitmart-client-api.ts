@@ -85,6 +85,8 @@ export class BitmartClientApi implements BitmartApi {
   }
 
   async submitOrder(orderRequest: OrderFuturesRequest): Promise<string> {
+    await this.setLeverage(orderRequest.symbol, orderRequest.leverage)
+
     const task = async (): Promise<string> => {
       const params: SubmitFuturesOrderRequest = {
         type: 'market',

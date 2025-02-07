@@ -108,7 +108,6 @@ export class BinanceClientApi implements BinanceApi {
         (await this.client.symbolPriceTicker(
           params,
         )) as RestMarketTypes.symbolPriceTickerResponse
-
       return parseFloat(response.price)
     }
 
@@ -142,6 +141,7 @@ export class BinanceClientApi implements BinanceApi {
   }
 
   async getSymbol(symbol: string): Promise<Symbol> {
+    const price: number = await this.getPrice(symbol)
     const task = async (): Promise<Symbol> => {
       const params: RestMarketTypes.exchangeInformationOptions = {
         symbol: symbol,
@@ -149,7 +149,6 @@ export class BinanceClientApi implements BinanceApi {
       const exchangeInfo: RestMarketTypes.exchangeInformationResponse =
         await this.client.exchangeInformation(params)
 
-      const price: number = await this.getPrice(symbol)
       return mapBinanceToDomainSymbol(exchangeInfo.symbols[0], price)
     }
 

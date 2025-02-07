@@ -9,6 +9,11 @@ export class InvestmentService {
     private readonly apiService: ApiService,
   ) {}
 
+  async getInvestmentQuantityFromSymbol(symbol: string): Promise<number> {
+    const investmentAmount: number = await this.getInvestmentAmount()
+    return this.getQuantityAdjustedFromAmount(symbol, investmentAmount)
+  }
+
   async getInvestmentAmount(): Promise<number> {
     const balance: Balance = await this.apiService.getBalance()
     const total: number = balance.equity
