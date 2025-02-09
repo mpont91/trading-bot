@@ -1,11 +1,15 @@
 import { InvestmentService } from '../../../src/domain/services/investment-service'
 import { TradingSettings } from '../../../src/application/settings'
 import { ApiService } from '../../../src/domain/services/api-service'
-import { Api } from '../../../src/application/api/api'
+import { ApiFuturesService } from '../../../src/domain/services/api-futures-service'
+import { BitmartApi } from '../../../src/application/api/bitmart-api'
+import { InvestmentFuturesService } from '../../../src/domain/services/investment-futures-service'
+import { LeverageService } from '../../../src/domain/services/leverage-service'
 
-let mockApi: jest.Mocked<Api>
+let mockApi: jest.Mocked<BitmartApi>
 let mockApiService: ApiService
-let mockSettings: TradingSettings
+let mockTradingSettings: TradingSettings
+let mockLeverageService: LeverageService
 let investmentService: InvestmentService
 
 function initialize(): void {
@@ -15,18 +19,25 @@ function initialize(): void {
     submitOrder: jest.fn(),
     getOrder: jest.fn(),
     getPosition: jest.fn(),
-  } as jest.Mocked<Api>
+    setLeverage: jest.fn(),
+  } as jest.Mocked<BitmartApi>
 
-  mockApiService = new ApiService(mockApi)
+  mockApiService = new ApiFuturesService(mockApi)
 
-  mockSettings = {
+  mockTradingSettings = {
     safetyCapitalMargin: 0.3,
     symbols: ['BTCUSDT'],
   }
 
-  investmentService = new InvestmentService(mockSettings, mockApiService)
+  mockLeverageService = new LeverageService()
+
+  investmentService = new InvestmentFuturesService(
+    mockTradingSettings,
+    mockApiService,
+    mockLeverageService,
+  )
 }
-describe('InvestmentService - getInvestmentAmount', (): void => {
+describe('InvestmentFuturesService - getInvestmentAmount', (): void => {
   beforeEach((): void => {
     initialize()
   })
@@ -37,14 +48,14 @@ describe('InvestmentService - getInvestmentAmount', (): void => {
   })
 
   test('Should return 35 when having 100 equity with 30% margin and 2 symbols to invest', async (): Promise<void> => {
-    mockSettings.symbols = ['BTCUSDT', 'ETHUSDT']
+    mockTradingSettings.symbols = ['BTCUSDT', 'ETHUSDT']
 
     const result: number = await investmentService.getInvestmentAmount()
     expect(result).toBe(35)
   })
 
   test('Should throw error when there are no symbols to invest', async (): Promise<void> => {
-    mockSettings.symbols = []
+    mockTradingSettings.symbols = []
 
     await expect(investmentService.getInvestmentAmount()).rejects.toThrow(
       'There are no symbols to invest.',
