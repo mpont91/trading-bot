@@ -1,11 +1,11 @@
 import { Container } from '../../di'
 import { sideRule } from '../../application/rules/side-rule'
-import { BitmartApiService } from '../../domain/services/bitmart-api-service'
+import { ApiFuturesService } from '../../domain/services/api-futures-service'
 import { OrderFuturesRequest } from '../../domain/models/order'
 import { Side } from '../../domain/types/side'
 
 async function start(): Promise<void> {
-  const bitmartApiService: BitmartApiService = Container.getBitmartApiService()
+  const bitmartApiService: ApiFuturesService = Container.getBitmartApiService()
   const symbol: string = process.argv[2]
   const side: string = process.argv[3]
   const quantity: string = process.argv[4]
@@ -15,7 +15,6 @@ async function start(): Promise<void> {
   sideRule(side)
 
   const orderRequest: OrderFuturesRequest = {
-    type: 'futures',
     symbol: symbol,
     side: side as Side,
     quantity: parseFloat(quantity),

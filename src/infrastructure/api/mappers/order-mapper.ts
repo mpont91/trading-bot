@@ -42,7 +42,6 @@ export function mapBinanceToDomainOrder(
     quantity > 0 ? weightedPrice / quantity : parseFloat(binanceOrder.price)
 
   return {
-    type: 'spot',
     orderId: binanceOrder.orderId.toString(),
     symbol: binanceOrder.symbol,
     side: mapBinanceToDomainSide(binanceOrder.side as Side),
@@ -68,7 +67,6 @@ export function mapBitmartToDomainOrder(
   )
 
   return {
-    type: 'futures',
     orderId: bitmartOrder.order_id,
     symbol: bitmartOrder.symbol,
     side: mapBitmartToDomainOrderSide(bitmartOrder.side),

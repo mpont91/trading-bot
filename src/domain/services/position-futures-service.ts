@@ -25,7 +25,6 @@ export class PositionFuturesService extends PositionService {
   ): OrderFuturesRequest {
     const leverage: number = this.leverageService.getLeverage()
     return {
-      type: 'futures',
       symbol: symbol,
       side: 'long',
       quantity: quantity,
@@ -37,7 +36,6 @@ export class PositionFuturesService extends PositionService {
     position: PositionFutures,
   ): OrderFuturesRequest {
     return {
-      type: 'futures',
       symbol: position.symbol,
       side: inverseSide(position.side),
       quantity: position.quantity,

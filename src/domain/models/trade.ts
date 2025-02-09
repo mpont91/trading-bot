@@ -15,12 +15,9 @@ export interface Trade {
   pnl: number
 }
 
-export interface TradeSpot extends Trade {
-  type: 'spot'
-}
+export type TradeSpot = Trade
 
 export interface TradeFutures extends Trade {
-  type: 'futures'
   contractSize: number
   leverage: number
 }

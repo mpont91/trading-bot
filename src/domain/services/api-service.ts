@@ -5,8 +5,8 @@ import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
 import { Position } from '../types/position'
 
-export class ApiService {
-  constructor(private readonly api: Api) {}
+export abstract class ApiService {
+  protected constructor(private readonly api: Api) {}
 
   async getBalance(): Promise<Balance> {
     return this.api.getBalance()

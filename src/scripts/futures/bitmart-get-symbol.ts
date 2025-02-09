@@ -1,9 +1,9 @@
 import { Container } from '../../di'
-import { BitmartApiService } from '../../domain/services/bitmart-api-service'
+import { ApiFuturesService } from '../../domain/services/api-futures-service'
 import { Symbol } from '../../domain/types/symbol'
 
 async function start(): Promise<void> {
-  const bitmartApiService: BitmartApiService = Container.getBitmartApiService()
+  const bitmartApiService: ApiFuturesService = Container.getBitmartApiService()
   const symbol: string = process.argv[2]
   const response: Symbol = await bitmartApiService.getSymbol(symbol)
   console.dir(response, { depth: null })

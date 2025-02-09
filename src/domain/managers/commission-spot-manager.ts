@@ -1,11 +1,11 @@
 import { ManagerInterface } from './manager-interface'
 import { CommissionEquityService } from '../services/commission-equity-service'
 import { CommissionEquityCreate } from '../models/commission-equity'
-import { BinanceApiService } from '../services/binance-api-service'
+import { ApiSpotService } from '../services/api-spot-service'
 
 export class CommissionSpotManager implements ManagerInterface {
   constructor(
-    private readonly binanceApiService: BinanceApiService,
+    private readonly binanceApiService: ApiSpotService,
     private readonly commissionEquityService: CommissionEquityService,
   ) {}
   async start(): Promise<void> {

@@ -9,7 +9,6 @@ export class PositionSpotService extends PositionService {
     quantity: number,
   ): OrderSpotRequest {
     return {
-      type: 'spot',
       symbol: symbol,
       side: 'long',
       quantity: quantity,
@@ -17,7 +16,6 @@ export class PositionSpotService extends PositionService {
   }
   createClosePositionOrderRequest(position: Position): OrderSpotRequest {
     return {
-      type: 'spot',
       symbol: position.symbol,
       side: inverseSide(position.side),
       quantity: position.quantity,

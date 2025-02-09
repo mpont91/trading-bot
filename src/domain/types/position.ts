@@ -8,11 +8,8 @@ export interface Position {
   entryAt: Date
 }
 
-export interface PositionSpot extends Position {
-  type: 'spot'
-}
+export type PositionSpot = Position
 
 export interface PositionFutures extends Position {
-  type: 'futures'
   leverage: number
 }

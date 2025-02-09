@@ -12,12 +12,9 @@ export interface Order {
   createdAt: Date
 }
 
-export interface OrderSpot extends Order {
-  type: 'spot'
-}
+export type OrderSpot = Order
 
 export interface OrderFutures extends Order {
-  type: 'futures'
   contractSize: number
   leverage: number
 }
@@ -32,12 +29,9 @@ export interface OrderRequest {
   quantity: number
 }
 
-export interface OrderSpotRequest extends OrderRequest {
-  type: 'spot'
-}
+export type OrderSpotRequest = OrderRequest
 
 export interface OrderFuturesRequest extends OrderRequest {
-  type: 'futures'
   leverage: number
   isClosePosition: boolean
 }

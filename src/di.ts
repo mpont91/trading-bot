@@ -4,8 +4,8 @@ import { BitmartApi } from './application/api/bitmart-api'
 import { BitmartClientApi } from './infrastructure/api/bitmart-client-api'
 import { BinanceApi } from './application/api/binance-api'
 import { BinanceClientApi } from './infrastructure/api/binance-client-api'
-import { BitmartApiService } from './domain/services/bitmart-api-service'
-import { BinanceApiService } from './domain/services/binance-api-service'
+import { ApiFuturesService } from './domain/services/api-futures-service'
+import { ApiSpotService } from './domain/services/api-spot-service'
 import { EquityService } from './domain/services/equity-service'
 import { EquityRepository } from './domain/repositories/equity-repository'
 import { PrismaEquityFuturesRepository } from './infrastructure/repositories/prisma-equity-futures-repository'
@@ -38,12 +38,15 @@ import { PositionFuturesService } from './domain/services/position-futures-servi
 import { PositionSpotService } from './domain/services/position-spot-service'
 import { LeverageService } from './domain/services/leverage-service'
 import { InvestmentFuturesService } from './domain/services/investment-futures-service'
+import { TradeSpotService } from './domain/services/trade-spot-service'
+import { TradeFuturesService } from './domain/services/trade-futures-service'
+import { InvestmentSpotService } from './domain/services/investment-spot-service'
 
 class Container {
   private static launcherSpot: Launcher
   private static launcherFutures: Launcher
-  private static bitmartApiService: BitmartApiService
-  private static binanceApiService: BinanceApiService
+  private static bitmartApiService: ApiFuturesService
+  private static binanceApiService: ApiSpotService
   private static apiSpotService: ApiService
   private static apiFuturesService: ApiService
   private static equitySpotService: EquityService
@@ -87,17 +90,17 @@ class Container {
     const tradeFuturesRepository: TradeRepository =
       new PrismaTradeFuturesRepository(prisma)
 
-    this.bitmartApiService = new BitmartApiService(bitmartApi)
-    this.binanceApiService = new BinanceApiService(apiSettings, binanceApi)
-    this.apiSpotService = new ApiService(binanceApi)
-    this.apiFuturesService = new ApiService(bitmartApi)
+    this.bitmartApiService = new ApiFuturesService(bitmartApi)
+    this.binanceApiService = new ApiSpotService(apiSettings, binanceApi)
+    this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
+    this.apiFuturesService = new ApiFuturesService(bitmartApi)
     this.equitySpotService = new EquityService(equitySpotRepository)
     this.equityFuturesService = new EquityService(equityFuturesRepository)
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
     this.leverageService = new LeverageService()
-    this.investmentSpotService = new InvestmentService(
+    this.investmentSpotService = new InvestmentSpotService(
       tradingSpotSettings,
       this.apiSpotService,
     )
@@ -108,8 +111,8 @@ class Container {
     )
     this.orderSpotService = new OrderService(orderSpotRepository)
     this.orderFuturesService = new OrderService(orderFuturesRepository)
-    this.tradeSpotService = new TradeService(tradeSpotRepository)
-    this.tradeFuturesService = new TradeService(tradeFuturesRepository)
+    this.tradeSpotService = new TradeSpotService(tradeSpotRepository)
+    this.tradeFuturesService = new TradeFuturesService(tradeFuturesRepository)
     this.positionSpotService = new PositionSpotService(
       this.apiSpotService,
       this.investmentSpotService,
@@ -157,10 +160,10 @@ class Container {
   static getLauncherFutures(): Launcher {
     return this.launcherFutures
   }
-  static getBitmartApiService(): BitmartApiService {
+  static getBitmartApiService(): ApiFuturesService {
     return this.bitmartApiService
   }
-  static getBinanceApiService(): BinanceApiService {
+  static getBinanceApiService(): ApiSpotService {
     return this.binanceApiService
   }
   static getApiSpotService(): ApiService {

@@ -43,7 +43,6 @@ export class PrismaOrderSpotRepository implements OrderRepository {
 
   private toDomain(prismaOrderSpot: PrismaOrderSpot): OrderSpot {
     return {
-      type: 'spot',
       id: prismaOrderSpot.id,
       orderId: prismaOrderSpot.order_id,
       symbol: prismaOrderSpot.symbol,

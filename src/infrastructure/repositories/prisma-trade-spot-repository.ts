@@ -30,7 +30,6 @@ export class PrismaTradeSpotRepository implements TradeRepository {
 
   private toDomain(prismaTradeSpot: PrismaTradeSpot): TradeSpot {
     return {
-      type: 'spot',
       id: prismaTradeSpot.id,
       symbol: prismaTradeSpot.symbol,
       side: prismaTradeSpot.side as Side,

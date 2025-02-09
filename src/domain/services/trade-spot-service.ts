@@ -1,18 +1,16 @@
-import { TradeFuturesCreate } from '../models/trade'
-import { OrderFutures, OrderFuturesCreate } from '../models/order'
+import { TradeSpotCreate } from '../models/trade'
+import { OrderSpot, OrderSpotCreate } from '../models/order'
 import { TradeService } from './trade-service'
 
-export class TradeFuturesService extends TradeService {
+export class TradeSpotService extends TradeService {
   async storeTradeFromOrders(
-    entryOrder: OrderFutures,
-    exitOrder: OrderFuturesCreate,
+    entryOrder: OrderSpot,
+    exitOrder: OrderSpotCreate,
   ): Promise<void> {
-    const trade: TradeFuturesCreate = {
+    const trade: TradeSpotCreate = {
       symbol: entryOrder.symbol,
       side: entryOrder.side,
       quantity: entryOrder.quantity,
-      contractSize: entryOrder.contractSize,
-      leverage: entryOrder.leverage,
       entryOrderId: entryOrder.orderId,
       entryPrice: entryOrder.price,
       entryAt: entryOrder.createdAt,

@@ -1,9 +1,9 @@
 import { Container } from '../../di'
-import { BitmartApiService } from '../../domain/services/bitmart-api-service'
+import { ApiFuturesService } from '../../domain/services/api-futures-service'
 import { OrderCreate } from '../../domain/models/order'
 
 async function start(): Promise<void> {
-  const bitmartApiService: BitmartApiService = Container.getBitmartApiService()
+  const bitmartApiService: ApiFuturesService = Container.getBitmartApiService()
   const symbol: string = process.argv[2]
   const orderId: string = process.argv[3]
 

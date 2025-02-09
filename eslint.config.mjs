@@ -11,6 +11,7 @@ export default [
     languageOptions: { globals: globals.browser },
     rules: {
       'prettier/prettier': 'error',
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
   pluginJs.configs.recommended,

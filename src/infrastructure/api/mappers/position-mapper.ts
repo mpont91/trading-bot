@@ -10,7 +10,6 @@ export function mapBitmartToDomainPosition(
   bitmartPosition: FuturesAccountPosition,
 ): PositionFutures {
   return {
-    type: 'futures',
     symbol: bitmartPosition.symbol,
     side: mapBitmartToDomainPositionSide(bitmartPosition.position_type),
     quantity: parseFloat(bitmartPosition.current_amount),
@@ -24,7 +23,6 @@ export function mapBinanceToDomainPosition(
   binanceOrder: RestTradeTypes.allOrdersResponse,
 ): PositionSpot {
   return {
-    type: 'spot',
     symbol: binanceOrder.symbol,
     side: mapBinanceToDomainSide(binanceOrder.side as Side),
     quantity: parseFloat(binanceOrder.executedQty),

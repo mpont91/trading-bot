@@ -43,7 +43,6 @@ export class PrismaOrderFuturesRepository implements OrderRepository {
 
   private toDomain(prismaOrderFutures: PrismaOrderFutures): OrderFutures {
     return {
-      type: 'futures',
       id: prismaOrderFutures.id,
       orderId: prismaOrderFutures.order_id,
       symbol: prismaOrderFutures.symbol,

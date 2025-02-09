@@ -4,7 +4,7 @@ import { ApiSettings } from '../../application/settings'
 import { ApiService } from './api-service'
 import { CommissionEquityCreate } from '../models/commission-equity'
 
-export class BinanceApiService extends ApiService {
+export class ApiSpotService extends ApiService {
   constructor(
     private readonly settings: ApiSettings,
     private readonly binanceApi: BinanceApi,

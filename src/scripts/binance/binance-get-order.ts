@@ -1,9 +1,9 @@
 import { Container } from '../../di'
-import { BinanceApiService } from '../../domain/services/binance-api-service'
+import { ApiSpotService } from '../../domain/services/api-spot-service'
 import { OrderCreate } from '../../domain/models/order'
 
 async function start(): Promise<void> {
-  const binanceApiService: BinanceApiService = Container.getBinanceApiService()
+  const binanceApiService: ApiSpotService = Container.getBinanceApiService()
   const symbol: string = process.argv[2]
   const orderId: string = process.argv[3]
 

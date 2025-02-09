@@ -30,7 +30,6 @@ export class PrismaTradeFuturesRepository implements TradeRepository {
 
   private toDomain(prismaTradeFutures: PrismaTradeFutures): TradeFutures {
     return {
-      type: 'futures',
       id: prismaTradeFutures.id,
       symbol: prismaTradeFutures.symbol,
       side: prismaTradeFutures.side as Side,

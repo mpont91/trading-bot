@@ -3,7 +3,7 @@ import { Balance } from '../types/balance'
 import { TradingSettings } from '../../application/settings'
 import { Symbol } from '../types/symbol'
 
-export class InvestmentService {
+export abstract class InvestmentService {
   constructor(
     private readonly settings: TradingSettings,
     private readonly apiService: ApiService,
