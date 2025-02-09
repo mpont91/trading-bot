@@ -1,10 +1,10 @@
 import { Container } from '../../di'
 import { Balance } from '../../domain/types/balance'
-import { ApiSpotService } from '../../domain/services/api-spot-service'
+import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const binanceApiService: ApiSpotService = Container.getBinanceApiService()
-  const response: Balance = await binanceApiService.getBalance()
+  const apiService: ApiService = Container.getApiFuturesService()
+  const response: Balance = await apiService.getBalance()
   console.dir(response, { depth: null })
 }
 

@@ -1,11 +1,11 @@
 import { Container } from '../../di'
-import { ApiSpotService } from '../../domain/services/api-spot-service'
 import { Symbol } from '../../domain/types/symbol'
+import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const binanceApiService: ApiSpotService = Container.getBinanceApiService()
+  const apiService: ApiService = Container.getApiSpotService()
   const symbol: string = process.argv[2]
-  const response: Symbol = await binanceApiService.getSymbol(symbol)
+  const response: Symbol = await apiService.getSymbol(symbol)
   console.dir(response, { depth: null })
 }
 

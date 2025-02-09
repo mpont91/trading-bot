@@ -1,16 +1,13 @@
 import { Container } from '../../di'
-import { ApiFuturesService } from '../../domain/services/api-futures-service'
 import { OrderCreate } from '../../domain/models/order'
+import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const bitmartApiService: ApiFuturesService = Container.getBitmartApiService()
+  const apiService: ApiService = Container.getApiSpotService()
   const symbol: string = process.argv[2]
   const orderId: string = process.argv[3]
 
-  const response: OrderCreate = await bitmartApiService.getOrder(
-    symbol,
-    orderId,
-  )
+  const response: OrderCreate = await apiService.getOrder(symbol, orderId)
   console.dir(response, { depth: null })
 }
 

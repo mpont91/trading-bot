@@ -1,11 +1,11 @@
 import { Container } from '../../di'
 import { sideRule } from '../../application/rules/side-rule'
-import { ApiFuturesService } from '../../domain/services/api-futures-service'
 import { OrderFuturesRequest } from '../../domain/models/order'
 import { Side } from '../../domain/types/side'
+import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const bitmartApiService: ApiFuturesService = Container.getBitmartApiService()
+  const apiService: ApiService = Container.getApiFuturesService()
   const symbol: string = process.argv[2]
   const side: string = process.argv[3]
   const quantity: string = process.argv[4]
@@ -22,7 +22,7 @@ async function start(): Promise<void> {
     isClosePosition: isClosePosition === 'true',
   }
 
-  await bitmartApiService.submitOrder(orderRequest)
+  await apiService.submitOrder(orderRequest)
 }
 
 start().catch((error: unknown): void => {

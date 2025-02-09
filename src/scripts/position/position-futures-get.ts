@@ -3,11 +3,9 @@ import { PositionService } from '../../domain/services/position-service'
 import { Position } from '../../domain/types/position'
 
 async function start(): Promise<void> {
-  const positionFuturesService: PositionService =
-    Container.getPositionFuturesService()
+  const positionService: PositionService = Container.getPositionFuturesService()
   const symbol: string = process.argv[2]
-  const response: Position | null =
-    await positionFuturesService.getPosition(symbol)
+  const response: Position | null = await positionService.getPosition(symbol)
   console.dir(response, { depth: null })
 }
 

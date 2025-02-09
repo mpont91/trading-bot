@@ -1,11 +1,11 @@
 import { Container } from '../../di'
 import { sideRule } from '../../application/rules/side-rule'
-import { ApiSpotService } from '../../domain/services/api-spot-service'
 import { OrderSpotRequest } from '../../domain/models/order'
 import { Side } from '../../domain/types/side'
+import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const binanceApiService: ApiSpotService = Container.getBinanceApiService()
+  const apiService: ApiService = Container.getApiSpotService()
   const symbol: string = process.argv[2]
   const side: string = process.argv[3]
   const quantity: string = process.argv[4]
@@ -18,7 +18,7 @@ async function start(): Promise<void> {
     quantity: parseFloat(quantity),
   }
 
-  await binanceApiService.submitOrder(orderRequest)
+  await apiService.submitOrder(orderRequest)
 }
 
 start().catch((error: unknown): void => {

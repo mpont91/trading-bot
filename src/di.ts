@@ -45,10 +45,10 @@ import { InvestmentSpotService } from './domain/services/investment-spot-service
 class Container {
   private static launcherSpot: Launcher
   private static launcherFutures: Launcher
-  private static bitmartApiService: ApiFuturesService
-  private static binanceApiService: ApiSpotService
   private static apiSpotService: ApiService
   private static apiFuturesService: ApiService
+  private static apiSpotConcreteService: ApiSpotService
+  private static apiFuturesConcreteService: ApiFuturesService
   private static equitySpotService: EquityService
   private static equityFuturesService: EquityService
   private static commissionEquitySpotService: CommissionEquityService
@@ -90,10 +90,10 @@ class Container {
     const tradeFuturesRepository: TradeRepository =
       new PrismaTradeFuturesRepository(prisma)
 
-    this.bitmartApiService = new ApiFuturesService(bitmartApi)
-    this.binanceApiService = new ApiSpotService(apiSettings, binanceApi)
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
+    this.apiSpotConcreteService = new ApiSpotService(apiSettings, binanceApi)
+    this.apiFuturesConcreteService = new ApiFuturesService(bitmartApi)
     this.equitySpotService = new EquityService(equitySpotRepository)
     this.equityFuturesService = new EquityService(equityFuturesRepository)
     this.commissionEquitySpotService = new CommissionEquityService(
@@ -133,7 +133,7 @@ class Container {
     )
     const commissionSpotManager: CommissionSpotManager =
       new CommissionSpotManager(
-        this.binanceApiService,
+        this.apiSpotConcreteService,
         this.commissionEquitySpotService,
       )
     const accountFuturesManager: AccountManager = new AccountManager(
@@ -160,17 +160,17 @@ class Container {
   static getLauncherFutures(): Launcher {
     return this.launcherFutures
   }
-  static getBitmartApiService(): ApiFuturesService {
-    return this.bitmartApiService
-  }
-  static getBinanceApiService(): ApiSpotService {
-    return this.binanceApiService
-  }
   static getApiSpotService(): ApiService {
     return this.apiSpotService
   }
   static getApiFuturesService(): ApiService {
     return this.apiFuturesService
+  }
+  static getApiSpotConcreteService(): ApiSpotService {
+    return this.apiSpotConcreteService
+  }
+  static getApiFuturesConcreteService(): ApiFuturesService {
+    return this.apiFuturesConcreteService
   }
   static getEquitySpotService(): EquityService {
     return this.equitySpotService
