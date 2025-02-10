@@ -32,8 +32,8 @@
     "api:spot-get-symbol": "ts-node src/scripts/api/api-spot-get-symbol.ts",
     "api:spot-submit-order": "ts-node src/scripts/api/api-spot-submit-order.ts",
     "position:futures-close": "ts-node src/scripts/position/position-futures-close.ts",
-    "position:futures-get": "ts-node src/scripts/position/position-futuress-get.ts",
-    "position:futures-open": "ts-node src/scripts/position/position-futuress-open.ts",
+    "position:futures-get": "ts-node src/scripts/position/position-futures-get.ts",
+    "position:futures-open": "ts-node src/scripts/position/position-futures-open.ts",
     "position:spot-close": "ts-node src/scripts/position/position-spot-close.ts",
     "position:spot-get": "ts-node src/scripts/position/position-spot-get.ts",
     "position:spot-open": "ts-node src/scripts/position/position-spot-open.ts"

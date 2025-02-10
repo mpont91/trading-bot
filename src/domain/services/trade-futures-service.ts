@@ -20,7 +20,11 @@ export class TradeFuturesService extends TradeService {
       exitPrice: exitOrder.price,
       exitAt: exitOrder.createdAt,
       fees: entryOrder.fees + exitOrder.fees,
-      pnl: (exitOrder.price - entryOrder.price) * entryOrder.quantity,
+      pnl:
+        (exitOrder.price - entryOrder.price) *
+        entryOrder.quantity *
+        entryOrder.contractSize *
+        (entryOrder.side === 'long' ? 1 : -1),
     }
 
     await this.store(trade)
