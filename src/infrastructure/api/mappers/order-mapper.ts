@@ -60,7 +60,16 @@ export function mapBitmartToDomainOrder(
   const price: number = parseFloat(bitmartOrder.deal_avg_price)
   const quantity: number = parseInt(bitmartOrder.deal_size)
   const contractSize: number = symbol.contractSize
-  const fees: number = bitmartTrades.reduce(
+  const leverage: number = parseInt(bitmartOrder.leverage)
+  const amountLeveraged: number = quantity * contractSize * price
+  const amount: number = amountLeveraged / leverage
+
+  const filteredTrades: FuturesAccountTrade[] = bitmartTrades.filter(
+    (trade: FuturesAccountTrade): boolean =>
+      trade.order_id === bitmartOrder.order_id,
+  )
+
+  const fees: number = filteredTrades.reduce(
     (total: number, bitmartTrade: FuturesAccountTrade) =>
       total + parseFloat(bitmartTrade.paid_fees),
     0,
@@ -72,9 +81,10 @@ export function mapBitmartToDomainOrder(
     side: mapBitmartToDomainOrderSide(bitmartOrder.side),
     quantity: quantity,
     contractSize: contractSize,
-    leverage: parseInt(bitmartOrder.leverage),
+    leverage: leverage,
     price: price,
-    amount: quantity * contractSize * price,
+    amount: amount,
+    amountLeveraged: amountLeveraged,
     fees: fees,
     createdAt: new Date(bitmartOrder.create_time),
   }

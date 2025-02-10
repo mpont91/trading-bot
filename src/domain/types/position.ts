@@ -12,6 +12,7 @@ export interface Position {
 export type PositionSpot = Position
 
 export interface PositionFutures extends Position {
+  amountLeveraged: number
   contractSize: number
   leverage: number
 }

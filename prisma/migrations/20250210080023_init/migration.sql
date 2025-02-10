@@ -45,6 +45,7 @@ CREATE TABLE "OrderFutures" (
     "leverage" INTEGER NOT NULL,
     "price" DECIMAL NOT NULL,
     "amount" DECIMAL NOT NULL,
+    "amount_leveraged" DECIMAL NOT NULL,
     "fees" DECIMAL NOT NULL,
     "created_at" DATETIME NOT NULL
 );

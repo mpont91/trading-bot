@@ -15,6 +15,7 @@ export interface Order {
 export type OrderSpot = Order
 
 export interface OrderFutures extends Order {
+  amountLeveraged: number
   contractSize: number
   leverage: number
 }

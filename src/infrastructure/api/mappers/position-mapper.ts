@@ -12,15 +12,17 @@ export function mapBitmartToDomainPosition(
   const quantity: number = parseFloat(bitmartPosition.current_amount)
   const leverage: number = parseInt(bitmartPosition.leverage)
   const price: number = parseFloat(bitmartPosition.entry_price)
-  const positionValue: number = parseFloat(bitmartPosition.position_value)
+  const amount: number = parseFloat(bitmartPosition.position_value)
+  const amountLeveraged: number = amount / leverage
 
   return {
     symbol: bitmartPosition.symbol,
     side: mapBitmartToDomainPositionSide(bitmartPosition.position_type),
     quantity: quantity,
     price: price,
-    amount: positionValue / leverage,
-    contractSize: positionValue / (quantity * price),
+    amount: amount,
+    amountLeveraged: amountLeveraged,
+    contractSize: amount / (quantity * price),
     leverage: leverage,
     entryAt: new Date(bitmartPosition.open_timestamp),
   }

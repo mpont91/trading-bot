@@ -47,17 +47,18 @@ model OrderSpot {
 }
 
 model OrderFutures {
-  id            Int      @id @default(autoincrement())
-  order_id      String
-  symbol        String
-  side          String
-  quantity      Decimal
-  contract_size Decimal
-  leverage      Int
-  price         Decimal
-  amount        Decimal
-  fees          Decimal
-  created_at    DateTime
+  id               Int      @id @default(autoincrement())
+  order_id         String
+  symbol           String
+  side             String
+  quantity         Decimal
+  contract_size    Decimal
+  leverage         Int
+  price            Decimal
+  amount           Decimal
+  amount_leveraged Decimal
+  fees             Decimal
+  created_at       DateTime
 }
 
 model TradeSpot {

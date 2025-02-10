@@ -52,6 +52,7 @@ export class PrismaOrderFuturesRepository implements OrderRepository {
       leverage: prismaOrderFutures.leverage,
       price: prismaOrderFutures.price.toNumber(),
       amount: prismaOrderFutures.amount.toNumber(),
+      amountLeveraged: prismaOrderFutures.amount_leveraged.toNumber(),
       fees: prismaOrderFutures.fees.toNumber(),
       createdAt: prismaOrderFutures.created_at,
     }
@@ -69,6 +70,7 @@ export class PrismaOrderFuturesRepository implements OrderRepository {
       leverage: orderCreate.leverage,
       price: new Decimal(orderCreate.price),
       amount: new Decimal(orderCreate.amount),
+      amount_leveraged: new Decimal(orderCreate.amountLeveraged),
       fees: new Decimal(orderCreate.fees),
       created_at: orderCreate.createdAt,
     }
