@@ -84,6 +84,16 @@ CREATE TABLE "TradeFutures" (
     "pnl" DECIMAL NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "Indicator" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "period" INTEGER NOT NULL,
+    "value" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- CreateIndex
 CREATE INDEX "OrderSpot_symbol_side_idx" ON "OrderSpot"("symbol", "side");
 
@@ -92,3 +102,39 @@ CREATE INDEX "OrderSpot_symbol_idx" ON "OrderSpot"("symbol");
 
 -- CreateIndex
 CREATE INDEX "OrderSpot_side_idx" ON "OrderSpot"("side");
+
+-- CreateIndex
+CREATE INDEX "OrderFutures_symbol_side_idx" ON "OrderFutures"("symbol", "side");
+
+-- CreateIndex
+CREATE INDEX "OrderFutures_symbol_idx" ON "OrderFutures"("symbol");
+
+-- CreateIndex
+CREATE INDEX "OrderFutures_side_idx" ON "OrderFutures"("side");
+
+-- CreateIndex
+CREATE INDEX "TradeSpot_symbol_side_idx" ON "TradeSpot"("symbol", "side");
+
+-- CreateIndex
+CREATE INDEX "TradeSpot_symbol_idx" ON "TradeSpot"("symbol");
+
+-- CreateIndex
+CREATE INDEX "TradeSpot_side_idx" ON "TradeSpot"("side");
+
+-- CreateIndex
+CREATE INDEX "TradeFutures_symbol_side_idx" ON "TradeFutures"("symbol", "side");
+
+-- CreateIndex
+CREATE INDEX "TradeFutures_symbol_idx" ON "TradeFutures"("symbol");
+
+-- CreateIndex
+CREATE INDEX "TradeFutures_side_idx" ON "TradeFutures"("side");
+
+-- CreateIndex
+CREATE INDEX "Indicator_symbol_name_idx" ON "Indicator"("symbol", "name");
+
+-- CreateIndex
+CREATE INDEX "Indicator_symbol_idx" ON "Indicator"("symbol");
+
+-- CreateIndex
+CREATE INDEX "Indicator_name_idx" ON "Indicator"("name");
