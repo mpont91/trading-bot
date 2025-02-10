@@ -1,8 +1,8 @@
 import { RSI } from 'technicalindicators'
-import { IndicatorService } from '../services/indicator-service'
+import { Indicator } from './indicator'
 import { Kline } from '../types/kline'
 
-export class RsiIndicator extends IndicatorService {
+export class RsiIndicator extends Indicator {
   getName(): string {
     return 'RSI'
   }

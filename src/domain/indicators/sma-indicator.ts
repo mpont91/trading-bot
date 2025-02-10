@@ -1,8 +1,8 @@
 import { SMA } from 'technicalindicators'
-import { IndicatorService } from '../services/indicator-service'
+import { Indicator } from './indicator'
 import { Kline } from '../types/kline'
 
-export class SmaIndicator extends IndicatorService {
+export class SmaIndicator extends Indicator {
   getName(): string {
     return 'SMA'
   }

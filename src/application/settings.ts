@@ -12,6 +12,7 @@ export interface Settings {
   spotTrading: TradingSettings
   futuresTrading: TradingSettings
   indicators: IndicatorsSettings
+  market: MarketSettings
 }
 
 export interface BitmartSettings {
@@ -51,6 +52,10 @@ export interface IndicatorsSettings {
   }
 }
 
+export interface MarketSettings {
+  symbols: string[]
+}
+
 export const settings: Settings = {
   intervalExecutionTime: parseInt(process.env.INTERVAL_EXECUTION_TIME!),
   intervalReportTime: parseInt(process.env.INTERVAL_REPORT_TIME!),
@@ -75,7 +80,7 @@ export const settings: Settings = {
     klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
   },
   spotTrading: {
-    symbols: ['ETHUSDT'],
+    symbols: ['ETHUSDC'],
     safetyCapitalMargin: 0.3,
   },
   futuresTrading: {
@@ -89,5 +94,8 @@ export const settings: Settings = {
       rsi: [7, 14],
       sma: [20, 50],
     },
+  },
+  market: {
+    symbols: ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'SOLUSDT'],
   },
 }

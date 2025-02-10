@@ -1,25 +1,30 @@
-import { Kline } from '../types/kline'
+import { IndicatorRepository } from '../repositories/indicator-repository'
+import { Indicator } from '../indicators/indicator'
 import { IndicatorCreate } from '../models/indicator'
+import { Kline } from '../types/kline'
 
-export abstract class IndicatorService {
-  constructor(protected readonly periods: number[]) {}
+export class IndicatorService {
+  constructor(
+    private readonly indicatorRepository: IndicatorRepository,
+    private readonly indicators: Indicator[],
+  ) {}
+
   calculate(symbol: string, klines: Kline[]): IndicatorCreate[] {
     const indicators: IndicatorCreate[] = []
 
-    this.periods.forEach((period: number): void => {
-      const value: number = this.getValue(period, klines)
+    this.indicators.forEach((indicator: Indicator): void => {
+      const indicatorCreates: IndicatorCreate[] = indicator.calculate(
+        symbol,
+        klines,
+      )
 
-      indicators.push({
-        name: this.getName(),
-        symbol: symbol,
-        period: period,
-        value: value,
-      })
+      indicators.push(...indicatorCreates)
     })
 
     return indicators
   }
 
-  abstract getValue(period: number, klines: Kline[]): number
-  abstract getName(): string
+  async store(indicators: IndicatorCreate[]): Promise<void> {
+    await this.indicatorRepository.createMany(indicators)
+  }
 }

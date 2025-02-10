@@ -32,6 +32,7 @@ import {
   BinanceSettings,
   BitmartSettings,
   IndicatorsSettings,
+  MarketSettings,
   settings,
   TradingSettings,
 } from './application/settings'
@@ -42,12 +43,12 @@ import { InvestmentFuturesService } from './domain/services/investment-futures-s
 import { TradeSpotService } from './domain/services/trade-spot-service'
 import { TradeFuturesService } from './domain/services/trade-futures-service'
 import { InvestmentSpotService } from './domain/services/investment-spot-service'
-import { IndicatorService } from './domain/services/indicator-service'
+import { Indicator } from './domain/indicators/indicator'
 import { AdxIndicator } from './domain/indicators/adx-indicator'
 import { AtrIndicator } from './domain/indicators/atr-indicator'
 import { RsiIndicator } from './domain/indicators/rsi-indicator'
 import { SmaIndicator } from './domain/indicators/sma-indicator'
-import { PredictionService } from './domain/services/prediction-service'
+import { IndicatorService } from './domain/services/indicator-service'
 import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { MarketManager } from './domain/managers/market-manager'
@@ -73,11 +74,11 @@ class Container {
   private static positionFuturesService: PositionService
   private static performanceService: PerformanceService
   private static leverageService: LeverageService
-  private static adxIndicatorService: IndicatorService
-  private static atrIndicatorService: IndicatorService
-  private static rsiIndicatorService: IndicatorService
-  private static smaIndicatorService: IndicatorService
-  private static predictionService: PredictionService
+  private static adxIndicator: Indicator
+  private static atrIndicator: Indicator
+  private static rsiIndicator: Indicator
+  private static smaIndicator: Indicator
+  private static indicatorService: IndicatorService
 
   static initialize(): void {
     const bitmartSettings: BitmartSettings = settings.bitmart
@@ -86,6 +87,8 @@ class Container {
     const tradingSpotSettings: TradingSettings = settings.spotTrading
     const tradingFuturesSettings: TradingSettings = settings.futuresTrading
     const indicatorsSettings: IndicatorsSettings = settings.indicators
+    const marketSettings: MarketSettings = settings.market
+
     const bitmartApi: BitmartApi = new BitmartClientApi(bitmartSettings)
     const binanceApi: BinanceApi = new BinanceClientApi(binanceSettings)
     const prisma: PrismaClient = new PrismaClient()
@@ -146,16 +149,16 @@ class Container {
       this.leverageService,
     )
     this.performanceService = new PerformanceService()
-    this.adxIndicatorService = new AdxIndicator(indicatorsSettings.periods.adx)
-    this.atrIndicatorService = new AtrIndicator(indicatorsSettings.periods.atr)
-    this.rsiIndicatorService = new RsiIndicator(indicatorsSettings.periods.rsi)
-    this.smaIndicatorService = new SmaIndicator(indicatorsSettings.periods.sma)
+    this.adxIndicator = new AdxIndicator(indicatorsSettings.periods.adx)
+    this.atrIndicator = new AtrIndicator(indicatorsSettings.periods.atr)
+    this.rsiIndicator = new RsiIndicator(indicatorsSettings.periods.rsi)
+    this.smaIndicator = new SmaIndicator(indicatorsSettings.periods.sma)
 
-    this.predictionService = new PredictionService(indicatorRepository, [
-      this.adxIndicatorService,
-      this.atrIndicatorService,
-      this.rsiIndicatorService,
-      this.smaIndicatorService,
+    this.indicatorService = new IndicatorService(indicatorRepository, [
+      this.adxIndicator,
+      this.atrIndicator,
+      this.rsiIndicator,
+      this.smaIndicator,
     ])
 
     const accountSpotManager: ManagerInterface = new AccountManager(
@@ -171,8 +174,9 @@ class Container {
       this.equityFuturesService,
     )
     const marketManager: ManagerInterface = new MarketManager(
+      marketSettings.symbols,
       this.apiSpotConcreteService,
-      this.predictionService,
+      this.indicatorService,
     )
     this.launcherSpot = new Launcher(
       settings.intervalReportTime,
@@ -245,20 +249,20 @@ class Container {
   static getLeverageService(): LeverageService {
     return this.leverageService
   }
-  static getAdxIndicatorService(): IndicatorService {
-    return this.adxIndicatorService
+  static getAdxIndicator(): Indicator {
+    return this.adxIndicator
   }
-  static getAtrIndicatorService(): IndicatorService {
-    return this.atrIndicatorService
+  static getAtrIndicator(): Indicator {
+    return this.atrIndicator
   }
-  static getRsiIndicatorService(): IndicatorService {
-    return this.rsiIndicatorService
+  static getRsiIndicator(): Indicator {
+    return this.rsiIndicator
   }
-  static getSmaIndicatorService(): IndicatorService {
-    return this.smaIndicatorService
+  static getSmaIndicator(): Indicator {
+    return this.smaIndicator
   }
-  static getPredictionService(): PredictionService {
-    return this.predictionService
+  static getIndicatorService(): IndicatorService {
+    return this.indicatorService
   }
 }
 
