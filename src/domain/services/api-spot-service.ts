@@ -20,18 +20,11 @@ export class ApiSpotService extends ApiService {
     return this.binanceApi.getPrice(symbol)
   }
 
-  async getPriceHistory(symbol: string): Promise<number[]> {
-    const interval: KlineInterval = this.settings.priceHistoryKlineInterval
-    const limit: number = this.settings.priceHistoryKlineLimit
+  async getKlineHistory(symbol: string): Promise<Kline[]> {
+    const interval: KlineInterval = this.settings.klineHistoryInterval
+    const limit: number = this.settings.klineHistoryLimit
     const end: Date = new Date()
     const start: Date = new Date(end.getTime() - limit * interval * 60 * 1000)
-    const response: Kline[] = await this.binanceApi.getKline(
-      symbol,
-      interval,
-      start,
-      end,
-    )
-
-    return response.map((kline: Kline) => kline.closePrice)
+    return this.binanceApi.getKline(symbol, interval, start, end)
   }
 }

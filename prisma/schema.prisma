@@ -59,6 +59,10 @@ model OrderFutures {
   amount_leveraged Decimal
   fees             Decimal
   created_at       DateTime
+
+  @@index([symbol, side])
+  @@index([symbol])
+  @@index([side])
 }
 
 model TradeSpot {
@@ -74,6 +78,10 @@ model TradeSpot {
   exit_at        DateTime
   fees           Decimal
   pnl            Decimal
+
+  @@index([symbol, side])
+  @@index([symbol])
+  @@index([side])
 }
 
 model TradeFutures {
@@ -91,4 +99,21 @@ model TradeFutures {
   exit_at        DateTime
   fees           Decimal
   pnl            Decimal
+
+  @@index([symbol, side])
+  @@index([symbol])
+  @@index([side])
+}
+
+model Indicator {
+  id         Int      @id @default(autoincrement())
+  name       String
+  symbol     String
+  period     Int
+  value      Decimal
+  created_at DateTime @default(now())
+
+  @@index([symbol, name])
+  @@index([symbol])
+  @@index([name])
 }

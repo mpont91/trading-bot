@@ -11,6 +11,7 @@ export interface Settings {
   api: ApiSettings
   spotTrading: TradingSettings
   futuresTrading: TradingSettings
+  indicators: IndicatorsSettings
 }
 
 export interface BitmartSettings {
@@ -32,13 +33,22 @@ export interface BinanceSettings {
 }
 
 export interface ApiSettings {
-  priceHistoryKlineInterval: KlineInterval
-  priceHistoryKlineLimit: number
+  klineHistoryInterval: KlineInterval
+  klineHistoryLimit: number
 }
 
 export interface TradingSettings {
   symbols: string[]
   safetyCapitalMargin: number
+}
+
+export interface IndicatorsSettings {
+  periods: {
+    adx: number[]
+    atr: number[]
+    rsi: number[]
+    sma: number[]
+  }
 }
 
 export const settings: Settings = {
@@ -61,8 +71,8 @@ export const settings: Settings = {
     feeCurrency: 'BNB',
   },
   api: {
-    priceHistoryKlineInterval: 5, // 5 minutes
-    priceHistoryKlineLimit: 240, // 5 minutes * 120 candles = 10 hours price history
+    klineHistoryInterval: 5, // 5 minutes
+    klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
   },
   spotTrading: {
     symbols: ['ETHUSDT'],
@@ -71,5 +81,13 @@ export const settings: Settings = {
   futuresTrading: {
     symbols: ['ETHUSDT'],
     safetyCapitalMargin: 0.3,
+  },
+  indicators: {
+    periods: {
+      adx: [10, 14],
+      atr: [10, 14],
+      rsi: [7, 14],
+      sma: [20, 50],
+    },
   },
 }
