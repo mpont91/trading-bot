@@ -6,9 +6,9 @@ import Decimal from 'decimal.js'
 export class PrismaIndicatorRepository implements IndicatorRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(indicator: IndicatorCreate): Promise<void> {
-    await this.prisma.indicator.create({
-      data: this.toPrisma(indicator),
+  async createMany(indicators: IndicatorCreate[]): Promise<void> {
+    await this.prisma.indicator.createMany({
+      data: indicators.map(this.toPrisma),
     })
   }
 

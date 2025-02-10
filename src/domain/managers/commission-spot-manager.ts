@@ -5,12 +5,12 @@ import { ApiSpotService } from '../services/api-spot-service'
 
 export class CommissionSpotManager implements ManagerInterface {
   constructor(
-    private readonly binanceApiService: ApiSpotService,
+    private readonly apiSpotService: ApiSpotService,
     private readonly commissionEquityService: CommissionEquityService,
   ) {}
   async start(): Promise<void> {
     const commissionEquityCreate: CommissionEquityCreate =
-      await this.binanceApiService.getCommissionEquity()
+      await this.apiSpotService.getCommissionEquity()
     await this.commissionEquityService.store(commissionEquityCreate)
   }
 }

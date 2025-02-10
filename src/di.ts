@@ -47,6 +47,11 @@ import { AdxIndicator } from './domain/indicators/adx-indicator'
 import { AtrIndicator } from './domain/indicators/atr-indicator'
 import { RsiIndicator } from './domain/indicators/rsi-indicator'
 import { SmaIndicator } from './domain/indicators/sma-indicator'
+import { PredictionService } from './domain/services/prediction-service'
+import { IndicatorRepository } from './domain/repositories/indicator-repository'
+import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
+import { MarketManager } from './domain/managers/market-manager'
+import { ManagerInterface } from './domain/managers/manager-interface'
 
 class Container {
   private static launcherSpot: Launcher
@@ -72,6 +77,7 @@ class Container {
   private static atrIndicatorService: IndicatorService
   private static rsiIndicatorService: IndicatorService
   private static smaIndicatorService: IndicatorService
+  private static predictionService: PredictionService
 
   static initialize(): void {
     const bitmartSettings: BitmartSettings = settings.bitmart
@@ -100,6 +106,8 @@ class Container {
     )
     const tradeFuturesRepository: TradeRepository =
       new PrismaTradeFuturesRepository(prisma)
+    const indicatorRepository: IndicatorRepository =
+      new PrismaIndicatorRepository(prisma)
 
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
@@ -143,23 +151,33 @@ class Container {
     this.rsiIndicatorService = new RsiIndicator(indicatorsSettings.periods.rsi)
     this.smaIndicatorService = new SmaIndicator(indicatorsSettings.periods.sma)
 
-    const accountSpotManager: AccountManager = new AccountManager(
+    this.predictionService = new PredictionService(indicatorRepository, [
+      this.adxIndicatorService,
+      this.atrIndicatorService,
+      this.rsiIndicatorService,
+      this.smaIndicatorService,
+    ])
+
+    const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
       this.equitySpotService,
     )
-    const commissionSpotManager: CommissionSpotManager =
-      new CommissionSpotManager(
-        this.apiSpotConcreteService,
-        this.commissionEquitySpotService,
-      )
-    const accountFuturesManager: AccountManager = new AccountManager(
+    const commissionSpotManager: ManagerInterface = new CommissionSpotManager(
+      this.apiSpotConcreteService,
+      this.commissionEquitySpotService,
+    )
+    const accountFuturesManager: ManagerInterface = new AccountManager(
       this.apiFuturesService,
       this.equityFuturesService,
+    )
+    const marketManager: ManagerInterface = new MarketManager(
+      this.apiSpotConcreteService,
+      this.predictionService,
     )
     this.launcherSpot = new Launcher(
       settings.intervalReportTime,
       settings.intervalExecutionTime,
-      [],
+      [marketManager],
       [accountSpotManager, commissionSpotManager],
     )
     this.launcherFutures = new Launcher(
@@ -238,6 +256,9 @@ class Container {
   }
   static getSmaIndicatorService(): IndicatorService {
     return this.smaIndicatorService
+  }
+  static getPredictionService(): PredictionService {
+    return this.predictionService
   }
 }
 
