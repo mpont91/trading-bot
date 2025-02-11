@@ -95,6 +95,18 @@ CREATE TABLE "Indicator" (
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- CreateTable
+CREATE TABLE "Strategy" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL NOT NULL,
+    "side" TEXT NOT NULL,
+    "sl" DECIMAL,
+    "tp" DECIMAL,
+    "leverage" INTEGER,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- CreateIndex
 CREATE INDEX "OrderSpot_symbol_side_idx" ON "OrderSpot"("symbol", "side");
 
@@ -142,3 +154,12 @@ CREATE INDEX "Indicator_name_idx" ON "Indicator"("name");
 
 -- CreateIndex
 CREATE INDEX "Indicator_period_idx" ON "Indicator"("period");
+
+-- CreateIndex
+CREATE INDEX "Strategy_symbol_side_idx" ON "Strategy"("symbol", "side");
+
+-- CreateIndex
+CREATE INDEX "Strategy_symbol_idx" ON "Strategy"("symbol");
+
+-- CreateIndex
+CREATE INDEX "Strategy_side_idx" ON "Strategy"("side");

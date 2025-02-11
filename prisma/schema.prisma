@@ -119,3 +119,18 @@ model Indicator {
   @@index([name])
   @@index([period])
 }
+
+model Strategy {
+  id         Int      @id @default(autoincrement())
+  symbol     String
+  price      Decimal
+  side       String
+  sl         Decimal?
+  tp         Decimal?
+  leverage   Int?
+  created_at DateTime @default(now())
+
+  @@index([symbol, side])
+  @@index([symbol])
+  @@index([side])
+}

@@ -54,6 +54,9 @@ import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-
 import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
 import { PredictionService } from './domain/services/prediction-service'
+import { StrategyService } from './domain/services/strategy-service'
+import { StrategyRepository } from './domain/repositories/strategy-repository'
+import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-strategy-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -82,6 +85,7 @@ class Container {
   private static smaIndicator: IndicatorEngine
   private static indicatorService: IndicatorService
   private static predictionService: PredictionService
+  private static strategyService: StrategyService
 
   static initialize(): void {
     const bitmartSettings: BitmartSettings = settings.bitmart
@@ -114,6 +118,9 @@ class Container {
       new PrismaTradeFuturesRepository(prisma)
     const indicatorRepository: IndicatorRepository =
       new PrismaIndicatorRepository(prisma)
+    const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
+      prisma,
+    )
 
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
@@ -163,7 +170,8 @@ class Container {
       this.rsiIndicator,
       this.smaIndicator,
     ])
-    this.predictionService = new PredictionService(this.indicatorService)
+    this.predictionService = new PredictionService()
+    this.strategyService = new StrategyService(strategyRepository)
 
     const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
@@ -181,6 +189,8 @@ class Container {
       marketSettings.symbols,
       this.apiSpotConcreteService,
       this.indicatorService,
+      this.predictionService,
+      this.strategyService,
     )
     this.launcherMarket = new Launcher(
       settings.intervalReportTime,
@@ -279,6 +289,9 @@ class Container {
   }
   static getPredictionService(): PredictionService {
     return this.predictionService
+  }
+  static getStrategyService(): StrategyService {
+    return this.strategyService
   }
 }
 

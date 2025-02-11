@@ -1,3 +1,3 @@
-export const sideOptions = ['long', 'short'] as const
+export const sideOptions = ['long', 'short', 'hold'] as const
 
 export type Side = (typeof sideOptions)[number]

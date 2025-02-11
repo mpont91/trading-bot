@@ -1,15 +1,9 @@
-import { IndicatorService } from './indicator-service'
-import { Indicator } from '../models/indicator'
-import { HOLD, Strategy } from '../types/strategy'
+import { IndicatorCreate } from '../models/indicator'
+import { StrategyCreate } from '../models/strategy'
 import { Side } from '../types/side'
 
 export class PredictionService {
-  constructor(private readonly indicatorService: IndicatorService) {}
-
-  async predict(symbol: string): Promise<Strategy | HOLD> {
-    const indicators: Indicator[] =
-      await this.indicatorService.getLatestForSymbol(symbol)
-
+  async predict(indicators: IndicatorCreate[]): Promise<StrategyCreate> {
     const rsi7: number = this.getIndicatorValue(indicators, 'RSI', 7)
     const rsi14: number = this.getIndicatorValue(indicators, 'RSI', 14)
     const adx10: number = this.getIndicatorValue(indicators, 'ADX', 10)
@@ -18,9 +12,13 @@ export class PredictionService {
     const atr14: number = this.getIndicatorValue(indicators, 'ATR', 14)
     const sma20: number = this.getIndicatorValue(indicators, 'SMA', 20)
     const sma50: number = this.getIndicatorValue(indicators, 'SMA', 50)
-    const lastPrice: number | null = indicators[0]?.price ?? 0
+    const lastPrice: number = indicators[0].price!
+    const symbol: string = indicators[0].symbol!
 
-    let side: Side | null = null
+    let side: Side = 'hold'
+    let sl: number | undefined = undefined
+    let tp: number | undefined = undefined
+    let leverage: number | undefined = undefined
 
     if (rsi7 < 35 && rsi14 < 40 && adx10 > 20 && sma20 > sma50) {
       side = 'long'
@@ -28,40 +26,38 @@ export class PredictionService {
       side = 'short'
     }
 
-    if (!side) {
-      return 'HOLD'
-    }
+    if (side !== 'hold') {
+      sl = atr10 * 0.6 + atr14 * 0.4
+      tp = sl * (1.8 + atr14 / atr10)
 
-    const sl: number = atr10 * 0.6 + atr14 * 0.4
-    const tp: number = sl * (1.8 + atr14 / atr10)
-
-    let leverage: number
-    if (adx10 > 30 && adx14 > 30) {
-      leverage = 10
-    } else if (adx10 > 20 && adx14 > 20) {
-      leverage = 5
-    } else {
-      leverage = 1
+      if (adx10 > 30 && adx14 > 30) {
+        leverage = 10
+      } else if (adx10 > 20 && adx14 > 20) {
+        leverage = 5
+      } else {
+        leverage = 1
+      }
     }
 
     return {
       symbol,
       side,
-      sl: sl,
-      tp: tp,
+      sl,
+      tp,
       leverage,
       price: lastPrice,
     }
   }
 
   private getIndicatorValue(
-    indicators: Indicator[],
+    indicators: IndicatorCreate[],
     name: string,
     period: number,
   ): number {
     return (
-      indicators.find((i: Indicator) => i.name === name && i.period === period)
-        ?.value ?? 0
+      indicators.find(
+        (i: IndicatorCreate) => i.name === name && i.period === period,
+      )?.value ?? 0
     )
   }
 }
