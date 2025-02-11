@@ -7,6 +7,7 @@ import Decimal from 'decimal.js'
 import { StrategyRepository } from '../../domain/repositories/strategy-repository'
 import { Strategy, StrategyCreate } from '../../domain/models/strategy'
 import { Side } from '../../domain/types/side'
+import { getEmptyStrategy } from '../../domain/helpers/strategy-helper'
 
 export class PrismaStrategyRepository implements StrategyRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -28,13 +29,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     })
 
     if (!strategy) {
-      return {
-        id: 1,
-        symbol,
-        side: 'hold',
-        price: 0,
-        createdAt: new Date(),
-      }
+      return getEmptyStrategy(symbol)
     }
 
     return this.toDomain(strategy as PrismaStrategy)
