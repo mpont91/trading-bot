@@ -32,6 +32,26 @@ FROM indicator i
     return this.toDomainList(indicators)
   }
 
+  async getLatestForSymbol(symbol: string): Promise<Indicator[]> {
+    const indicators: PrismaIndicator[] = await this.prisma.$queryRaw<
+      PrismaIndicator[]
+    >`
+SELECT i.*
+FROM indicator i
+    INNER JOIN (
+    SELECT name, period, MAX(created_at) AS max_created_at
+    FROM indicator
+    WHERE symbol = ${symbol}
+    GROUP BY name, period
+    ) latest
+        ON i.name = latest.name 
+        AND i.period = latest.period 
+        AND i.created_at = latest.max_created_at
+WHERE i.symbol = ${symbol}`
+
+    return this.toDomainList(indicators)
+  }
+
   private toDomain(prismaIndicator: PrismaIndicator): Indicator {
     return {
       id: prismaIndicator.id,

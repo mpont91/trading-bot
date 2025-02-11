@@ -31,4 +31,8 @@ export class IndicatorService {
   async getLatest(): Promise<Indicator[]> {
     return this.indicatorRepository.getLatest()
   }
+
+  async getLatestForSymbol(symbol: string): Promise<Indicator[]> {
+    return this.indicatorRepository.getLatestForSymbol(symbol)
+  }
 }

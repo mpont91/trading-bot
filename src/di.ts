@@ -53,6 +53,7 @@ import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
+import { PredictionService } from './domain/services/prediction-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -80,6 +81,7 @@ class Container {
   private static rsiIndicator: IndicatorEngine
   private static smaIndicator: IndicatorEngine
   private static indicatorService: IndicatorService
+  private static predictionService: PredictionService
 
   static initialize(): void {
     const bitmartSettings: BitmartSettings = settings.bitmart
@@ -161,6 +163,7 @@ class Container {
       this.rsiIndicator,
       this.smaIndicator,
     ])
+    this.predictionService = new PredictionService(this.indicatorService)
 
     const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
@@ -273,6 +276,9 @@ class Container {
   }
   static getIndicatorService(): IndicatorService {
     return this.indicatorService
+  }
+  static getPredictionService(): PredictionService {
+    return this.predictionService
   }
 }
 

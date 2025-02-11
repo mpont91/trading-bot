@@ -40,7 +40,8 @@
     "position:futures-open": "ts-node src/scripts/position/position-futures-open.ts",
     "position:spot-close": "ts-node src/scripts/position/position-spot-close.ts",
     "position:spot-get": "ts-node src/scripts/position/position-spot-get.ts",
-    "position:spot-open": "ts-node src/scripts/position/position-spot-open.ts"
+    "position:spot-open": "ts-node src/scripts/position/position-spot-open.ts",
+    "prediction:predict": "ts-node src/scripts/prediction/prediction-predict.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",
