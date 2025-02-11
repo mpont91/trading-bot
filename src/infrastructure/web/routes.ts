@@ -12,6 +12,7 @@ import {
   getLatestTradesFutures,
   getLatestTradesSpot,
 } from './controllers/trade-controller'
+import { getIndicators } from './controllers/indicator-controller'
 
 const router: Router = Router()
 
@@ -22,6 +23,9 @@ router.get('/', (req: Request, res: Response): void => {
 router.get('/uptime', (req: Request, res: Response): void => {
   res.send({ data: process.uptime() })
 })
+
+const marketRouter: Router = Router()
+marketRouter.get('/indicators', getIndicators)
 
 const spotRouter: Router = Router()
 spotRouter.get('/graph/equity', getEquitySpotGraph)
@@ -34,6 +38,7 @@ futuresRouter.get('/graph/equity', getEquityFuturesGraph)
 futuresRouter.get('/performance', getPerformanceFutures)
 futuresRouter.get('/latest-trades', getLatestTradesFutures)
 
+router.use('/market', marketRouter)
 router.use('/spot', spotRouter)
 router.use('/futures', futuresRouter)
 

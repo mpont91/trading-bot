@@ -1,9 +1,9 @@
 import { ADX } from 'technicalindicators'
-import { Indicator } from './indicator'
+import { IndicatorEngine } from './indicator-engine'
 import { Kline } from '../types/kline'
 import { ADXOutput } from 'technicalindicators/declarations/directionalmovement/ADX'
 
-export class AdxIndicator extends Indicator {
+export class AdxIndicator extends IndicatorEngine {
   getName(): string {
     return 'ADX'
   }

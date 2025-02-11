@@ -1,8 +1,8 @@
 import { SMA } from 'technicalindicators'
-import { Indicator } from './indicator'
+import { IndicatorEngine } from './indicator-engine'
 import { Kline } from '../types/kline'
 
-export class SmaIndicator extends Indicator {
+export class SmaIndicator extends IndicatorEngine {
   getName(): string {
     return 'SMA'
   }

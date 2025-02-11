@@ -1,8 +1,8 @@
 import { ATR } from 'technicalindicators'
-import { Indicator } from './indicator'
+import { IndicatorEngine } from './indicator-engine'
 import { Kline } from '../types/kline'
 
-export class AtrIndicator extends Indicator {
+export class AtrIndicator extends IndicatorEngine {
   getName(): string {
     return 'ATR'
   }

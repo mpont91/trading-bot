@@ -1,7 +1,7 @@
 import { Kline } from '../types/kline'
 import { IndicatorCreate } from '../models/indicator'
 
-export abstract class Indicator {
+export abstract class IndicatorEngine {
   constructor(protected readonly periods: number[]) {}
   calculate(symbol: string, klines: Kline[]): IndicatorCreate[] {
     const indicators: IndicatorCreate[] = []

@@ -43,7 +43,7 @@ import { InvestmentFuturesService } from './domain/services/investment-futures-s
 import { TradeSpotService } from './domain/services/trade-spot-service'
 import { TradeFuturesService } from './domain/services/trade-futures-service'
 import { InvestmentSpotService } from './domain/services/investment-spot-service'
-import { Indicator } from './domain/indicators/indicator'
+import { IndicatorEngine } from './domain/indicators/indicator-engine'
 import { AdxIndicator } from './domain/indicators/adx-indicator'
 import { AtrIndicator } from './domain/indicators/atr-indicator'
 import { RsiIndicator } from './domain/indicators/rsi-indicator'
@@ -75,10 +75,10 @@ class Container {
   private static positionFuturesService: PositionService
   private static performanceService: PerformanceService
   private static leverageService: LeverageService
-  private static adxIndicator: Indicator
-  private static atrIndicator: Indicator
-  private static rsiIndicator: Indicator
-  private static smaIndicator: Indicator
+  private static adxIndicator: IndicatorEngine
+  private static atrIndicator: IndicatorEngine
+  private static rsiIndicator: IndicatorEngine
+  private static smaIndicator: IndicatorEngine
   private static indicatorService: IndicatorService
 
   static initialize(): void {
@@ -259,16 +259,16 @@ class Container {
   static getLeverageService(): LeverageService {
     return this.leverageService
   }
-  static getAdxIndicator(): Indicator {
+  static getAdxIndicator(): IndicatorEngine {
     return this.adxIndicator
   }
-  static getAtrIndicator(): Indicator {
+  static getAtrIndicator(): IndicatorEngine {
     return this.atrIndicator
   }
-  static getRsiIndicator(): Indicator {
+  static getRsiIndicator(): IndicatorEngine {
     return this.rsiIndicator
   }
-  static getSmaIndicator(): Indicator {
+  static getSmaIndicator(): IndicatorEngine {
     return this.smaIndicator
   }
   static getIndicatorService(): IndicatorService {
