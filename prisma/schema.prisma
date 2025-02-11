@@ -111,9 +111,11 @@ model Indicator {
   symbol     String
   period     Int
   value      Decimal
+  price      Decimal
   created_at DateTime @default(now())
 
-  @@index([symbol, name])
+  @@index([symbol, name, period])
   @@index([symbol])
   @@index([name])
+  @@index([period])
 }

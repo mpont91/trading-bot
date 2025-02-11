@@ -6,6 +6,10 @@ export abstract class IndicatorEngine {
   calculate(symbol: string, klines: Kline[]): IndicatorCreate[] {
     const indicators: IndicatorCreate[] = []
 
+    if (klines.length === 0) {
+      console.warn('There is no klines. Skipping calculation')
+    }
+
     this.periods.forEach((period: number): void => {
       const value: number = this.getValue(period, klines)
 
@@ -14,6 +18,7 @@ export abstract class IndicatorEngine {
         symbol: symbol,
         period: period,
         value: value,
+        price: klines[klines.length - 1].closePrice,
       })
     })
 

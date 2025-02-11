@@ -4,6 +4,7 @@ export interface Indicator {
   symbol: string
   period: number
   value: number
+  price: number
   createdAt: Date
 }
 

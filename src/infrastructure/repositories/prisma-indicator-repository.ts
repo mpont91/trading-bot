@@ -39,6 +39,7 @@ FROM indicator i
       symbol: prismaIndicator.symbol,
       period: prismaIndicator.period,
       value: prismaIndicator.value.toNumber(),
+      price: prismaIndicator.price.toNumber(),
       createdAt: prismaIndicator.created_at,
     }
   }
@@ -51,6 +52,7 @@ FROM indicator i
       symbol: indicatorCreate.symbol,
       period: indicatorCreate.period,
       value: new Decimal(indicatorCreate.value),
+      price: new Decimal(indicatorCreate.price),
     }
   }
 
