@@ -55,6 +55,7 @@ import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
 
 class Container {
+  private static launcherMarket: Launcher
   private static launcherSpot: Launcher
   private static launcherFutures: Launcher
   private static apiSpotService: ApiService
@@ -178,10 +179,16 @@ class Container {
       this.apiSpotConcreteService,
       this.indicatorService,
     )
-    this.launcherSpot = new Launcher(
+    this.launcherMarket = new Launcher(
       settings.intervalReportTime,
       settings.intervalExecutionTime,
       [marketManager],
+      [],
+    )
+    this.launcherSpot = new Launcher(
+      settings.intervalReportTime,
+      settings.intervalExecutionTime,
+      [],
       [accountSpotManager, commissionSpotManager],
     )
     this.launcherFutures = new Launcher(
@@ -192,6 +199,9 @@ class Container {
     )
   }
 
+  static getLauncherMarket(): Launcher {
+    return this.launcherMarket
+  }
   static getLauncherSpot(): Launcher {
     return this.launcherSpot
   }
