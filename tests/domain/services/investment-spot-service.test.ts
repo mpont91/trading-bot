@@ -1,8 +1,8 @@
 import { InvestmentService } from '../../../src/domain/services/investment-service'
-import { TradingSettings } from '../../../src/application/settings'
 import { ApiService } from '../../../src/domain/services/api-service'
 import { InvestmentSpotService } from '../../../src/domain/services/investment-spot-service'
 import { createMockApiSpotService } from '../../mocks/mock-api'
+import { TradingSettings } from '../../../src/domain/types/settings'
 
 let mockApiService: ApiService
 let mockTradingSettings: TradingSettings

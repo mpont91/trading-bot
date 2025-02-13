@@ -115,12 +115,7 @@ export class PredictionService {
 
   private checkCondition(
     indicators: IndicatorCreate[],
-    condition: {
-      indicator: string
-      period: number
-      threshold: number
-      condition: '>' | '<'
-    },
+    condition: IndicatorConditionRuleSettings,
   ): boolean {
     const value: number = this.getIndicatorValue(
       indicators,
@@ -128,9 +123,27 @@ export class PredictionService {
       condition.period,
     )
 
-    return condition.condition === '>'
-      ? value > condition.threshold
-      : value < condition.threshold
+    if (condition.compareWith) {
+      const compareValue: number = this.getIndicatorValue(
+        indicators,
+        condition.compareWith.indicator,
+        condition.compareWith.period,
+      )
+
+      return condition.condition === '>'
+        ? value > compareValue
+        : value < compareValue
+    }
+
+    if (condition.threshold) {
+      return condition.condition === '>'
+        ? value > condition.threshold
+        : value < condition.threshold
+    }
+
+    throw new Error(
+      'The condition rule must have either a threshold or a compareWith property.',
+    )
   }
 
   private getIndicatorValue(

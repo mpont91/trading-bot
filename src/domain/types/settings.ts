@@ -75,8 +75,14 @@ export interface IndicatorLeverageRuleSettings {
 export interface IndicatorConditionRuleSettings {
   indicator: Indicator
   period: number
-  threshold: number
+  threshold?: number
+  compareWith?: ConditionCompareWith
   condition: ConditionOperator
+}
+
+export interface ConditionCompareWith {
+  indicator: Indicator
+  period: number
 }
 
 export type Indicator = 'adx' | 'atr' | 'rsi' | 'sma'

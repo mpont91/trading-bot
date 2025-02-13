@@ -48,7 +48,12 @@ export const settings: Settings = {
           conditions: [
             { indicator: 'rsi', period: 7, threshold: 40, condition: '<' },
             { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
-            { indicator: 'sma', period: 20, threshold: 50, condition: '>' },
+            {
+              indicator: 'sma',
+              period: 20,
+              compareWith: { indicator: 'sma', period: 50 },
+              condition: '>',
+            },
           ],
         },
         {
@@ -56,7 +61,12 @@ export const settings: Settings = {
           conditions: [
             { indicator: 'rsi', period: 7, threshold: 60, condition: '>' },
             { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
-            { indicator: 'sma', period: 20, threshold: 50, condition: '<' },
+            {
+              indicator: 'sma',
+              period: 20,
+              compareWith: { indicator: 'sma', period: 50 },
+              condition: '<',
+            },
           ],
         },
         {
