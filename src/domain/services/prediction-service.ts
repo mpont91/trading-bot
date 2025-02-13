@@ -1,42 +1,30 @@
 import { IndicatorCreate } from '../models/indicator'
 import { StrategyCreate } from '../models/strategy'
 import { Side } from '../types/side'
+import {
+  IndicatorConditionRuleSettings,
+  IndicatorLeverageRuleSettings,
+  IndicatorSideRuleSettings,
+  IndicatorsRulesSettings,
+} from '../../application/settings'
 
 export class PredictionService {
+  constructor(private settings: IndicatorsRulesSettings) {}
+
   async predict(indicators: IndicatorCreate[]): Promise<StrategyCreate> {
-    const rsi7: number = this.getIndicatorValue(indicators, 'RSI', 7)
-    const rsi14: number = this.getIndicatorValue(indicators, 'RSI', 14)
-    const adx10: number = this.getIndicatorValue(indicators, 'ADX', 10)
-    const adx14: number = this.getIndicatorValue(indicators, 'ADX', 14)
-    const atr10: number = this.getIndicatorValue(indicators, 'ATR', 10)
-    const atr14: number = this.getIndicatorValue(indicators, 'ATR', 14)
-    const sma20: number = this.getIndicatorValue(indicators, 'SMA', 20)
-    const sma50: number = this.getIndicatorValue(indicators, 'SMA', 50)
     const lastPrice: number = indicators[0].price!
     const symbol: string = indicators[0].symbol!
 
-    let side: Side = 'hold'
-    let sl: number | undefined = undefined
-    let tp: number | undefined = undefined
-    let leverage: number | undefined = undefined
+    const side: Side = this.evaluateSide(indicators)
 
-    if (rsi7 < 35 && rsi14 < 40 && adx10 > 20 && sma20 > sma50) {
-      side = 'long'
-    } else if (rsi7 > 65 && rsi14 > 60 && adx10 > 20 && sma20 < sma50) {
-      side = 'short'
-    }
+    let sl: number | undefined
+    let tp: number | undefined
+    let leverage: number | undefined
 
     if (side !== 'hold') {
-      sl = atr10 * 0.6 + atr14 * 0.4
-      tp = sl * (1.8 + atr14 / atr10)
-
-      if (adx10 > 30 && adx14 > 30) {
-        leverage = 10
-      } else if (adx10 > 20 && adx14 > 20) {
-        leverage = 5
-      } else {
-        leverage = 1
-      }
+      tp = this.evaluateTakeProfit(indicators)
+      sl = this.evaluateStopLoss(indicators)
+      leverage = this.evaluateLeverage(indicators)
     }
 
     return {
@@ -49,6 +37,102 @@ export class PredictionService {
     }
   }
 
+  private evaluateSide(indicators: IndicatorCreate[]): Side {
+    const sideRules: IndicatorSideRuleSettings[] = this.settings.side
+
+    for (const rule of sideRules) {
+      if (!rule.conditions || rule.conditions.length === 0) {
+        return rule.value
+      }
+
+      const isMatch: boolean = rule.conditions.every(
+        (condition: IndicatorConditionRuleSettings) =>
+          this.checkCondition(indicators, condition),
+      )
+
+      if (isMatch) {
+        return rule.value
+      }
+    }
+
+    return sideRules[sideRules.length - 1].value
+  }
+
+  private evaluateLeverage(indicators: IndicatorCreate[]): number {
+    const leverageRules: IndicatorLeverageRuleSettings[] =
+      this.settings.leverage
+
+    for (const rule of leverageRules) {
+      if (!rule.conditions || rule.conditions.length === 0) {
+        return rule.value
+      }
+
+      const isMatch: boolean = rule.conditions.every(
+        (condition: IndicatorConditionRuleSettings) =>
+          this.checkCondition(indicators, condition),
+      )
+
+      if (isMatch) {
+        return rule.value
+      }
+    }
+
+    return leverageRules[leverageRules.length - 1].value
+  }
+
+  private evaluateStopLoss(indicators: IndicatorCreate[]): number {
+    const atrValues: number[] = this.settings.sl
+      .map(({ period, multiplier }) => {
+        const atr = this.getIndicatorValue(indicators, 'atr', period)
+        return atr * multiplier
+      })
+      .filter((sl: number): boolean => sl > 0)
+
+    return this.getMedian(atrValues)
+  }
+
+  private evaluateTakeProfit(indicators: IndicatorCreate[]): number {
+    const atrValues: number[] = this.settings.tp
+      .map(({ period, multiplier }) => {
+        const atr: number = this.getIndicatorValue(indicators, 'atr', period)
+        return atr * multiplier
+      })
+      .filter((tp): boolean => tp > 0)
+
+    return this.getMedian(atrValues)
+  }
+
+  private getMedian(values: number[]): number {
+    if (values.length === 0) return 0
+
+    const sorted: number[] = values.sort((a: number, b: number) => a - b)
+    const mid: number = Math.floor(sorted.length / 2)
+
+    return sorted.length % 2 !== 0
+      ? sorted[mid]
+      : (sorted[mid - 1] + sorted[mid]) / 2
+  }
+
+  private checkCondition(
+    indicators: IndicatorCreate[],
+    condition: {
+      indicator: string
+      period: number
+      threshold: number
+      condition: '>' | '<'
+    },
+  ): boolean {
+    const value: number = this.getIndicatorValue(
+      indicators,
+      condition.indicator,
+      condition.period,
+    )
+
+    return condition.condition === '>'
+      ? value > condition.threshold
+      : value < condition.threshold
+  }
+
   private getIndicatorValue(
     indicators: IndicatorCreate[],
     name: string,
@@ -56,7 +140,8 @@ export class PredictionService {
   ): number {
     return (
       indicators.find(
-        (i: IndicatorCreate) => i.name === name && i.period === period,
+        (i: IndicatorCreate) =>
+          i.name.toLowerCase() === name.toLowerCase() && i.period === period,
       )?.value ?? 0
     )
   }

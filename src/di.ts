@@ -170,7 +170,7 @@ class Container {
       this.rsiIndicator,
       this.smaIndicator,
     ])
-    this.predictionService = new PredictionService()
+    this.predictionService = new PredictionService(indicatorsSettings.rules)
     this.strategyService = new StrategyService(strategyRepository)
 
     const accountSpotManager: ManagerInterface = new AccountManager(

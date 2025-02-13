@@ -1,5 +1,6 @@
 import { config } from 'dotenv-safe'
 import { KlineInterval } from '../domain/types/kline'
+import { Side } from '../domain/types/side'
 
 config()
 
@@ -50,7 +51,39 @@ export interface IndicatorsSettings {
     rsi: number[]
     sma: number[]
   }
+  rules: IndicatorsRulesSettings
 }
+
+export interface IndicatorsRulesSettings {
+  side: IndicatorSideRuleSettings[]
+  leverage: IndicatorLeverageRuleSettings[]
+  tp: IndicatorAtrMultiplier[]
+  sl: IndicatorAtrMultiplier[]
+}
+
+export interface IndicatorAtrMultiplier {
+  period: number
+  multiplier: number
+}
+
+export interface IndicatorSideRuleSettings {
+  value: Side
+  conditions: IndicatorConditionRuleSettings[]
+}
+export interface IndicatorLeverageRuleSettings {
+  value: number
+  conditions: IndicatorConditionRuleSettings[]
+}
+
+export interface IndicatorConditionRuleSettings {
+  indicator: Indicator
+  period: number
+  threshold: number
+  condition: ConditionOperator
+}
+
+export type Indicator = 'adx' | 'atr' | 'rsi' | 'sma'
+export type ConditionOperator = '>' | '<'
 
 export interface MarketSettings {
   symbols: string[]
@@ -93,6 +126,68 @@ export const settings: Settings = {
       atr: [10, 14],
       rsi: [7, 14],
       sma: [20, 50],
+    },
+    rules: {
+      side: [
+        {
+          value: 'long',
+          conditions: [
+            { indicator: 'rsi', period: 7, threshold: 40, condition: '<' },
+            { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
+            { indicator: 'sma', period: 20, threshold: 50, condition: '>' },
+          ],
+        },
+        {
+          value: 'short',
+          conditions: [
+            { indicator: 'rsi', period: 7, threshold: 60, condition: '>' },
+            { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
+            { indicator: 'sma', period: 20, threshold: 50, condition: '<' },
+          ],
+        },
+        {
+          value: 'hold',
+          conditions: [],
+        },
+      ],
+      leverage: [
+        {
+          value: 10,
+          conditions: [
+            { indicator: 'adx', period: 10, threshold: 30, condition: '>' },
+          ],
+        },
+        {
+          value: 5,
+          conditions: [
+            { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
+          ],
+        },
+        {
+          value: 1,
+          conditions: [],
+        },
+      ],
+      tp: [
+        {
+          period: 14,
+          multiplier: 2.5,
+        },
+        {
+          period: 10,
+          multiplier: 3,
+        },
+      ],
+      sl: [
+        {
+          period: 14,
+          multiplier: 1.25,
+        },
+        {
+          period: 10,
+          multiplier: 1.5,
+        },
+      ],
     },
   },
   market: {
