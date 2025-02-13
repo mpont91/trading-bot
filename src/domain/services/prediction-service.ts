@@ -22,8 +22,8 @@ export class PredictionService {
     let leverage: number | undefined
 
     if (side !== 'hold') {
-      tp = this.evaluateTakeProfit(indicators)
-      sl = this.evaluateStopLoss(indicators)
+      tp = this.evaluateTakeProfit(indicators, lastPrice, side)
+      sl = this.evaluateStopLoss(indicators, lastPrice, side)
       leverage = this.evaluateLeverage(indicators)
     }
 
@@ -80,26 +80,38 @@ export class PredictionService {
     return leverageRules[leverageRules.length - 1].value
   }
 
-  private evaluateStopLoss(indicators: IndicatorCreate[]): number {
+  private evaluateStopLoss(
+    indicators: IndicatorCreate[],
+    lastPrice: number,
+    side: Side,
+  ): number {
     const atrValues: number[] = this.settings.sl
       .map(({ period, multiplier }) => {
-        const atr = this.getIndicatorValue(indicators, 'atr', period)
-        return atr * multiplier
+        const atr: number = this.getIndicatorValue(indicators, 'atr', period)
+        return (atr * multiplier) / lastPrice
       })
       .filter((sl: number): boolean => sl > 0)
 
-    return this.getMedian(atrValues)
+    const sl: number = this.getMedian(atrValues)
+
+    return side === 'long' ? lastPrice * (1 - sl) : lastPrice * (1 + sl)
   }
 
-  private evaluateTakeProfit(indicators: IndicatorCreate[]): number {
+  private evaluateTakeProfit(
+    indicators: IndicatorCreate[],
+    lastPrice: number,
+    side: Side,
+  ): number {
     const atrValues: number[] = this.settings.tp
       .map(({ period, multiplier }) => {
         const atr: number = this.getIndicatorValue(indicators, 'atr', period)
-        return atr * multiplier
+        return (atr * multiplier) / lastPrice
       })
-      .filter((tp): boolean => tp > 0)
+      .filter((tp: number): boolean => tp > 0)
 
-    return this.getMedian(atrValues)
+    const tp: number = this.getMedian(atrValues)
+
+    return side === 'long' ? lastPrice * (1 + tp) : lastPrice * (1 - tp)
   }
 
   private getMedian(values: number[]): number {

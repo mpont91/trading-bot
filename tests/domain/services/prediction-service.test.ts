@@ -108,28 +108,11 @@ describe('PredictionService - TP and SL Calculation', (): void => {
     )
   })
 
-  it('should calculate SL as median of ATR values', async (): Promise<void> => {
-    const atr10: number = 2 // SL10 = 2 * 1.5 = 3
-    const atr14: number = 4 // SL14 = 4 * 1.25 = 5
-    const expectedSL: number = 4 // Median of [3, 5]
-
-    const indicators: IndicatorCreate[] = [
-      { name: 'ATR', period: 10, value: atr10, price, symbol },
-      { name: 'ATR', period: 14, value: atr14, price, symbol },
-      { name: 'RSI', period: 7, value: 35, price, symbol },
-      { name: 'ADX', period: 10, value: 25, price, symbol },
-      { name: 'SMA', period: 20, value: 55, price, symbol },
-      { name: 'SMA', period: 50, value: 50, price, symbol },
-    ]
-
-    const result: StrategyCreate = await predictionService.predict(indicators)
-    expect(result.sl).toBe(expectedSL)
-  })
-
-  it('should calculate TP as median of ATR values', async (): Promise<void> => {
-    const atr10 = 2 // TP10 = 2 * 3 = 6
-    const atr14 = 4 // TP14 = 4 * 2.5 = 10
-    const expectedTP = 8 // Median of [6, 10]
+  it('should calculate TP and SL as median of ATR values', async (): Promise<void> => {
+    const atr10: number = 2
+    const atr14: number = 4
+    const expectedTP: number = 108
+    const expectedSL: number = 96
 
     const indicators: IndicatorCreate[] = [
       { name: 'ATR', period: 10, value: atr10, price, symbol },
@@ -142,5 +125,6 @@ describe('PredictionService - TP and SL Calculation', (): void => {
 
     const result: StrategyCreate = await predictionService.predict(indicators)
     expect(result.tp).toBe(expectedTP)
+    expect(result.sl).toBe(expectedSL)
   })
 })
