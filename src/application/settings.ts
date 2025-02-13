@@ -47,7 +47,8 @@ export const settings: Settings = {
           value: 'long',
           conditions: [
             { indicator: 'rsi', period: 7, threshold: 40, condition: '<' },
-            { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
+            { indicator: 'rsi', period: 14, threshold: 50, condition: '<' },
+            { indicator: 'adx', period: 14, threshold: 25, condition: '>' },
             {
               indicator: 'sma',
               period: 20,
@@ -60,7 +61,8 @@ export const settings: Settings = {
           value: 'short',
           conditions: [
             { indicator: 'rsi', period: 7, threshold: 60, condition: '>' },
-            { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
+            { indicator: 'rsi', period: 14, threshold: 50, condition: '>' },
+            { indicator: 'adx', period: 14, threshold: 25, condition: '>' },
             {
               indicator: 'sma',
               period: 20,
@@ -78,13 +80,13 @@ export const settings: Settings = {
         {
           value: 10,
           conditions: [
-            { indicator: 'adx', period: 10, threshold: 30, condition: '>' },
+            { indicator: 'adx', period: 14, threshold: 35, condition: '>' },
           ],
         },
         {
           value: 5,
           conditions: [
-            { indicator: 'adx', period: 10, threshold: 20, condition: '>' },
+            { indicator: 'adx', period: 14, threshold: 25, condition: '>' },
           ],
         },
         {
@@ -95,21 +97,21 @@ export const settings: Settings = {
       tp: [
         {
           period: 14,
-          multiplier: 2.5,
+          multiplier: 3,
         },
         {
           period: 10,
-          multiplier: 3,
+          multiplier: 2.5,
         },
       ],
       sl: [
         {
           period: 14,
-          multiplier: 1.25,
+          multiplier: 1.5,
         },
         {
           period: 10,
-          multiplier: 1.5,
+          multiplier: 1.25,
         },
       ],
     },
