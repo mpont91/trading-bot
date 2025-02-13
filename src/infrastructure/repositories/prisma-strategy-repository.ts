@@ -52,6 +52,22 @@ FROM strategy s
     return this.toDomain(strategy as PrismaStrategy)
   }
 
+  async getLatestOpportunities(limit: number = 5): Promise<Strategy[]> {
+    const opportunities: PrismaStrategy[] = await this.prisma.strategy.findMany(
+      {
+        take: limit,
+        where: {
+          OR: [{ side: 'long' }, { side: 'short' }],
+        },
+        orderBy: {
+          created_at: Prisma.SortOrder.desc,
+        },
+      },
+    )
+
+    return this.toDomainList(opportunities)
+  }
+
   private toDomain(prismaStrategy: PrismaStrategy): Strategy {
     return {
       id: prismaStrategy.id,

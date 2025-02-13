@@ -20,3 +20,19 @@ export async function getStrategies(
     createErrorResponse(response, error)
   }
 }
+
+export async function getLatestOpportunities(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  try {
+    const opportunities: Strategy[] =
+      await strategyService.getLatestOpportunities()
+
+    response.json({
+      data: opportunities,
+    })
+  } catch (error: unknown) {
+    createErrorResponse(response, error)
+  }
+}

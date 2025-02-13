@@ -15,4 +15,8 @@ export class StrategyService {
   async getLatestForSymbol(symbol: string): Promise<Strategy> {
     return this.strategyRepository.getLatestForSymbol(symbol)
   }
+
+  async getLatestOpportunities(): Promise<Strategy[]> {
+    return this.strategyRepository.getLatestOpportunities()
+  }
 }

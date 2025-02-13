@@ -13,7 +13,11 @@ import {
   getLatestTradesSpot,
 } from './controllers/trade-controller'
 import { getIndicators } from './controllers/indicator-controller'
-import { getStrategies } from './controllers/strategy-controller'
+import {
+  getLatestOpportunities,
+  getStrategies,
+} from './controllers/strategy-controller'
+import { getRules } from './controllers/rules-controller'
 
 const router: Router = Router()
 
@@ -28,6 +32,8 @@ router.get('/uptime', (req: Request, res: Response): void => {
 const marketRouter: Router = Router()
 marketRouter.get('/indicators', getIndicators)
 marketRouter.get('/strategies', getStrategies)
+marketRouter.get('/latest-opportunities', getLatestOpportunities)
+marketRouter.get('/rules', getRules)
 
 const spotRouter: Router = Router()
 spotRouter.get('/graph/equity', getEquitySpotGraph)
