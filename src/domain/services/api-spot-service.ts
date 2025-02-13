@@ -1,8 +1,8 @@
 import { BinanceApi } from '../../application/api/binance-api'
 import { Kline, KlineInterval } from '../types/kline'
-import { ApiSettings } from '../../application/settings'
 import { ApiService } from './api-service'
 import { CommissionEquityCreate } from '../models/commission-equity'
+import { ApiSettings } from '../types/settings'
 
 export class ApiSpotService extends ApiService {
   constructor(

@@ -1,4 +1,4 @@
-import { IndicatorsRulesSettings } from '../../src/application/settings'
+import { IndicatorsRulesSettings } from '../../src/domain/types/settings'
 
 export function mockIndicatorsRulesForSideEvaluationSettings(): IndicatorsRulesSettings {
   return {

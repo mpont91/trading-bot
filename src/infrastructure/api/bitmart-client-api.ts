@@ -13,7 +13,6 @@ import {
   FuturesAccountTrade,
   FuturesAccountTradesRequest,
 } from 'bitmart-api'
-import { BitmartSettings } from '../../application/settings'
 import Bottleneck from 'bottleneck'
 import { Balance } from '../../domain/types/balance'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
@@ -28,6 +27,7 @@ import {
 import { mapBitmartToDomainOrder } from './mappers/order-mapper'
 import { PositionFutures } from '../../domain/types/position'
 import { mapBitmartToDomainPosition } from './mappers/position-mapper'
+import { BitmartSettings } from '../../domain/types/settings'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly client: FuturesClientV2

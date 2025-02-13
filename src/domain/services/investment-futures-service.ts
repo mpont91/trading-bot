@@ -1,7 +1,7 @@
 import { ApiService } from './api-service'
-import { TradingSettings } from '../../application/settings'
 import { InvestmentService } from './investment-service'
 import { LeverageService } from './leverage-service'
+import { TradingSettings } from '../types/settings'
 
 export class InvestmentFuturesService extends InvestmentService {
   constructor(

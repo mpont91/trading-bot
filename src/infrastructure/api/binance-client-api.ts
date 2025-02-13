@@ -6,7 +6,6 @@ import {
   Spot,
 } from '@binance/connector-typescript'
 import { BinanceApi } from '../../application/api/binance-api'
-import { BinanceSettings } from '../../application/settings'
 import Bottleneck from 'bottleneck'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { Kline, KlineInterval } from '../../domain/types/kline'
@@ -24,6 +23,7 @@ import { OrderSpotCreate, OrderSpotRequest } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
 import { PositionSpot } from '../../domain/types/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
+import { BinanceSettings } from '../../domain/types/settings'
 
 export class BinanceClientApi implements BinanceApi {
   private readonly client: Spot

@@ -27,15 +27,7 @@ import { PrismaTradeFuturesRepository } from './infrastructure/repositories/pris
 import { PrismaOrderFuturesRepository } from './infrastructure/repositories/prisma-order-futures-repository'
 import { PositionService } from './domain/services/position-service'
 import { InvestmentService } from './domain/services/investment-service'
-import {
-  ApiSettings,
-  BinanceSettings,
-  BitmartSettings,
-  IndicatorsSettings,
-  MarketSettings,
-  settings,
-  TradingSettings,
-} from './application/settings'
+import { settings } from './application/settings'
 import { PositionFuturesService } from './domain/services/position-futures-service'
 import { PositionSpotService } from './domain/services/position-spot-service'
 import { LeverageService } from './domain/services/leverage-service'
@@ -57,6 +49,14 @@ import { PredictionService } from './domain/services/prediction-service'
 import { StrategyService } from './domain/services/strategy-service'
 import { StrategyRepository } from './domain/repositories/strategy-repository'
 import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-strategy-repository'
+import {
+  ApiSettings,
+  BinanceSettings,
+  BitmartSettings,
+  IndicatorsSettings,
+  MarketSettings,
+  TradingSettings,
+} from './domain/types/settings'
 
 class Container {
   private static launcherMarket: Launcher

@@ -1,7 +1,7 @@
 import { ApiService } from './api-service'
 import { Balance } from '../types/balance'
-import { TradingSettings } from '../../application/settings'
 import { Symbol } from '../types/symbol'
+import { TradingSettings } from '../types/settings'
 
 export abstract class InvestmentService {
   constructor(

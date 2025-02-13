@@ -3,7 +3,8 @@ import { BitmartApi } from '../../src/application/api/bitmart-api'
 import { ApiSpotService } from '../../src/domain/services/api-spot-service'
 import { ApiService } from '../../src/domain/services/api-service'
 import { ApiFuturesService } from '../../src/domain/services/api-futures-service'
-import { ApiSettings, settings } from '../../src/application/settings'
+import { settings } from '../../src/application/settings'
+import { ApiSettings } from '../../src/domain/types/settings'
 
 export function createMockBinanceApi(): jest.Mocked<BinanceApi> {
   return {

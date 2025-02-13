@@ -6,7 +6,7 @@ import {
   IndicatorLeverageRuleSettings,
   IndicatorSideRuleSettings,
   IndicatorsRulesSettings,
-} from '../../application/settings'
+} from '../types/settings'
 
 export class PredictionService {
   constructor(private settings: IndicatorsRulesSettings) {}
