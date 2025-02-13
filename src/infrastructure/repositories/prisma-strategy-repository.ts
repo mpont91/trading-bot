@@ -18,7 +18,24 @@ export class PrismaStrategyRepository implements StrategyRepository {
     })
   }
 
-  async get(symbol: string): Promise<Strategy> {
+  async getLatest(): Promise<Strategy[]> {
+    const strategies: PrismaStrategy[] = await this.prisma.$queryRaw<
+      PrismaStrategy[]
+    >`
+SELECT s.*
+FROM strategy s
+    INNER JOIN (
+        SELECT symbol, MAX(created_at) AS max_created_at
+        FROM strategy
+        GROUP BY symbol
+    ) latest 
+    ON s.symbol = latest.symbol 
+    AND s.created_at = latest.max_created_at`
+
+    return this.toDomainList(strategies)
+  }
+
+  async getLatestForSymbol(symbol: string): Promise<Strategy> {
     const strategy = await this.prisma.strategy.findFirst({
       where: {
         symbol: symbol,
@@ -57,5 +74,9 @@ export class PrismaStrategyRepository implements StrategyRepository {
       sl: strategyCreate.sl ? new Decimal(strategyCreate.sl) : undefined,
       leverage: strategyCreate.leverage ? strategyCreate.leverage : undefined,
     }
+  }
+
+  private toDomainList(prismaStrategy: PrismaStrategy[]): Strategy[] {
+    return prismaStrategy.map(this.toDomain)
   }
 }

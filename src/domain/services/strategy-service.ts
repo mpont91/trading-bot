@@ -7,7 +7,12 @@ export class StrategyService {
   async create(strategy: StrategyCreate): Promise<void> {
     await this.strategyRepository.create(strategy)
   }
-  async get(symbol: string): Promise<Strategy> {
-    return this.strategyRepository.get(symbol)
+
+  async getLatest(): Promise<Strategy[]> {
+    return this.strategyRepository.getLatest()
+  }
+
+  async getLatestForSymbol(symbol: string): Promise<Strategy> {
+    return this.strategyRepository.getLatestForSymbol(symbol)
   }
 }
