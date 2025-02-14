@@ -4,6 +4,7 @@ import { InvestmentService } from './investment-service'
 import { Order, OrderCreate, OrderRequest } from '../models/order'
 import { OrderService } from './order-service'
 import { TradeService } from './trade-service'
+import { Side } from '../types/side'
 
 export abstract class PositionService {
   constructor(
@@ -17,12 +18,13 @@ export abstract class PositionService {
     return this.apiService.getPosition(symbol)
   }
 
-  async openPosition(symbol: string): Promise<void> {
+  async openPosition(symbol: string, side: Side = 'long'): Promise<void> {
     const quantity: number =
       await this.investmentService.getInvestmentQuantityFromSymbol(symbol)
     const orderRequest: OrderRequest = this.createOpenPositionOrderRequest(
       symbol,
       quantity,
+      side,
     )
 
     await this.submitOrder(orderRequest)
@@ -54,6 +56,7 @@ export abstract class PositionService {
   abstract createOpenPositionOrderRequest(
     symbol: string,
     quantity: number,
+    side: Side,
   ): OrderRequest
   abstract createClosePositionOrderRequest(position: Position): OrderRequest
 

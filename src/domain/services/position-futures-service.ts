@@ -7,6 +7,7 @@ import { InvestmentService } from './investment-service'
 import { OrderService } from './order-service'
 import { LeverageService } from './leverage-service'
 import { TradeService } from './trade-service'
+import { Side } from '../types/side'
 
 export class PositionFuturesService extends PositionService {
   constructor(
@@ -22,11 +23,12 @@ export class PositionFuturesService extends PositionService {
   createOpenPositionOrderRequest(
     symbol: string,
     quantity: number,
+    side: Side,
   ): OrderFuturesRequest {
     const leverage: number = this.leverageService.getLeverage()
     return {
       symbol: symbol,
-      side: 'long',
+      side: side,
       quantity: quantity,
       leverage: leverage,
       isClosePosition: false,
