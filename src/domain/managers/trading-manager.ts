@@ -25,16 +25,23 @@ export class TradingManager implements ManagerInterface {
       const position: Position | null =
         await this.positionService.getPosition(symbol)
 
-      if (position) {
-        await this.handlePosition(position)
+      if (!position) {
+        await this.handleOpportunity(strategy)
         continue
       }
 
-      await this.handleOpportunity(strategy)
+      if (position.side !== strategy.side) {
+        await this.positionService.closePosition(symbol)
+      }
+
+      await this.handlePosition(position)
     }
   }
 
-  async handlePosition(position: Position): Promise<void> {}
+  async handlePosition(position: Position): Promise<void> {
+    console.log(position)
+    //TODO: Logic about closing position if hits TP or SL.
+  }
   async handleOpportunity(strategy: Strategy): Promise<void> {
     if (
       (this.tradingMode === 'spot' && strategy.side === 'long') ||

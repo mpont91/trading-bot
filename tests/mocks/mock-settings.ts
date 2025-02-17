@@ -40,8 +40,16 @@ export function mockIndicatorsRulesForSideEvaluationSettings(): IndicatorsRulesS
         conditions: [],
       },
     ],
-    tp: [],
-    sl: [],
+    tp: {
+      atr: [],
+      min: 0.03, // 3%
+      max: 0.1, // 10%
+    },
+    sl: {
+      atr: [],
+      min: 0.02, // 2%
+      max: 0.08, // 8%
+    },
   }
 }
 
@@ -71,8 +79,16 @@ export function mockIndicatorsRulesForLeverageEvaluationSettings(): IndicatorsRu
         conditions: [],
       },
     ],
-    tp: [],
-    sl: [],
+    tp: {
+      atr: [],
+      min: 0.03, // 3%
+      max: 0.1, // 10%
+    },
+    sl: {
+      atr: [],
+      min: 0.02, // 2%
+      max: 0.08, // 8%
+    },
   }
 }
 
@@ -90,25 +106,33 @@ export function mockIndicatorsRulesForTPSLEvaluationSettings(): IndicatorsRulesS
         conditions: [],
       },
     ],
-    tp: [
-      {
-        period: 14,
-        multiplier: 2.5,
-      },
-      {
-        period: 10,
-        multiplier: 3,
-      },
-    ],
-    sl: [
-      {
-        period: 14,
-        multiplier: 1.25,
-      },
-      {
-        period: 10,
-        multiplier: 1.5,
-      },
-    ],
+    tp: {
+      atr: [
+        {
+          period: 14,
+          multiplier: 2.5,
+        },
+        {
+          period: 10,
+          multiplier: 3,
+        },
+      ],
+      min: 0.03, // 3%
+      max: 0.1, // 10%
+    },
+    sl: {
+      atr: [
+        {
+          period: 14,
+          multiplier: 1.25,
+        },
+        {
+          period: 10,
+          multiplier: 1.5,
+        },
+      ],
+      min: 0.02, // 2%
+      max: 0.08, // 8%
+    },
   }
 }

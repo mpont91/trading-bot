@@ -1,5 +1,6 @@
 import { PredictionService } from '../../../src/domain/services/prediction-service'
 import { IndicatorCreate } from '../../../src/domain/models/indicator'
+import { Side } from '../../../src/domain/types/side'
 import { StrategyCreate } from '../../../src/domain/models/strategy'
 import {
   mockIndicatorsRulesForLeverageEvaluationSettings,
@@ -126,5 +127,49 @@ describe('PredictionService - TP and SL Calculation', (): void => {
     const result: StrategyCreate = await predictionService.predict(indicators)
     expect(result.tp).toBe(expectedTP)
     expect(result.sl).toBe(expectedSL)
+  })
+
+  it('should limit max TP and SL values', async (): Promise<void> => {
+    const atr10: number = 10
+    const atr14: number = 15
+    const expectedTP: number = 110
+    const expectedSL: number = 92
+
+    const indicators: IndicatorCreate[] = [
+      { name: 'ATR', period: 10, value: atr10, price, symbol },
+      { name: 'ATR', period: 14, value: atr14, price, symbol },
+      { name: 'RSI', period: 7, value: 35, price, symbol },
+      { name: 'ADX', period: 10, value: 25, price, symbol },
+      { name: 'SMA', period: 20, value: 55, price, symbol },
+      { name: 'SMA', period: 50, value: 50, price, symbol },
+    ]
+
+    const result: StrategyCreate = await predictionService.predict(indicators)
+    expect(result.tp).toBe(expectedTP)
+    expect(result.sl).toBe(expectedSL)
+  })
+
+  it('should return hold if TP are smaller than the minimum', async (): Promise<void> => {
+    const atr10: number = 0.1
+    const atr14: number = 0.1
+    const expectedTP: number | undefined = undefined
+    const expectedSL: number | undefined = undefined
+    const expectedLeverage: number | undefined = undefined
+    const expectedSide: Side = 'hold'
+
+    const indicators: IndicatorCreate[] = [
+      { name: 'ATR', period: 10, value: atr10, price, symbol },
+      { name: 'ATR', period: 14, value: atr14, price, symbol },
+      { name: 'RSI', period: 7, value: 35, price, symbol },
+      { name: 'ADX', period: 10, value: 25, price, symbol },
+      { name: 'SMA', period: 20, value: 55, price, symbol },
+      { name: 'SMA', period: 50, value: 50, price, symbol },
+    ]
+
+    const result: StrategyCreate = await predictionService.predict(indicators)
+    expect(result.tp).toBe(expectedTP)
+    expect(result.sl).toBe(expectedSL)
+    expect(result.leverage).toBe(expectedLeverage)
+    expect(result.side).toBe(expectedSide)
   })
 })

@@ -94,26 +94,34 @@ export const settings: Settings = {
           conditions: [],
         },
       ],
-      tp: [
-        {
-          period: 14,
-          multiplier: 3,
-        },
-        {
-          period: 10,
-          multiplier: 2.5,
-        },
-      ],
-      sl: [
-        {
-          period: 14,
-          multiplier: 1.5,
-        },
-        {
-          period: 10,
-          multiplier: 1.25,
-        },
-      ],
+      tp: {
+        atr: [
+          {
+            period: 14,
+            multiplier: 3,
+          },
+          {
+            period: 10,
+            multiplier: 2.5,
+          },
+        ],
+        min: 0.03, // 3%
+        max: 0.1, // 10%
+      },
+      sl: {
+        atr: [
+          {
+            period: 14,
+            multiplier: 1.5,
+          },
+          {
+            period: 10,
+            multiplier: 1.25,
+          },
+        ],
+        min: 0.02, // 2%
+        max: 0.08, // 8%
+      },
     },
   },
   market: {

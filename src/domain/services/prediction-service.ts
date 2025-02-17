@@ -15,7 +15,7 @@ export class PredictionService {
     const lastPrice: number = indicators[0].price!
     const symbol: string = indicators[0].symbol!
 
-    const side: Side = this.evaluateSide(indicators)
+    let side: Side = this.evaluateSide(indicators)
 
     let sl: number | undefined
     let tp: number | undefined
@@ -23,8 +23,15 @@ export class PredictionService {
 
     if (side !== 'hold') {
       tp = this.evaluateTakeProfit(indicators, lastPrice, side)
-      sl = this.evaluateStopLoss(indicators, lastPrice, side)
-      leverage = this.evaluateLeverage(indicators)
+      if (!tp) {
+        side = 'hold'
+        tp = undefined
+        sl = undefined
+        leverage = undefined
+      } else {
+        sl = this.evaluateStopLoss(indicators, lastPrice, side)
+        leverage = this.evaluateLeverage(indicators)
+      }
     }
 
     return {
@@ -85,33 +92,47 @@ export class PredictionService {
     lastPrice: number,
     side: Side,
   ): number {
-    const atrValues: number[] = this.settings.sl
+    const atrValues: number[] = this.settings.sl.atr
       .map(({ period, multiplier }) => {
         const atr: number = this.getIndicatorValue(indicators, 'atr', period)
         return (atr * multiplier) / lastPrice
       })
       .filter((sl: number): boolean => sl > 0)
 
-    const sl: number = this.getMedian(atrValues)
+    let sl: number = this.getMedian(atrValues)
 
-    return side === 'long' ? lastPrice * (1 - sl) : lastPrice * (1 + sl)
+    sl = Math.max(this.settings.sl.min, Math.min(sl, this.settings.sl.max))
+
+    const price: number =
+      side === 'long' ? lastPrice * (1 - sl) : lastPrice * (1 + sl)
+
+    return this.roundPrice(price)
   }
 
   private evaluateTakeProfit(
     indicators: IndicatorCreate[],
     lastPrice: number,
     side: Side,
-  ): number {
-    const atrValues: number[] = this.settings.tp
+  ): number | undefined {
+    const atrValues: number[] = this.settings.tp.atr
       .map(({ period, multiplier }) => {
         const atr: number = this.getIndicatorValue(indicators, 'atr', period)
         return (atr * multiplier) / lastPrice
       })
       .filter((tp: number): boolean => tp > 0)
 
-    const tp: number = this.getMedian(atrValues)
+    let tp: number = this.getMedian(atrValues)
 
-    return side === 'long' ? lastPrice * (1 + tp) : lastPrice * (1 - tp)
+    if (tp <= this.settings.tp.min) {
+      return undefined
+    }
+
+    tp = Math.min(tp, this.settings.tp.max)
+
+    const price: number =
+      side === 'long' ? lastPrice * (1 + tp) : lastPrice * (1 - tp)
+
+    return this.roundPrice(price)
   }
 
   private getMedian(values: number[]): number {
@@ -169,5 +190,12 @@ export class PredictionService {
           i.name.toLowerCase() === name.toLowerCase() && i.period === period,
       )?.value ?? 0
     )
+  }
+  private roundPrice(price: number): number {
+    if (price >= 1) {
+      return parseFloat(price.toFixed(2))
+    }
+    const decimals: number = Math.max(6, -Math.floor(Math.log10(price)))
+    return parseFloat(price.toFixed(decimals))
   }
 }
