@@ -23,6 +23,7 @@ export class PredictionService {
 
     if (side !== 'hold') {
       tp = this.evaluateTakeProfit(indicators, lastPrice, side)
+      console.log(tp)
       if (!tp) {
         side = 'hold'
         tp = undefined
