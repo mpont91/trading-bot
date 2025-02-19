@@ -15,7 +15,7 @@ import {
 import { getIndicators } from './controllers/indicator-controller'
 import {
   getLatestOpportunities,
-  getStrategies,
+  getLatestStrategies,
 } from './controllers/strategy-controller'
 import { getRules } from './controllers/rules-controller'
 
@@ -31,7 +31,7 @@ router.get('/uptime', (req: Request, res: Response): void => {
 
 const marketRouter: Router = Router()
 marketRouter.get('/indicators', getIndicators)
-marketRouter.get('/strategies', getStrategies)
+marketRouter.get('/latest-strategies', getLatestStrategies)
 marketRouter.get('/latest-opportunities', getLatestOpportunities)
 marketRouter.get('/rules', getRules)
 

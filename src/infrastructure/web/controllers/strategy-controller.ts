@@ -6,7 +6,7 @@ import { StrategyService } from '../../../domain/services/strategy-service'
 
 const strategyService: StrategyService = Container.getStrategyService()
 
-export async function getStrategies(
+export async function getLatestStrategies(
   request: Request,
   response: Response,
 ): Promise<void> {

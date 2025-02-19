@@ -52,20 +52,22 @@ FROM strategy s
     return this.toDomain(strategy as PrismaStrategy)
   }
 
-  async getLatestOpportunities(limit: number = 5): Promise<Strategy[]> {
-    const opportunities: PrismaStrategy[] = await this.prisma.strategy.findMany(
-      {
-        take: limit,
-        where: {
-          OR: [{ side: 'long' }, { side: 'short' }],
-        },
-        orderBy: {
-          created_at: Prisma.SortOrder.desc,
-        },
-      },
-    )
+  async getLatestOpportunities(): Promise<Strategy[]> {
+    const strategies: PrismaStrategy[] = await this.prisma.$queryRaw<
+      PrismaStrategy[]
+    >`
+SELECT s.*
+FROM strategy s
+    INNER JOIN (
+        SELECT symbol, MAX(created_at) AS max_created_at
+        FROM strategy
+        WHERE side <> 'hold'
+        GROUP BY symbol
+    ) latest 
+    ON s.symbol = latest.symbol 
+    AND s.created_at = latest.max_created_at`
 
-    return this.toDomainList(opportunities)
+    return this.toDomainList(strategies)
   }
 
   private toDomain(prismaStrategy: PrismaStrategy): Strategy {
