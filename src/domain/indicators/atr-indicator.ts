@@ -14,6 +14,6 @@ export class AtrIndicator extends IndicatorEngine {
       close: klines.map((k: Kline) => k.closePrice),
     })
 
-    return values[values.length - 1]
+    return values[values.length - 1] / klines[klines.length - 1]
   }
 }
