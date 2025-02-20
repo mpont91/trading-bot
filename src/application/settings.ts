@@ -98,11 +98,11 @@ export const settings: Settings = {
         atr: [
           {
             period: 14,
-            multiplier: 3,
+            multiplier: 8,
           },
           {
             period: 10,
-            multiplier: 2.5,
+            multiplier: 8,
           },
         ],
         min: 0.03, // 3%
@@ -112,11 +112,11 @@ export const settings: Settings = {
         atr: [
           {
             period: 14,
-            multiplier: 1.5,
+            multiplier: 8,
           },
           {
             period: 10,
-            multiplier: 1.25,
+            multiplier: 8,
           },
         ],
         min: 0.02, // 2%
