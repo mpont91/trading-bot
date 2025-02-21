@@ -8,9 +8,4 @@ export interface Trailing {
   createdAt: Date
 }
 
-export interface TrailingCreate {
-  symbol: string
-  side: Side
-  tp: number
-  sl: number
-}
+export type TrailingCreate = Omit<Trailing, 'createdAt'>
