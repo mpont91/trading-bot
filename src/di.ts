@@ -57,6 +57,10 @@ import {
   MarketSettings,
   TradingSettings,
 } from './domain/types/settings'
+import { TrailingService } from './domain/services/trailing-service'
+import { TrailingRepository } from './domain/repositories/trailing-repository'
+import { PrismaTrailingSpotRepository } from './infrastructure/repositories/prisma-trailing-spot-repository'
+import { PrismaTrailingFuturesRepository } from './infrastructure/repositories/prisma-trailing-futures-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -86,6 +90,8 @@ class Container {
   private static indicatorService: IndicatorService
   private static predictionService: PredictionService
   private static strategyService: StrategyService
+  private static trailingSpotService: TrailingService
+  private static trailingFuturesService: TrailingService
 
   static initialize(): void {
     const bitmartSettings: BitmartSettings = settings.bitmart
@@ -121,6 +127,10 @@ class Container {
     const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
       prisma,
     )
+    const trailingSpotRepository: TrailingRepository =
+      new PrismaTrailingSpotRepository(prisma)
+    const trailingFuturesRepository: TrailingRepository =
+      new PrismaTrailingFuturesRepository(prisma)
 
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
@@ -150,12 +160,14 @@ class Container {
       this.investmentSpotService,
       this.orderSpotService,
       this.tradeSpotService,
+      this.trailingSpotService,
     )
     this.positionFuturesService = new PositionFuturesService(
       this.apiFuturesService,
       this.investmentFuturesService,
       this.orderFuturesService,
       this.tradeFuturesService,
+      this.trailingSpotService,
       this.leverageService,
     )
     this.performanceService = new PerformanceService()
@@ -172,6 +184,8 @@ class Container {
     ])
     this.predictionService = new PredictionService(indicatorsSettings.rules)
     this.strategyService = new StrategyService(strategyRepository)
+    this.trailingSpotService = new TrailingService(trailingSpotRepository)
+    this.trailingFuturesService = new TrailingService(trailingFuturesRepository)
 
     const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
@@ -292,6 +306,12 @@ class Container {
   }
   static getStrategyService(): StrategyService {
     return this.strategyService
+  }
+  static getTrailingSpotService(): TrailingService {
+    return this.trailingSpotService
+  }
+  static getTrailingFuturesService(): TrailingService {
+    return this.trailingFuturesService
   }
 }
 

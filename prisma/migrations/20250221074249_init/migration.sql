@@ -107,6 +107,24 @@ CREATE TABLE "Strategy" (
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- CreateTable
+CREATE TABLE "TrailingSpot" (
+    "symbol" TEXT NOT NULL PRIMARY KEY,
+    "side" TEXT NOT NULL,
+    "tp" DECIMAL NOT NULL,
+    "sl" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "TrailingFutures" (
+    "symbol" TEXT NOT NULL PRIMARY KEY,
+    "side" TEXT NOT NULL,
+    "tp" DECIMAL NOT NULL,
+    "sl" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- CreateIndex
 CREATE INDEX "OrderSpot_symbol_side_idx" ON "OrderSpot"("symbol", "side");
 
@@ -163,3 +181,9 @@ CREATE INDEX "Strategy_symbol_idx" ON "Strategy"("symbol");
 
 -- CreateIndex
 CREATE INDEX "Strategy_side_idx" ON "Strategy"("side");
+
+-- CreateIndex
+CREATE INDEX "TrailingSpot_side_idx" ON "TrailingSpot"("side");
+
+-- CreateIndex
+CREATE INDEX "TrailingFutures_side_idx" ON "TrailingFutures"("side");

@@ -5,6 +5,7 @@ import { Order, OrderCreate, OrderRequest } from '../models/order'
 import { OrderService } from './order-service'
 import { TradeService } from './trade-service'
 import { Side } from '../types/side'
+import { TrailingService } from './trailing-service'
 
 export abstract class PositionService {
   constructor(
@@ -12,6 +13,7 @@ export abstract class PositionService {
     private readonly investmentService: InvestmentService,
     private readonly orderService: OrderService,
     private readonly tradeService: TradeService,
+    private readonly trailingService: TrailingService,
   ) {}
 
   async getPosition(symbol: string): Promise<Position | null> {
@@ -51,6 +53,7 @@ export abstract class PositionService {
     const exitOrder: OrderCreate = await this.submitOrder(orderRequest)
 
     await this.tradeService.storeTradeFromOrders(entryOrder, exitOrder)
+    await this.trailingService.remove(symbol)
   }
 
   abstract createOpenPositionOrderRequest(

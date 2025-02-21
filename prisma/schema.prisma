@@ -134,3 +134,23 @@ model Strategy {
   @@index([symbol])
   @@index([side])
 }
+
+model TrailingSpot {
+  symbol     String   @id
+  side       String
+  tp         Decimal
+  sl         Decimal
+  created_at DateTime @default(now())
+
+  @@index([side])
+}
+
+model TrailingFutures {
+  symbol     String   @id
+  side       String
+  tp         Decimal
+  sl         Decimal
+  created_at DateTime @default(now())
+
+  @@index([side])
+}

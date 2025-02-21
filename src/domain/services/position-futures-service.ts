@@ -8,6 +8,7 @@ import { OrderService } from './order-service'
 import { LeverageService } from './leverage-service'
 import { TradeService } from './trade-service'
 import { Side } from '../types/side'
+import { TrailingService } from './trailing-service'
 
 export class PositionFuturesService extends PositionService {
   constructor(
@@ -15,9 +16,16 @@ export class PositionFuturesService extends PositionService {
     investmentService: InvestmentService,
     orderService: OrderService,
     tradeService: TradeService,
+    trailingService: TrailingService,
     private readonly leverageService: LeverageService,
   ) {
-    super(apiService, investmentService, orderService, tradeService)
+    super(
+      apiService,
+      investmentService,
+      orderService,
+      tradeService,
+      trailingService,
+    )
   }
 
   createOpenPositionOrderRequest(

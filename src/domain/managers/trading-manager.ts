@@ -4,6 +4,8 @@ import { PositionService } from '../services/position-service'
 import { Strategy } from '../models/strategy'
 import { Position } from '../types/position'
 import { TradingMode } from '../types/trading-mode'
+import { TrailingService } from '../services/trailing-service'
+import { Trailing, TrailingCreate } from '../models/trailing'
 
 export class TradingManager implements ManagerInterface {
   constructor(
@@ -11,6 +13,7 @@ export class TradingManager implements ManagerInterface {
     private readonly symbols: string[],
     private readonly positionService: PositionService,
     private readonly strategyService: StrategyService,
+    private readonly trailingService: TrailingService,
   ) {}
 
   async start(): Promise<void> {
@@ -34,13 +37,28 @@ export class TradingManager implements ManagerInterface {
         await this.positionService.closePosition(symbol)
       }
 
-      await this.handlePosition(position)
+      await this.handlePosition(position, strategy.price)
     }
   }
 
-  async handlePosition(position: Position): Promise<void> {
-    console.log(position)
-    //TODO: Logic about closing position if hits TP or SL.
+  async handlePosition(position: Position, price: number): Promise<void> {
+    const trailing: Trailing | null = await this.trailingService.get(
+      position.symbol,
+    )
+
+    if (!trailing) {
+      throw new Error(
+        'There is an open position but no trailing stored in DB. Something is broken!',
+      )
+    }
+
+    if (trailing.tp <= price) {
+      await this.positionService.closePosition(position.symbol)
+    }
+
+    if (trailing.sl >= price) {
+      await this.positionService.closePosition(position.symbol)
+    }
   }
   async handleOpportunity(strategy: Strategy): Promise<void> {
     if (
@@ -48,6 +66,13 @@ export class TradingManager implements ManagerInterface {
       (this.tradingMode === 'futures' && strategy.side !== 'hold')
     ) {
       await this.positionService.openPosition(strategy.symbol, strategy.side)
+      const trailing: TrailingCreate = {
+        symbol: strategy.symbol,
+        side: strategy.side,
+        tp: strategy.tp!,
+        sl: strategy.sl!,
+      }
+      await this.trailingService.create(trailing)
     }
   }
 }
