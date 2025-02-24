@@ -34,97 +34,17 @@ export const settings: Settings = {
     symbols: ['ETHUSDT'],
     safetyCapitalMargin: 0.3,
   },
-  indicators: {
-    periods: {
-      adx: [10, 14],
-      atr: [10, 14],
-      rsi: [7, 14],
-      sma: [20, 50],
-    },
-    rules: {
-      side: [
-        {
-          value: 'long',
-          conditions: [
-            { indicator: 'rsi', period: 7, threshold: 40, condition: '<' },
-            { indicator: 'rsi', period: 14, threshold: 50, condition: '<' },
-            { indicator: 'adx', period: 14, threshold: 25, condition: '>' },
-            {
-              indicator: 'sma',
-              period: 20,
-              compareWith: { indicator: 'sma', period: 50 },
-              condition: '>',
-            },
-          ],
-        },
-        {
-          value: 'short',
-          conditions: [
-            { indicator: 'rsi', period: 7, threshold: 60, condition: '>' },
-            { indicator: 'rsi', period: 14, threshold: 50, condition: '>' },
-            { indicator: 'adx', period: 14, threshold: 25, condition: '>' },
-            {
-              indicator: 'sma',
-              period: 20,
-              compareWith: { indicator: 'sma', period: 50 },
-              condition: '<',
-            },
-          ],
-        },
-        {
-          value: 'hold',
-          conditions: [],
-        },
-      ],
-      leverage: [
-        {
-          value: 10,
-          conditions: [
-            { indicator: 'adx', period: 14, threshold: 35, condition: '>' },
-          ],
-        },
-        {
-          value: 5,
-          conditions: [
-            { indicator: 'adx', period: 14, threshold: 25, condition: '>' },
-          ],
-        },
-        {
-          value: 1,
-          conditions: [],
-        },
-      ],
-      tp: {
-        atr: [
-          {
-            period: 14,
-            multiplier: 10,
-          },
-          {
-            period: 10,
-            multiplier: 10,
-          },
-        ],
-        min: 0.03, // 3%
-        max: 0.1, // 10%
-      },
-      sl: {
-        atr: [
-          {
-            period: 14,
-            multiplier: 10,
-          },
-          {
-            period: 10,
-            multiplier: 10,
-          },
-        ],
-        min: 0.02, // 2%
-        max: 0.08, // 8%
-      },
-    },
-  },
   market: {
     symbols: ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'SOLUSDT'],
+  },
+  indicators: {
+    sma: 20,
+    rsi: 14,
+    adx: 14,
+    atr: 14,
+    bb: {
+      period: 20,
+      multiplier: 2.5,
+    },
   },
 }

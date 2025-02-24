@@ -35,14 +35,6 @@ import { InvestmentFuturesService } from './domain/services/investment-futures-s
 import { TradeSpotService } from './domain/services/trade-spot-service'
 import { TradeFuturesService } from './domain/services/trade-futures-service'
 import { InvestmentSpotService } from './domain/services/investment-spot-service'
-import { IndicatorEngine } from './domain/indicators/indicator-engine'
-import { AdxIndicator } from './domain/indicators/adx-indicator'
-import { AtrIndicator } from './domain/indicators/atr-indicator'
-import { RsiIndicator } from './domain/indicators/rsi-indicator'
-import { SmaIndicator } from './domain/indicators/sma-indicator'
-import { IndicatorService } from './domain/services/indicator-service'
-import { IndicatorRepository } from './domain/repositories/indicator-repository'
-import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
 import { PredictionService } from './domain/services/prediction-service'
@@ -61,6 +53,12 @@ import { TrailingService } from './domain/services/trailing-service'
 import { TrailingRepository } from './domain/repositories/trailing-repository'
 import { PrismaTrailingSpotRepository } from './infrastructure/repositories/prisma-trailing-spot-repository'
 import { PrismaTrailingFuturesRepository } from './infrastructure/repositories/prisma-trailing-futures-repository'
+import { AdxIndicator } from './domain/indicators/adx-indicator'
+import { AtrIndicator } from './domain/indicators/atr-indicator'
+import { RsiIndicator } from './domain/indicators/rsi-indicator'
+import { SmaIndicator } from './domain/indicators/sma-indicator'
+import { BbIndicator } from './domain/indicators/bb-indicator'
+import { IndicatorService } from './domain/services/indicator-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -83,12 +81,8 @@ class Container {
   private static positionFuturesService: PositionService
   private static performanceService: PerformanceService
   private static leverageService: LeverageService
-  private static adxIndicator: IndicatorEngine
-  private static atrIndicator: IndicatorEngine
-  private static rsiIndicator: IndicatorEngine
-  private static smaIndicator: IndicatorEngine
-  private static indicatorService: IndicatorService
   private static predictionService: PredictionService
+  private static indicatorService: IndicatorService
   private static strategyService: StrategyService
   private static trailingSpotService: TrailingService
   private static trailingFuturesService: TrailingService
@@ -99,8 +93,8 @@ class Container {
     const apiSettings: ApiSettings = settings.api
     const tradingSpotSettings: TradingSettings = settings.spotTrading
     const tradingFuturesSettings: TradingSettings = settings.futuresTrading
-    const indicatorsSettings: IndicatorsSettings = settings.indicators
     const marketSettings: MarketSettings = settings.market
+    const indicatorsSettings: IndicatorsSettings = settings.indicators
 
     const bitmartApi: BitmartApi = new BitmartClientApi(bitmartSettings)
     const binanceApi: BinanceApi = new BinanceClientApi(binanceSettings)
@@ -122,8 +116,6 @@ class Container {
     )
     const tradeFuturesRepository: TradeRepository =
       new PrismaTradeFuturesRepository(prisma)
-    const indicatorRepository: IndicatorRepository =
-      new PrismaIndicatorRepository(prisma)
     const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
       prisma,
     )
@@ -171,18 +163,23 @@ class Container {
       this.leverageService,
     )
     this.performanceService = new PerformanceService()
-    this.adxIndicator = new AdxIndicator(indicatorsSettings.periods.adx)
-    this.atrIndicator = new AtrIndicator(indicatorsSettings.periods.atr)
-    this.rsiIndicator = new RsiIndicator(indicatorsSettings.periods.rsi)
-    this.smaIndicator = new SmaIndicator(indicatorsSettings.periods.sma)
 
-    this.indicatorService = new IndicatorService(indicatorRepository, [
-      this.adxIndicator,
-      this.atrIndicator,
-      this.rsiIndicator,
-      this.smaIndicator,
-    ])
-    this.predictionService = new PredictionService(indicatorsSettings.rules)
+    const adxIndicator: AdxIndicator = new AdxIndicator(indicatorsSettings.adx)
+    const atrIndicator: AtrIndicator = new AtrIndicator(indicatorsSettings.atr)
+    const rsiIndicator: RsiIndicator = new RsiIndicator(indicatorsSettings.rsi)
+    const smaIndicator: SmaIndicator = new SmaIndicator(indicatorsSettings.sma)
+    const bbIndicator: BbIndicator = new BbIndicator(
+      indicatorsSettings.bb.period,
+      indicatorsSettings.bb.multiplier,
+    )
+    this.indicatorService = new IndicatorService(
+      smaIndicator,
+      rsiIndicator,
+      adxIndicator,
+      atrIndicator,
+      bbIndicator,
+    )
+    this.predictionService = new PredictionService(this.indicatorService)
     this.strategyService = new StrategyService(strategyRepository)
     this.trailingSpotService = new TrailingService(trailingSpotRepository)
     this.trailingFuturesService = new TrailingService(trailingFuturesRepository)
@@ -202,7 +199,6 @@ class Container {
     const marketManager: ManagerInterface = new MarketManager(
       marketSettings.symbols,
       this.apiSpotConcreteService,
-      this.indicatorService,
       this.predictionService,
       this.strategyService,
     )
@@ -285,18 +281,6 @@ class Container {
   }
   static getLeverageService(): LeverageService {
     return this.leverageService
-  }
-  static getAdxIndicator(): IndicatorEngine {
-    return this.adxIndicator
-  }
-  static getAtrIndicator(): IndicatorEngine {
-    return this.atrIndicator
-  }
-  static getRsiIndicator(): IndicatorEngine {
-    return this.rsiIndicator
-  }
-  static getSmaIndicator(): IndicatorEngine {
-    return this.smaIndicator
   }
   static getIndicatorService(): IndicatorService {
     return this.indicatorService

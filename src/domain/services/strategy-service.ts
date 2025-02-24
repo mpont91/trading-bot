@@ -17,6 +17,10 @@ export class StrategyService {
     return this.strategyRepository.getLatest()
   }
 
+  async getLatestOpportunities(): Promise<Strategy[]> {
+    return this.strategyRepository.getLatestOpportunities()
+  }
+
   async getLatestForSymbol(symbol: string): Promise<Strategy> {
     const needConversion: boolean = isSymbolForSpotBaseCurrency(symbol)
 
@@ -32,9 +36,5 @@ export class StrategyService {
     }
 
     return strategy
-  }
-
-  async getLatestOpportunities(): Promise<Strategy[]> {
-    return this.strategyRepository.getLatestOpportunities()
   }
 }

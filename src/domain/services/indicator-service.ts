@@ -1,38 +1,36 @@
-import { IndicatorRepository } from '../repositories/indicator-repository'
-import { IndicatorEngine } from '../indicators/indicator-engine'
-import { Indicator, IndicatorCreate } from '../models/indicator'
+import { SmaIndicator } from '../indicators/sma-indicator'
+import { RsiIndicator } from '../indicators/rsi-indicator'
+import { AdxIndicator, AdxIndicatorType } from '../indicators/adx-indicator'
+import { AtrIndicator } from '../indicators/atr-indicator'
+import { BbIndicator, BbIndicatorType } from '../indicators/bb-indicator'
 import { Kline } from '../types/kline'
 
 export class IndicatorService {
   constructor(
-    private readonly indicatorRepository: IndicatorRepository,
-    private readonly indicatorEngines: IndicatorEngine[],
+    private readonly smaIndicator: SmaIndicator,
+    private readonly rsiIndicator: RsiIndicator,
+    private readonly adxIndicator: AdxIndicator,
+    private readonly atrIndicator: AtrIndicator,
+    private readonly bbIndicator: BbIndicator,
   ) {}
 
-  calculate(symbol: string, klines: Kline[]): IndicatorCreate[] {
-    const indicators: IndicatorCreate[] = []
-
-    this.indicatorEngines.forEach((indicatorEngine: IndicatorEngine): void => {
-      const indicatorCreates: IndicatorCreate[] = indicatorEngine.calculate(
-        symbol,
-        klines,
-      )
-
-      indicators.push(...indicatorCreates)
-    })
-
-    return indicators
+  sma(klines: Kline[]): number {
+    return this.smaIndicator.calculate(klines)
   }
 
-  async store(indicators: IndicatorCreate[]): Promise<void> {
-    await this.indicatorRepository.createMany(indicators)
+  rsi(klines: Kline[]): number {
+    return this.rsiIndicator.calculate(klines)
   }
 
-  async getLatest(): Promise<Indicator[]> {
-    return this.indicatorRepository.getLatest()
+  atr(klines: Kline[]): number {
+    return this.atrIndicator.calculate(klines)
   }
 
-  async getLatestForSymbol(symbol: string): Promise<Indicator[]> {
-    return this.indicatorRepository.getLatestForSymbol(symbol)
+  adx(klines: Kline[]): AdxIndicatorType {
+    return this.adxIndicator.calculate(klines)
+  }
+
+  bb(klines: Kline[]): BbIndicatorType {
+    return this.bbIndicator.calculate(klines)
   }
 }

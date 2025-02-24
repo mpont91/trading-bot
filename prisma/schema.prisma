@@ -105,21 +105,6 @@ model TradeFutures {
   @@index([side])
 }
 
-model Indicator {
-  id         Int      @id @default(autoincrement())
-  name       String
-  symbol     String
-  period     Int
-  value      Decimal
-  price      Decimal
-  created_at DateTime @default(now())
-
-  @@index([symbol, name, period])
-  @@index([symbol])
-  @@index([name])
-  @@index([period])
-}
-
 model Strategy {
   id         Int      @id @default(autoincrement())
   symbol     String
