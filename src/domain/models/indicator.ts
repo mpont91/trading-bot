@@ -1,11 +1,26 @@
-export interface Indicator {
+export interface AdxIndicatorType {
+  adx: number
+  pdi: number
+  mdi: number
+}
+
+export interface BbIndicatorType {
+  middle: number
+  upper: number
+  lower: number
+  pb: number
+}
+
+export interface BbIndicatorModel {
   id: number
-  name: string
-  symbol: string
   period: number
-  value: number
+  symbol: string
   price: number
+  upper: number
+  middle: number
+  lower: number
+  pb: number
   createdAt: Date
 }
 
-export type IndicatorCreate = Omit<Indicator, 'id' | 'createdAt'>
+export type BbIndicatorModelCreate = Omit<BbIndicatorModel, 'id' | 'createdAt'>

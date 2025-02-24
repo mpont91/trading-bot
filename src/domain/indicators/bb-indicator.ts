@@ -1,13 +1,7 @@
 import { BollingerBands } from 'technicalindicators'
 import { Kline } from '../types/kline'
 import { BollingerBandsOutput } from 'technicalindicators/declarations/generated'
-
-export interface BbIndicatorType {
-  middle: number
-  upper: number
-  lower: number
-  pb: number
-}
+import { BbIndicatorType } from '../models/indicator'
 
 export class BbIndicator {
   constructor(

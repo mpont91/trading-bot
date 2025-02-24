@@ -59,6 +59,8 @@ import { RsiIndicator } from './domain/indicators/rsi-indicator'
 import { SmaIndicator } from './domain/indicators/sma-indicator'
 import { BbIndicator } from './domain/indicators/bb-indicator'
 import { IndicatorService } from './domain/services/indicator-service'
+import { IndicatorRepository } from './domain/repositories/indicator-repository'
+import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -116,6 +118,8 @@ class Container {
     )
     const tradeFuturesRepository: TradeRepository =
       new PrismaTradeFuturesRepository(prisma)
+    const indicatorRepository: IndicatorRepository =
+      new PrismaIndicatorRepository(prisma)
     const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
       prisma,
     )
@@ -173,6 +177,7 @@ class Container {
       indicatorsSettings.bb.multiplier,
     )
     this.indicatorService = new IndicatorService(
+      indicatorRepository,
       smaIndicator,
       rsiIndicator,
       adxIndicator,

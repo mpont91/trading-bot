@@ -105,6 +105,18 @@ model TradeFutures {
   @@index([side])
 }
 
+model IndicatorBB {
+  id         Int      @id @default(autoincrement())
+  period     Int
+  symbol     String
+  price      Decimal
+  upper      Decimal
+  middle     Decimal
+  lower      Decimal
+  pb         Decimal
+  created_at DateTime @default(now())
+}
+
 model Strategy {
   id         Int      @id @default(autoincrement())
   symbol     String

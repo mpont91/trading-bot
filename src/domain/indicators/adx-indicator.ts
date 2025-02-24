@@ -1,12 +1,7 @@
 import { ADX } from 'technicalindicators'
 import { Kline } from '../types/kline'
 import { ADXOutput } from 'technicalindicators/declarations/directionalmovement/ADX'
-
-export interface AdxIndicatorType {
-  adx: number
-  pdi: number
-  mdi: number
-}
+import { AdxIndicatorType } from '../models/indicator'
 
 export class AdxIndicator {
   constructor(private readonly period: number) {}

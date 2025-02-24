@@ -85,13 +85,15 @@ CREATE TABLE "TradeFutures" (
 );
 
 -- CreateTable
-CREATE TABLE "Indicator" (
+CREATE TABLE "IndicatorBB" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "symbol" TEXT NOT NULL,
     "period" INTEGER NOT NULL,
-    "value" DECIMAL NOT NULL,
+    "symbol" TEXT NOT NULL,
     "price" DECIMAL NOT NULL,
+    "upper" DECIMAL NOT NULL,
+    "middle" DECIMAL NOT NULL,
+    "lower" DECIMAL NOT NULL,
+    "pb" DECIMAL NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -160,18 +162,6 @@ CREATE INDEX "TradeFutures_symbol_idx" ON "TradeFutures"("symbol");
 
 -- CreateIndex
 CREATE INDEX "TradeFutures_side_idx" ON "TradeFutures"("side");
-
--- CreateIndex
-CREATE INDEX "Indicator_symbol_name_period_idx" ON "Indicator"("symbol", "name", "period");
-
--- CreateIndex
-CREATE INDEX "Indicator_symbol_idx" ON "Indicator"("symbol");
-
--- CreateIndex
-CREATE INDEX "Indicator_name_idx" ON "Indicator"("name");
-
--- CreateIndex
-CREATE INDEX "Indicator_period_idx" ON "Indicator"("period");
 
 -- CreateIndex
 CREATE INDEX "Strategy_symbol_side_idx" ON "Strategy"("symbol", "side");
