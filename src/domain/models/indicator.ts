@@ -1,17 +1,50 @@
-export interface AdxIndicatorType {
+export interface IndicatorSMA {
+  id: number
+  period: number
+  symbol: string
+  price: number
+  sma: number
+  createdAt: Date
+}
+
+export type IndicatorSMACreate = Omit<IndicatorSMA, 'id' | 'createdAt'>
+
+export interface IndicatorRSI {
+  id: number
+  period: number
+  symbol: string
+  price: number
+  rsi: number
+  createdAt: Date
+}
+
+export type IndicatorRSICreate = Omit<IndicatorRSI, 'id' | 'createdAt'>
+
+export interface IndicatorATR {
+  id: number
+  period: number
+  symbol: string
+  price: number
+  atr: number
+  createdAt: Date
+}
+
+export type IndicatorATRCreate = Omit<IndicatorATR, 'id' | 'createdAt'>
+
+export interface IndicatorADX {
+  id: number
+  period: number
+  symbol: string
+  price: number
   adx: number
   pdi: number
   mdi: number
+  createdAt: Date
 }
 
-export interface BbIndicatorType {
-  middle: number
-  upper: number
-  lower: number
-  pb: number
-}
+export type IndicatorADXCreate = Omit<IndicatorADX, 'id' | 'createdAt'>
 
-export interface BbIndicatorModel {
+export interface IndicatorBB {
   id: number
   period: number
   symbol: string
@@ -23,4 +56,4 @@ export interface BbIndicatorModel {
   createdAt: Date
 }
 
-export type BbIndicatorModelCreate = Omit<BbIndicatorModel, 'id' | 'createdAt'>
+export type IndicatorBBCreate = Omit<IndicatorBB, 'id' | 'createdAt'>

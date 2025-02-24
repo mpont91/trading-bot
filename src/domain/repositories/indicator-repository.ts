@@ -1,5 +1,15 @@
-import { BbIndicatorModelCreate } from '../models/indicator'
+import {
+  IndicatorADXCreate,
+  IndicatorATRCreate,
+  IndicatorBBCreate,
+  IndicatorRSICreate,
+  IndicatorSMACreate,
+} from '../models/indicator'
 
 export interface IndicatorRepository {
-  createBB(indicator: BbIndicatorModelCreate): Promise<void>
+  createSMA(indicator: IndicatorSMACreate): Promise<void>
+  createRSI(indicator: IndicatorRSICreate): Promise<void>
+  createATR(indicator: IndicatorATRCreate): Promise<void>
+  createADX(indicator: IndicatorADXCreate): Promise<void>
+  createBB(indicator: IndicatorBBCreate): Promise<void>
 }

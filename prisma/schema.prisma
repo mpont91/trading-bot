@@ -105,6 +105,44 @@ model TradeFutures {
   @@index([side])
 }
 
+model IndicatorSMA {
+  id         Int      @id @default(autoincrement())
+  period     Int
+  symbol     String
+  price      Decimal
+  sma        Decimal
+  created_at DateTime @default(now())
+}
+
+model IndicatorRSI {
+  id         Int      @id @default(autoincrement())
+  period     Int
+  symbol     String
+  price      Decimal
+  rsi        Decimal
+  created_at DateTime @default(now())
+}
+
+model IndicatorATR {
+  id         Int      @id @default(autoincrement())
+  period     Int
+  symbol     String
+  price      Decimal
+  atr        Decimal
+  created_at DateTime @default(now())
+}
+
+model IndicatorADX {
+  id         Int      @id @default(autoincrement())
+  period     Int
+  symbol     String
+  price      Decimal
+  adx        Decimal
+  pdi        Decimal
+  mdi        Decimal
+  created_at DateTime @default(now())
+}
+
 model IndicatorBB {
   id         Int      @id @default(autoincrement())
   period     Int

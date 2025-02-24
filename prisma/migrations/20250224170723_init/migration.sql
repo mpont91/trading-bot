@@ -85,6 +85,48 @@ CREATE TABLE "TradeFutures" (
 );
 
 -- CreateTable
+CREATE TABLE "IndicatorSMA" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "period" INTEGER NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL NOT NULL,
+    "sma" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "IndicatorRSI" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "period" INTEGER NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL NOT NULL,
+    "rsi" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "IndicatorATR" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "period" INTEGER NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL NOT NULL,
+    "atr" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "IndicatorADX" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "period" INTEGER NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL NOT NULL,
+    "adx" DECIMAL NOT NULL,
+    "pdi" DECIMAL NOT NULL,
+    "mdi" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "IndicatorBB" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "period" INTEGER NOT NULL,

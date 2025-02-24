@@ -1,11 +1,11 @@
 import { ADX } from 'technicalindicators'
 import { Kline } from '../types/kline'
 import { ADXOutput } from 'technicalindicators/declarations/directionalmovement/ADX'
-import { AdxIndicatorType } from '../models/indicator'
+import { IndicatorADXCreate } from '../models/indicator'
 
 export class AdxIndicator {
   constructor(private readonly period: number) {}
-  calculate(klines: Kline[]): AdxIndicatorType {
+  calculate(symbol: string, klines: Kline[]): IndicatorADXCreate {
     const values: ADXOutput[] = ADX.calculate({
       period: this.period,
       high: klines.map((k: Kline) => k.highPrice),
@@ -13,11 +13,12 @@ export class AdxIndicator {
       close: klines.map((k: Kline) => k.closePrice),
     })
 
-    return this.toDomain(values[values.length - 1])
-  }
+    const value: ADXOutput = values[values.length - 1]
 
-  private toDomain(value: ADXOutput): AdxIndicatorType {
     return {
+      period: this.period,
+      symbol: symbol,
+      price: klines[klines.length - 1].closePrice,
       adx: value.adx,
       pdi: value.pdi,
       mdi: value.mdi,

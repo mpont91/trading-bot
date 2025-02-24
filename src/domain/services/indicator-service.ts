@@ -1,11 +1,17 @@
 import { SmaIndicator } from '../indicators/sma-indicator'
 import { RsiIndicator } from '../indicators/rsi-indicator'
-import { AdxIndicatorType, BbIndicatorType } from '../models/indicator'
 import { AtrIndicator } from '../indicators/atr-indicator'
 import { Kline } from '../types/kline'
 import { AdxIndicator } from '../indicators/adx-indicator'
 import { BbIndicator } from '../indicators/bb-indicator'
 import { IndicatorRepository } from '../repositories/indicator-repository'
+import {
+  IndicatorADXCreate,
+  IndicatorATRCreate,
+  IndicatorBBCreate,
+  IndicatorRSICreate,
+  IndicatorSMACreate,
+} from '../models/indicator'
 
 export class IndicatorService {
   constructor(
@@ -17,23 +23,43 @@ export class IndicatorService {
     private readonly bbIndicator: BbIndicator,
   ) {}
 
-  sma(klines: Kline[]): number {
-    return this.smaIndicator.calculate(klines)
+  sma(symbol: string, klines: Kline[]): IndicatorSMACreate {
+    return this.smaIndicator.calculate(symbol, klines)
   }
 
-  rsi(klines: Kline[]): number {
-    return this.rsiIndicator.calculate(klines)
+  async createSMA(indicator: IndicatorSMACreate): Promise<void> {
+    await this.indicatorRepository.createSMA(indicator)
   }
 
-  atr(klines: Kline[]): number {
-    return this.atrIndicator.calculate(klines)
+  rsi(symbol: string, klines: Kline[]): IndicatorRSICreate {
+    return this.rsiIndicator.calculate(symbol, klines)
   }
 
-  adx(klines: Kline[]): AdxIndicatorType {
-    return this.adxIndicator.calculate(klines)
+  async createRSI(indicator: IndicatorRSICreate): Promise<void> {
+    await this.indicatorRepository.createRSI(indicator)
   }
 
-  bb(klines: Kline[]): BbIndicatorType {
-    return this.bbIndicator.calculate(klines)
+  atr(symbol: string, klines: Kline[]): IndicatorATRCreate {
+    return this.atrIndicator.calculate(symbol, klines)
+  }
+
+  async createATR(indicator: IndicatorATRCreate): Promise<void> {
+    await this.indicatorRepository.createATR(indicator)
+  }
+
+  adx(symbol: string, klines: Kline[]): IndicatorADXCreate {
+    return this.adxIndicator.calculate(symbol, klines)
+  }
+
+  async createADX(indicator: IndicatorADXCreate): Promise<void> {
+    await this.indicatorRepository.createADX(indicator)
+  }
+
+  bb(symbol: string, klines: Kline[]): IndicatorBBCreate {
+    return this.bbIndicator.calculate(symbol, klines)
+  }
+
+  async createBB(indicator: IndicatorBBCreate): Promise<void> {
+    await this.indicatorRepository.createBB(indicator)
   }
 }
