@@ -1,7 +1,37 @@
 import {
   convertSymbolToFuturesBaseCurrency,
   convertSymbolToSpotBaseCurrency,
+  isSymbolForFuturesBaseCurrency,
+  isSymbolForSpotBaseCurrency,
 } from '../../../src/domain/helpers/symbol-helper'
+
+describe('SymbolHelper - isSymbolForSpotBaseCurrency', (): void => {
+  test('Should return true with symbol which ends with USDC', async (): Promise<void> => {
+    expect(isSymbolForSpotBaseCurrency('BTCUSDC')).toBe(true)
+  })
+
+  test('Should return false with different base currency', async (): Promise<void> => {
+    expect(isSymbolForSpotBaseCurrency('XRPBTC')).toBe(false)
+  })
+
+  test('Should return false with different base currency', async (): Promise<void> => {
+    expect(isSymbolForSpotBaseCurrency('XRPUSDT')).toBe(false)
+  })
+})
+
+describe('SymbolHelper - isSymbolForFuturesBaseCurrency', (): void => {
+  test('Should return true with symbol which ends with USDT', async (): Promise<void> => {
+    expect(isSymbolForFuturesBaseCurrency('BTCUSDT')).toBe(true)
+  })
+
+  test('Should return false with different base currency', async (): Promise<void> => {
+    expect(isSymbolForFuturesBaseCurrency('XRPBTC')).toBe(false)
+  })
+
+  test('Should return false with different base currency', async (): Promise<void> => {
+    expect(isSymbolForFuturesBaseCurrency('XRPUSDC')).toBe(false)
+  })
+})
 
 describe('SymbolHelper - convertSymbolToSpotBaseCurrency', (): void => {
   test('Should BTCUSDT be converted to BTCUSDC', async (): Promise<void> => {
