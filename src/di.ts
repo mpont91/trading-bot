@@ -64,8 +64,10 @@ import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-
 
 class Container {
   private static launcherMarket: Launcher
-  private static launcherSpot: Launcher
-  private static launcherFutures: Launcher
+  private static launcherSpotTrading: Launcher
+  private static launcherSpotAccount: Launcher
+  private static launcherFuturesTrading: Launcher
+  private static launcherFuturesAccount: Launcher
   private static apiSpotService: ApiService
   private static apiFuturesService: ApiService
   private static apiSpotConcreteService: ApiSpotService
@@ -207,34 +209,34 @@ class Container {
       this.predictionService,
       this.strategyService,
     )
-    this.launcherMarket = new Launcher(
-      settings.intervalReportTime,
-      settings.intervalExecutionTime,
-      [marketManager],
-      [],
-    )
-    this.launcherSpot = new Launcher(
-      settings.intervalReportTime,
-      settings.intervalExecutionTime,
-      [],
-      [accountSpotManager, commissionSpotManager],
-    )
-    this.launcherFutures = new Launcher(
-      settings.intervalReportTime,
-      settings.intervalExecutionTime,
-      [],
-      [accountFuturesManager],
-    )
+    this.launcherMarket = new Launcher(settings.intervalMarketTime, [
+      marketManager,
+    ])
+    this.launcherSpotTrading = new Launcher(settings.intervalTradingTime, [])
+    this.launcherSpotAccount = new Launcher(settings.intervalAccountTime, [
+      accountSpotManager,
+      commissionSpotManager,
+    ])
+    this.launcherFuturesTrading = new Launcher(settings.intervalTradingTime, [])
+    this.launcherFuturesAccount = new Launcher(settings.intervalAccountTime, [
+      accountFuturesManager,
+    ])
   }
 
   static getLauncherMarket(): Launcher {
     return this.launcherMarket
   }
-  static getLauncherSpot(): Launcher {
-    return this.launcherSpot
+  static getLauncherSpotTrading(): Launcher {
+    return this.launcherSpotTrading
   }
-  static getLauncherFutures(): Launcher {
-    return this.launcherFutures
+  static getLauncherSpotAccount(): Launcher {
+    return this.launcherSpotAccount
+  }
+  static getLauncherFuturesTrading(): Launcher {
+    return this.launcherFuturesTrading
+  }
+  static getLauncherFuturesAccount(): Launcher {
+    return this.launcherFuturesAccount
   }
   static getApiSpotService(): ApiService {
     return this.apiSpotService

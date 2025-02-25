@@ -1,8 +1,9 @@
 import { KlineInterval } from './kline'
 
 export interface Settings {
-  intervalExecutionTime: number
-  intervalReportTime: number
+  intervalTradingTime: number
+  intervalMarketTime: number
+  intervalAccountTime: number
   bitmart: BitmartSettings
   binance: BinanceSettings
   api: ApiSettings

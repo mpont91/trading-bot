@@ -3,45 +3,27 @@ import { ManagerInterface } from '../domain/managers/manager-interface'
 
 export class Launcher {
   constructor(
-    private readonly intervalReportTime: number,
-    private readonly intervalExecutionTime: number,
-    private readonly executionManagers: ManagerInterface[],
-    private readonly reportManagers: ManagerInterface[],
+    private readonly interval: number,
+    private readonly managers: ManagerInterface[],
   ) {}
 
   async start(): Promise<void> {
     logger.info('Launcher is about to start for the first time.')
-    await this.report()
     await this.execute()
     setInterval(async (): Promise<void> => {
-      await this.report()
-    }, this.intervalReportTime)
-    setInterval(async (): Promise<void> => {
       await this.execute()
-    }, this.intervalExecutionTime)
+    }, this.interval)
   }
 
   private async execute(): Promise<void> {
-    logger.info('Launcher is going to start the execution managers.')
+    logger.info('Launcher is going to start the managers.')
     try {
-      for (const manager of this.executionManagers) {
+      for (const manager of this.managers) {
         await manager.start()
       }
     } catch (error: unknown) {
-      logger.error('Something went wrong with execution managers', error)
-      console.error('Something went wrong with execution managers', error)
-    }
-  }
-
-  private async report(): Promise<void> {
-    logger.info('Launcher is going to start the report managers.')
-    try {
-      for (const manager of this.reportManagers) {
-        await manager.start()
-      }
-    } catch (error: unknown) {
-      logger.error('Something went wrong with report managers', error)
-      console.error('Something went wrong with report managers', error)
+      logger.error('Something went wrong with managers', error)
+      console.error('Something went wrong with managers', error)
     }
   }
 }

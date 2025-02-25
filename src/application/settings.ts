@@ -4,8 +4,9 @@ import { Settings } from '../domain/types/settings'
 config()
 
 export const settings: Settings = {
-  intervalExecutionTime: parseInt(process.env.INTERVAL_EXECUTION_TIME!),
-  intervalReportTime: parseInt(process.env.INTERVAL_REPORT_TIME!),
+  intervalTradingTime: parseInt(process.env.INTERVAL_TRADING_TIME!),
+  intervalMarketTime: parseInt(process.env.INTERVAL_MARKET_TIME!),
+  intervalAccountTime: parseInt(process.env.INTERVAL_ACCOUNT_TIME!),
   bitmart: {
     bitmartApiKey: process.env.BITMART_API_KEY!,
     bitmartApiSecret: process.env.BITMART_SECRET_KEY!,

@@ -1,46 +1,76 @@
 import { server } from './server'
 import { botMarket } from './bot-market'
-import { botSpot } from './bot-spot'
-import { botFutures } from './bot-futures'
+import { botSpotTrading, botSpotAccount } from './bot-spot'
+import { botFuturesTrading, botFuturesAccount } from './bot-futures'
 
 class App {
   private readonly runServer: boolean = true
-  private readonly runBotMarket: boolean = true
-  private readonly runBotSpot: boolean = true
-  private readonly runBotFutures: boolean = true
+  private readonly runMarket: boolean = true
+  private readonly runSpotTrading: boolean = true
+  private readonly runSpotAccount: boolean = true
+  private readonly runFuturesTrading: boolean = true
+  private readonly runFuturesAccount: boolean = true
 
   constructor(args: string[]) {
     const onlyServer: boolean = args.includes('--only-server')
-    const onlyBotMarket: boolean = args.includes('--only-bot-market')
-    const onlyBotSpot: boolean = args.includes('--only-bot-spot')
-    const onlyBotFutures: boolean = args.includes('--only-bot-futures')
+    const onlyMarket: boolean = args.includes('--only-market')
+    const onlySpotTrading: boolean = args.includes('--only-spot-trading')
+    const onlySpotAccount: boolean = args.includes('--only-spot-account')
+    const onlyFuturesTrading: boolean = args.includes('--only-futures-trading')
+    const onlyFuturesAccount: boolean = args.includes('--only-futures-account')
 
     if (onlyServer) {
       console.log('Running only server')
-      this.runBotMarket = false
-      this.runBotSpot = false
-      this.runBotFutures = false
+      this.runMarket = false
+      this.runSpotTrading = false
+      this.runSpotAccount = false
+      this.runFuturesTrading = false
+      this.runFuturesAccount = false
     }
 
-    if (onlyBotMarket) {
+    if (onlyMarket) {
       console.log('Running only bot market')
       this.runServer = false
-      this.runBotFutures = false
-      this.runBotSpot = false
+      this.runSpotTrading = false
+      this.runSpotAccount = false
+      this.runFuturesTrading = false
+      this.runFuturesAccount = false
     }
 
-    if (onlyBotSpot) {
-      console.log('Running only bot spot')
+    if (onlySpotTrading) {
+      console.log('Running only bot spot trading')
       this.runServer = false
-      this.runBotMarket = false
-      this.runBotFutures = false
+      this.runMarket = false
+      this.runSpotAccount = false
+      this.runFuturesTrading = false
+      this.runFuturesAccount = false
     }
 
-    if (onlyBotFutures) {
-      console.log('Running only bot futures')
+    if (onlySpotAccount) {
+      console.log('Running only bot spot account')
       this.runServer = false
-      this.runBotMarket = false
-      this.runBotSpot = false
+      this.runMarket = false
+      this.runSpotTrading = false
+      this.runFuturesTrading = false
+      this.runFuturesAccount = false
+    }
+
+    if (onlyFuturesTrading) {
+      console.log('Running only bot futures trading')
+      this.runServer = false
+      this.runMarket = false
+      this.runSpotTrading = false
+      this.runSpotAccount = false
+      this.runFuturesAccount = false
+    }
+
+    if (onlyFuturesAccount) {
+      console.log('Running only bot futures account')
+      this.runServer = false
+      this.runMarket = false
+      this.runSpotTrading = false
+      this.runSpotAccount = false
+      this.runFuturesTrading = false
     }
   }
 
@@ -49,16 +79,24 @@ class App {
       server()
     }
 
-    if (this.runBotMarket) {
+    if (this.runMarket) {
       botMarket()
     }
 
-    if (this.runBotSpot) {
-      botSpot()
+    if (this.runSpotTrading) {
+      botSpotTrading()
     }
 
-    if (this.runBotSpot) {
-      botFutures()
+    if (this.runFuturesTrading) {
+      botFuturesTrading()
+    }
+
+    if (this.runSpotAccount) {
+      botSpotAccount()
+    }
+
+    if (this.runFuturesAccount) {
+      botFuturesAccount()
     }
   }
 }
