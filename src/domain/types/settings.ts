@@ -11,6 +11,8 @@ export interface Settings {
   futuresTrading: TradingSettings
   market: MarketSettings
   indicators: IndicatorsSettings
+  stops: StopsSettings
+  leverage: number
 }
 
 export interface BitmartSettings {
@@ -54,4 +56,9 @@ export interface IndicatorsSettings {
     period: number
     multiplier: number
   }
+}
+
+export interface StopsSettings {
+  tp: number | null
+  sl: number | null
 }

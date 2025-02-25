@@ -43,8 +43,8 @@ export class PrismaTrailingSpotRepository implements TrailingRepository {
     return {
       symbol: prismaTrailingSpot.symbol,
       side: prismaTrailingSpot.side as Side,
-      tp: prismaTrailingSpot.tp.toNumber(),
-      sl: prismaTrailingSpot.sl.toNumber(),
+      tp: prismaTrailingSpot.tp ? prismaTrailingSpot.tp.toNumber() : undefined,
+      sl: prismaTrailingSpot.sl ? prismaTrailingSpot.sl.toNumber() : undefined,
       createdAt: prismaTrailingSpot.created_at,
     }
   }
@@ -53,8 +53,8 @@ export class PrismaTrailingSpotRepository implements TrailingRepository {
     return {
       symbol: trailing.symbol,
       side: trailing.side,
-      tp: new Decimal(trailing.tp),
-      sl: new Decimal(trailing.sl),
+      tp: trailing.tp ? new Decimal(trailing.tp) : undefined,
+      sl: trailing.sl ? new Decimal(trailing.sl) : undefined,
     }
   }
 }

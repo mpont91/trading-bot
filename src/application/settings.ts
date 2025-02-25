@@ -48,4 +48,9 @@ export const settings: Settings = {
       multiplier: 2.5,
     },
   },
+  stops: {
+    tp: null,
+    sl: 0.03,
+  },
+  leverage: 1,
 }

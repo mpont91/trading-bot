@@ -47,6 +47,7 @@ import {
   BitmartSettings,
   IndicatorsSettings,
   MarketSettings,
+  StopsSettings,
   TradingSettings,
 } from './domain/types/settings'
 import { TrailingService } from './domain/services/trailing-service'
@@ -61,6 +62,8 @@ import { BbIndicator } from './domain/indicators/bb-indicator'
 import { IndicatorService } from './domain/services/indicator-service'
 import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
+import { StopsService } from './domain/services/stops-service'
+import { TradingManager } from './domain/managers/trading-manager'
 
 class Container {
   private static launcherMarket: Launcher
@@ -85,6 +88,7 @@ class Container {
   private static positionFuturesService: PositionService
   private static performanceService: PerformanceService
   private static leverageService: LeverageService
+  private static stopsService: StopsService
   private static predictionService: PredictionService
   private static indicatorService: IndicatorService
   private static strategyService: StrategyService
@@ -99,6 +103,8 @@ class Container {
     const tradingFuturesSettings: TradingSettings = settings.futuresTrading
     const marketSettings: MarketSettings = settings.market
     const indicatorsSettings: IndicatorsSettings = settings.indicators
+    const stopsSettings: StopsSettings = settings.stops
+    const leverageSettings: number = settings.leverage
 
     const bitmartApi: BitmartApi = new BitmartClientApi(bitmartSettings)
     const binanceApi: BinanceApi = new BinanceClientApi(binanceSettings)
@@ -139,7 +145,8 @@ class Container {
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
-    this.leverageService = new LeverageService()
+    this.leverageService = new LeverageService(leverageSettings)
+    this.stopsService = new StopsService(stopsSettings)
     this.investmentSpotService = new InvestmentSpotService(
       tradingSpotSettings,
       this.apiSpotService,
@@ -186,7 +193,11 @@ class Container {
       atrIndicator,
       bbIndicator,
     )
-    this.predictionService = new PredictionService(this.indicatorService)
+    this.predictionService = new PredictionService(
+      this.indicatorService,
+      this.leverageService,
+      this.stopsService,
+    )
     this.strategyService = new StrategyService(strategyRepository)
     this.trailingSpotService = new TrailingService(trailingSpotRepository)
     this.trailingFuturesService = new TrailingService(trailingFuturesRepository)
@@ -209,15 +220,33 @@ class Container {
       this.predictionService,
       this.strategyService,
     )
+    const tradingSpotManager: TradingManager = new TradingManager(
+      'spot',
+      tradingSpotSettings.symbols,
+      this.positionSpotService,
+      this.strategyService,
+      this.trailingSpotService,
+    )
+    const tradingFuturesManager: TradingManager = new TradingManager(
+      'futures',
+      tradingFuturesSettings.symbols,
+      this.positionFuturesService,
+      this.strategyService,
+      this.trailingFuturesService,
+    )
     this.launcherMarket = new Launcher(settings.intervalMarketTime, [
       marketManager,
     ])
-    this.launcherSpotTrading = new Launcher(settings.intervalTradingTime, [])
+    this.launcherSpotTrading = new Launcher(settings.intervalTradingTime, [
+      tradingSpotManager,
+    ])
     this.launcherSpotAccount = new Launcher(settings.intervalAccountTime, [
       accountSpotManager,
       commissionSpotManager,
     ])
-    this.launcherFuturesTrading = new Launcher(settings.intervalTradingTime, [])
+    this.launcherFuturesTrading = new Launcher(settings.intervalTradingTime, [
+      tradingFuturesManager,
+    ])
     this.launcherFuturesAccount = new Launcher(settings.intervalAccountTime, [
       accountFuturesManager,
     ])
@@ -288,6 +317,9 @@ class Container {
   }
   static getLeverageService(): LeverageService {
     return this.leverageService
+  }
+  static getStopsService(): StopsService {
+    return this.stopsService
   }
   static getIndicatorService(): IndicatorService {
     return this.indicatorService

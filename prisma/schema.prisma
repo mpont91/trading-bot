@@ -173,8 +173,8 @@ model Strategy {
 model TrailingSpot {
   symbol     String   @id
   side       String
-  tp         Decimal
-  sl         Decimal
+  tp         Decimal?
+  sl         Decimal?
   created_at DateTime @default(now())
 
   @@index([side])
@@ -183,8 +183,8 @@ model TrailingSpot {
 model TrailingFutures {
   symbol     String   @id
   side       String
-  tp         Decimal
-  sl         Decimal
+  tp         Decimal?
+  sl         Decimal?
   created_at DateTime @default(now())
 
   @@index([side])

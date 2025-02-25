@@ -6,6 +6,7 @@ import { Position } from '../types/position'
 import { TradingMode } from '../types/trading-mode'
 import { TrailingService } from '../services/trailing-service'
 import { Trailing, TrailingCreate } from '../models/trailing'
+import { isSL, isTP } from '../helpers/stops-helper'
 
 export class TradingManager implements ManagerInterface {
   constructor(
@@ -52,11 +53,11 @@ export class TradingManager implements ManagerInterface {
       )
     }
 
-    if (trailing.tp <= price) {
+    if (isTP(trailing.side, price, trailing.tp)) {
       await this.positionService.closePosition(position.symbol)
     }
 
-    if (trailing.sl >= price) {
+    if (isSL(trailing.side, price, trailing.sl)) {
       await this.positionService.closePosition(position.symbol)
     }
   }
@@ -69,8 +70,8 @@ export class TradingManager implements ManagerInterface {
       const trailing: TrailingCreate = {
         symbol: strategy.symbol,
         side: strategy.side,
-        tp: strategy.tp!,
-        sl: strategy.sl!,
+        tp: strategy.tp,
+        sl: strategy.sl,
       }
       await this.trailingService.create(trailing)
     }

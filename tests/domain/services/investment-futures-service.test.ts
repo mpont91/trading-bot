@@ -9,6 +9,7 @@ let mockApiService: ApiService
 let mockTradingSettings: TradingSettings
 let mockLeverageService: LeverageService
 let investmentService: InvestmentService
+let leverageSettings: number
 
 function initialize(): void {
   mockApiService = createMockApiFuturesService()
@@ -22,7 +23,9 @@ function initialize(): void {
     symbols: ['BTCUSDT'],
   }
 
-  mockLeverageService = new LeverageService()
+  leverageSettings = 1
+
+  mockLeverageService = new LeverageService(leverageSettings)
 
   investmentService = new InvestmentFuturesService(
     mockTradingSettings,

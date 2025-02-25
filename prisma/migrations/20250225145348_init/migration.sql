@@ -155,8 +155,8 @@ CREATE TABLE "Strategy" (
 CREATE TABLE "TrailingSpot" (
     "symbol" TEXT NOT NULL PRIMARY KEY,
     "side" TEXT NOT NULL,
-    "tp" DECIMAL NOT NULL,
-    "sl" DECIMAL NOT NULL,
+    "tp" DECIMAL,
+    "sl" DECIMAL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -164,8 +164,8 @@ CREATE TABLE "TrailingSpot" (
 CREATE TABLE "TrailingFutures" (
     "symbol" TEXT NOT NULL PRIMARY KEY,
     "side" TEXT NOT NULL,
-    "tp" DECIMAL NOT NULL,
-    "sl" DECIMAL NOT NULL,
+    "tp" DECIMAL,
+    "sl" DECIMAL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
