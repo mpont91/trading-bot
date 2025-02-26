@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node src/index.ts",
     "dev:server": "nodemon --watch src --exec ts-node src/index.ts -- --only-server",
-    "dev:bot-spot": "nodemon --watch src --exec ts-node src/index.ts -- --only-bot-spot",
-    "dev:bot-futures": "nodemon --watch src --exec ts-node src/index.ts -- --only-bot-futures",
+    "dev:market": "nodemon --watch src --exec ts-node src/index.ts -- --only-market",
+    "dev:spot-trading": "nodemon --watch src --exec ts-node src/index.ts -- --only-spot-trading",
+    "dev:spot-account": "nodemon --watch src --exec ts-node src/index.ts -- --only-spot-account",
+    "dev:futures-trading": "nodemon --watch src --exec ts-node src/index.ts -- --only-futures-trading",
+    "dev:futures-account": "nodemon --watch src --exec ts-node src/index.ts -- --only-futures-account",
     "build": "tsc",
     "serve": "node dist/index.js",
     "format": "prettier --write .",

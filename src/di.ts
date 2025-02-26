@@ -136,17 +136,36 @@ class Container {
     const trailingFuturesRepository: TrailingRepository =
       new PrismaTrailingFuturesRepository(prisma)
 
+    const adxIndicator: AdxIndicator = new AdxIndicator(indicatorsSettings.adx)
+    const atrIndicator: AtrIndicator = new AtrIndicator(indicatorsSettings.atr)
+    const rsiIndicator: RsiIndicator = new RsiIndicator(indicatorsSettings.rsi)
+    const smaIndicator: SmaIndicator = new SmaIndicator(indicatorsSettings.sma)
+    const bbIndicator: BbIndicator = new BbIndicator(
+      indicatorsSettings.bb.period,
+      indicatorsSettings.bb.multiplier,
+    )
+
+    this.performanceService = new PerformanceService()
+
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
     this.apiSpotConcreteService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesConcreteService = new ApiFuturesService(bitmartApi)
+
     this.equitySpotService = new EquityService(equitySpotRepository)
     this.equityFuturesService = new EquityService(equityFuturesRepository)
+    this.strategyService = new StrategyService(strategyRepository)
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
     this.leverageService = new LeverageService(leverageSettings)
     this.stopsService = new StopsService(stopsSettings)
+    this.trailingSpotService = new TrailingService(trailingSpotRepository)
+    this.trailingFuturesService = new TrailingService(trailingFuturesRepository)
+    this.orderSpotService = new OrderService(orderSpotRepository)
+    this.orderFuturesService = new OrderService(orderFuturesRepository)
+    this.tradeSpotService = new TradeSpotService(tradeSpotRepository)
+    this.tradeFuturesService = new TradeFuturesService(tradeFuturesRepository)
     this.investmentSpotService = new InvestmentSpotService(
       tradingSpotSettings,
       this.apiSpotService,
@@ -156,10 +175,6 @@ class Container {
       this.apiFuturesService,
       this.leverageService,
     )
-    this.orderSpotService = new OrderService(orderSpotRepository)
-    this.orderFuturesService = new OrderService(orderFuturesRepository)
-    this.tradeSpotService = new TradeSpotService(tradeSpotRepository)
-    this.tradeFuturesService = new TradeFuturesService(tradeFuturesRepository)
     this.positionSpotService = new PositionSpotService(
       this.apiSpotService,
       this.investmentSpotService,
@@ -172,18 +187,8 @@ class Container {
       this.investmentFuturesService,
       this.orderFuturesService,
       this.tradeFuturesService,
-      this.trailingSpotService,
+      this.trailingFuturesService,
       this.leverageService,
-    )
-    this.performanceService = new PerformanceService()
-
-    const adxIndicator: AdxIndicator = new AdxIndicator(indicatorsSettings.adx)
-    const atrIndicator: AtrIndicator = new AtrIndicator(indicatorsSettings.atr)
-    const rsiIndicator: RsiIndicator = new RsiIndicator(indicatorsSettings.rsi)
-    const smaIndicator: SmaIndicator = new SmaIndicator(indicatorsSettings.sma)
-    const bbIndicator: BbIndicator = new BbIndicator(
-      indicatorsSettings.bb.period,
-      indicatorsSettings.bb.multiplier,
     )
     this.indicatorService = new IndicatorService(
       indicatorRepository,
@@ -198,9 +203,6 @@ class Container {
       this.leverageService,
       this.stopsService,
     )
-    this.strategyService = new StrategyService(strategyRepository)
-    this.trailingSpotService = new TrailingService(trailingSpotRepository)
-    this.trailingFuturesService = new TrailingService(trailingFuturesRepository)
 
     const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
