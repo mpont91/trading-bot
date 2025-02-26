@@ -28,15 +28,40 @@ export const settings: Settings = {
     klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
   },
   spotTrading: {
-    symbols: ['ETHUSDC'],
+    symbols: [
+      'BTCUSDC',
+      'ETHUSDC',
+      'XRPUSDC',
+      'SOLUSDC',
+      'ADAUSDC',
+      'HBARUSDC',
+    ],
     safetyCapitalMargin: 0.3,
   },
   futuresTrading: {
-    symbols: ['ETHUSDT'],
+    symbols: [
+      'DOGEUSDT',
+      'ADAUSDT',
+      'TRXUSDT',
+      'LINKUSDT',
+      'XLMUSDT',
+      'HBARUSDT',
+    ],
     safetyCapitalMargin: 0.3,
   },
   market: {
-    symbols: ['BTCUSDT', 'ETHUSDT', 'XRPUSDT', 'SOLUSDT'],
+    symbols: [
+      'BTCUSDT',
+      'ETHUSDT',
+      'XRPUSDT',
+      'SOLUSDT',
+      'DOGEUSDT',
+      'ADAUSDT',
+      'TRXUSDT',
+      'LINKUSDT',
+      'XLMUSDT',
+      'HBARUSDT',
+    ],
   },
   indicators: {
     sma: 20,
