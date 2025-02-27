@@ -5,6 +5,7 @@ import {
 } from './controllers/equity-controller'
 import { getCommissionEquitySpot } from './controllers/commission-equity-controller'
 import {
+  getPerformanceFull,
   getPerformanceFutures,
   getPerformanceSpot,
 } from './controllers/performance-controller'
@@ -26,6 +27,8 @@ router.get('/', (req: Request, res: Response): void => {
 router.get('/uptime', (req: Request, res: Response): void => {
   res.send({ data: process.uptime() })
 })
+
+router.get('/performance', getPerformanceFull)
 
 const marketRouter: Router = Router()
 marketRouter.get('/latest-strategies', getLatestStrategies)

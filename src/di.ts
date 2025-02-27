@@ -64,6 +64,7 @@ import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
+import { PerformanceFullService } from './domain/services/performance-full-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -88,6 +89,7 @@ class Container {
   private static positionFuturesService: PositionService
   private static performanceSpotService: PerformanceService
   private static performanceFuturesService: PerformanceService
+  private static performanceFullService: PerformanceFullService
   private static leverageService: LeverageService
   private static stopsService: StopsService
   private static predictionService: PredictionService
@@ -168,6 +170,10 @@ class Container {
     this.performanceSpotService = new PerformanceService(this.tradeSpotService)
     this.performanceFuturesService = new PerformanceService(
       this.tradeFuturesService,
+    )
+    this.performanceFullService = new PerformanceFullService(
+      this.performanceSpotService,
+      this.performanceFuturesService,
     )
     this.investmentSpotService = new InvestmentSpotService(
       tradingSpotSettings,
@@ -322,6 +328,9 @@ class Container {
   }
   static getPerformanceFuturesService(): PerformanceService {
     return this.performanceFuturesService
+  }
+  static getPerformanceFullService(): PerformanceFullService {
+    return this.performanceFullService
   }
   static getLeverageService(): LeverageService {
     return this.leverageService
