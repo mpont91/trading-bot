@@ -236,7 +236,7 @@ export class BinanceClientApi implements BinanceApi {
       const options: RestTradeTypes.getOrderOptions = {
         orderId: parseInt(orderId),
       }
-      return await this.client.getOrder(symbol, options)
+      return this.client.getOrder(symbol, options)
     }
 
     return executeWithRateLimit(this.limiter, task)
@@ -252,7 +252,7 @@ export class BinanceClientApi implements BinanceApi {
       const options: RestTradeTypes.accountTradeListOptions = {
         orderId: parseInt(orderId),
       }
-      return await this.client.accountTradeList(symbol, options)
+      return this.client.accountTradeList(symbol, options)
     }
 
     return executeWithRateLimit(this.limiter, task)

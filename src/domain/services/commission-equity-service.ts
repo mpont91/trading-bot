@@ -14,6 +14,6 @@ export class CommissionEquityService {
   }
 
   async get(): Promise<CommissionEquity> {
-    return await this.commissionEquityRepository.get()
+    return this.commissionEquityRepository.get()
   }
 }

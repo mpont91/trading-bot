@@ -7,6 +7,7 @@ import Decimal from 'decimal.js'
 import { TradeRepository } from '../../domain/repositories/trade-repository'
 import { TradeFutures, TradeFuturesCreate } from '../../domain/models/trade'
 import { Side } from '../../domain/types/side'
+import { Performance } from '../../domain/types/performance'
 
 export class PrismaTradeFuturesRepository implements TradeRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -26,6 +27,32 @@ export class PrismaTradeFuturesRepository implements TradeRepository {
     })
 
     return this.toDomainList(trades)
+  }
+
+  async getPerformance(): Promise<Performance> {
+    const trades = await this.prisma.tradeFutures.findMany()
+
+    const totalTrades: number = trades.length
+    const successTrades: number = trades.filter((t) => t.pnl.gt(0)).length
+    const failedTrades: number = trades.filter((t) => t.pnl.lt(0)).length
+    const totalPnl: Decimal = trades.reduce(
+      (sum, t) => sum.plus(t.pnl),
+      new Decimal(0),
+    )
+    const totalFees: Decimal = trades.reduce(
+      (sum, t) => sum.plus(t.fees),
+      new Decimal(0),
+    )
+    const netProfit: Decimal = totalPnl.minus(totalFees)
+
+    return {
+      trades: totalTrades,
+      success: successTrades,
+      failed: failedTrades,
+      pnl: totalPnl.toNumber(),
+      fees: totalFees.toNumber(),
+      net: netProfit.toNumber(),
+    }
   }
 
   private toDomain(prismaTradeFutures: PrismaTradeFutures): TradeFutures {

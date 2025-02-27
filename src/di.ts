@@ -86,7 +86,8 @@ class Container {
   private static tradeFuturesService: TradeService
   private static positionSpotService: PositionService
   private static positionFuturesService: PositionService
-  private static performanceService: PerformanceService
+  private static performanceSpotService: PerformanceService
+  private static performanceFuturesService: PerformanceService
   private static leverageService: LeverageService
   private static stopsService: StopsService
   private static predictionService: PredictionService
@@ -145,8 +146,6 @@ class Container {
       indicatorsSettings.bb.multiplier,
     )
 
-    this.performanceService = new PerformanceService()
-
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
     this.apiSpotConcreteService = new ApiSpotService(apiSettings, binanceApi)
@@ -166,6 +165,10 @@ class Container {
     this.orderFuturesService = new OrderService(orderFuturesRepository)
     this.tradeSpotService = new TradeSpotService(tradeSpotRepository)
     this.tradeFuturesService = new TradeFuturesService(tradeFuturesRepository)
+    this.performanceSpotService = new PerformanceService(this.tradeSpotService)
+    this.performanceFuturesService = new PerformanceService(
+      this.tradeFuturesService,
+    )
     this.investmentSpotService = new InvestmentSpotService(
       tradingSpotSettings,
       this.apiSpotService,
@@ -314,8 +317,11 @@ class Container {
   static getPositionFuturesService(): PositionService {
     return this.positionFuturesService
   }
-  static getPerformanceService(): PerformanceService {
-    return this.performanceService
+  static getPerformanceSpotService(): PerformanceService {
+    return this.performanceSpotService
+  }
+  static getPerformanceFuturesService(): PerformanceService {
+    return this.performanceFuturesService
   }
   static getLeverageService(): LeverageService {
     return this.leverageService
