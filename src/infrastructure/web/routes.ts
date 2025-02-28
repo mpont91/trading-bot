@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express'
 import {
+  getEquityFullGraph,
   getEquityFuturesGraph,
   getEquitySpotGraph,
 } from './controllers/equity-controller'
@@ -29,6 +30,7 @@ router.get('/uptime', (req: Request, res: Response): void => {
 })
 
 router.get('/performance', getPerformanceFull)
+router.get('/graph/equity', getEquityFullGraph)
 
 const marketRouter: Router = Router()
 marketRouter.get('/latest-strategies', getLatestStrategies)

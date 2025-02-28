@@ -65,6 +65,7 @@ import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-
 import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { PerformanceFullService } from './domain/services/performance-full-service'
+import { EquityFullService } from './domain/services/equity-full-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -78,6 +79,7 @@ class Container {
   private static apiFuturesConcreteService: ApiFuturesService
   private static equitySpotService: EquityService
   private static equityFuturesService: EquityService
+  private static equityFullService: EquityFullService
   private static commissionEquitySpotService: CommissionEquityService
   private static investmentSpotService: InvestmentService
   private static investmentFuturesService: InvestmentService
@@ -155,6 +157,10 @@ class Container {
 
     this.equitySpotService = new EquityService(equitySpotRepository)
     this.equityFuturesService = new EquityService(equityFuturesRepository)
+    this.equityFullService = new EquityFullService(
+      this.equitySpotService,
+      this.equityFuturesService,
+    )
     this.strategyService = new StrategyService(strategyRepository)
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
@@ -295,6 +301,9 @@ class Container {
   }
   static getEquityFuturesService(): EquityService {
     return this.equityFuturesService
+  }
+  static getEquityFullService(): EquityFullService {
+    return this.equityFullService
   }
   static getCommissionEquitySpotService(): CommissionEquityService {
     return this.commissionEquitySpotService
