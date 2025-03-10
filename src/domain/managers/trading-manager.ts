@@ -47,18 +47,13 @@ export class TradingManager implements ManagerInterface {
       position.symbol,
     )
 
-    if (!trailing) {
-      throw new Error(
-        'There is an open position but no trailing stored in DB. Something is broken!',
-      )
-    }
-
-    if (isTP(trailing.side, price, trailing.tp)) {
+    if (
+      !trailing ||
+      isTP(trailing.side, price, trailing.tp) ||
+      isSL(trailing.side, price, trailing.sl)
+    ) {
       await this.positionService.closePosition(position.symbol)
-    }
-
-    if (isSL(trailing.side, price, trailing.sl)) {
-      await this.positionService.closePosition(position.symbol)
+      return
     }
   }
   async handleOpportunity(strategy: Strategy): Promise<void> {
