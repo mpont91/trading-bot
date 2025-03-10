@@ -8,16 +8,12 @@ import {
   IndicatorRSICreate,
   IndicatorSMACreate,
 } from '../models/indicator'
-import { Side } from '../types/side'
-import { LeverageService } from './leverage-service'
-import { StopsService } from './stops-service'
-import { calculateSL, calculateTP } from '../helpers/stops-helper'
+import { BbStrategy } from '../strategies/bb-strategy'
 
 export class PredictionService {
   constructor(
     private readonly indicatorService: IndicatorService,
-    private readonly leverageService: LeverageService,
-    private readonly stopsService: StopsService,
+    private readonly bbStrategy: BbStrategy,
   ) {}
   async predict(symbol: string, klines: Kline[]): Promise<StrategyCreate> {
     const sma: IndicatorSMACreate = this.indicatorService.sma(symbol, klines)
@@ -35,34 +31,6 @@ export class PredictionService {
     const bb: IndicatorBBCreate = this.indicatorService.bb(symbol, klines)
     await this.indicatorService.createBB(bb)
 
-    return this.createStrategy(bb)
-  }
-
-  private async createStrategy(bb: IndicatorBBCreate): Promise<StrategyCreate> {
-    let side: Side = 'hold'
-    let leverage: number | undefined = undefined
-    let tp: number | undefined = undefined
-    let sl: number | undefined = undefined
-
-    if (bb.price <= bb.lower) {
-      side = 'long'
-    } else if (bb.price >= bb.upper) {
-      side = 'short'
-    }
-
-    if (side !== 'hold') {
-      leverage = this.leverageService.getLeverage()
-      tp = calculateTP(side, bb.price, this.stopsService.getTakeProfit())
-      sl = calculateSL(side, bb.price, this.stopsService.getStopLoss())
-    }
-
-    return {
-      symbol: bb.symbol,
-      price: bb.price,
-      side: side,
-      leverage: leverage,
-      tp: tp,
-      sl: sl,
-    }
+    return this.bbStrategy.createStrategy(bb)
   }
 }

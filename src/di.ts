@@ -66,6 +66,7 @@ import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { PerformanceFullService } from './domain/services/performance-full-service'
 import { EquityFullService } from './domain/services/equity-full-service'
+import { BbStrategy } from './domain/strategies/bb-strategy'
 
 class Container {
   private static launcherMarket: Launcher
@@ -213,10 +214,15 @@ class Container {
       atrIndicator,
       bbIndicator,
     )
-    this.predictionService = new PredictionService(
-      this.indicatorService,
+
+    const bbStrategy: BbStrategy = new BbStrategy(
       this.leverageService,
       this.stopsService,
+    )
+
+    this.predictionService = new PredictionService(
+      this.indicatorService,
+      bbStrategy,
     )
 
     const accountSpotManager: ManagerInterface = new AccountManager(
