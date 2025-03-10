@@ -37,7 +37,6 @@ import { TradeFuturesService } from './domain/services/trade-futures-service'
 import { InvestmentSpotService } from './domain/services/investment-spot-service'
 import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
-import { PredictionService } from './domain/services/prediction-service'
 import { StrategyService } from './domain/services/strategy-service'
 import { StrategyRepository } from './domain/repositories/strategy-repository'
 import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-strategy-repository'
@@ -95,7 +94,6 @@ class Container {
   private static performanceFullService: PerformanceFullService
   private static leverageService: LeverageService
   private static stopsService: StopsService
-  private static predictionService: PredictionService
   private static indicatorService: IndicatorService
   private static strategyService: StrategyService
   private static trailingSpotService: TrailingService
@@ -216,13 +214,9 @@ class Container {
     )
 
     const bbStrategy: BbStrategy = new BbStrategy(
+      this.indicatorService,
       this.leverageService,
       this.stopsService,
-    )
-
-    this.predictionService = new PredictionService(
-      this.indicatorService,
-      bbStrategy,
     )
 
     const accountSpotManager: ManagerInterface = new AccountManager(
@@ -240,7 +234,8 @@ class Container {
     const marketManager: ManagerInterface = new MarketManager(
       marketSettings.symbols,
       this.apiSpotConcreteService,
-      this.predictionService,
+      this.indicatorService,
+      bbStrategy,
       this.strategyService,
     )
     const tradingSpotManager: TradingManager = new TradingManager(
@@ -355,9 +350,6 @@ class Container {
   }
   static getIndicatorService(): IndicatorService {
     return this.indicatorService
-  }
-  static getPredictionService(): PredictionService {
-    return this.predictionService
   }
   static getStrategyService(): StrategyService {
     return this.strategyService

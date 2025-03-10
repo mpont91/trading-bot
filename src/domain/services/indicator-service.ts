@@ -6,6 +6,11 @@ import { AdxIndicator } from '../indicators/adx-indicator'
 import { BbIndicator } from '../indicators/bb-indicator'
 import { IndicatorRepository } from '../repositories/indicator-repository'
 import {
+  IndicatorADX,
+  IndicatorATR,
+  IndicatorBB,
+  IndicatorRSI,
+  IndicatorSMA,
   IndicatorADXCreate,
   IndicatorATRCreate,
   IndicatorBBCreate,
@@ -23,7 +28,7 @@ export class IndicatorService {
     private readonly bbIndicator: BbIndicator,
   ) {}
 
-  sma(symbol: string, klines: Kline[]): IndicatorSMACreate {
+  calculateSMA(symbol: string, klines: Kline[]): IndicatorSMACreate {
     return this.smaIndicator.calculate(symbol, klines)
   }
 
@@ -31,7 +36,11 @@ export class IndicatorService {
     await this.indicatorRepository.createSMA(indicator)
   }
 
-  rsi(symbol: string, klines: Kline[]): IndicatorRSICreate {
+  async getSMA(symbol: string): Promise<IndicatorSMA | null> {
+    return this.indicatorRepository.getSMA(symbol)
+  }
+
+  calculateRSI(symbol: string, klines: Kline[]): IndicatorRSICreate {
     return this.rsiIndicator.calculate(symbol, klines)
   }
 
@@ -39,7 +48,11 @@ export class IndicatorService {
     await this.indicatorRepository.createRSI(indicator)
   }
 
-  atr(symbol: string, klines: Kline[]): IndicatorATRCreate {
+  async getRSI(symbol: string): Promise<IndicatorRSI | null> {
+    return this.indicatorRepository.getRSI(symbol)
+  }
+
+  calculateATR(symbol: string, klines: Kline[]): IndicatorATRCreate {
     return this.atrIndicator.calculate(symbol, klines)
   }
 
@@ -47,7 +60,11 @@ export class IndicatorService {
     await this.indicatorRepository.createATR(indicator)
   }
 
-  adx(symbol: string, klines: Kline[]): IndicatorADXCreate {
+  async getATR(symbol: string): Promise<IndicatorATR | null> {
+    return this.indicatorRepository.getATR(symbol)
+  }
+
+  calculateADX(symbol: string, klines: Kline[]): IndicatorADXCreate {
     return this.adxIndicator.calculate(symbol, klines)
   }
 
@@ -55,11 +72,35 @@ export class IndicatorService {
     await this.indicatorRepository.createADX(indicator)
   }
 
-  bb(symbol: string, klines: Kline[]): IndicatorBBCreate {
+  async getADX(symbol: string): Promise<IndicatorADX | null> {
+    return this.indicatorRepository.getADX(symbol)
+  }
+
+  calculateBB(symbol: string, klines: Kline[]): IndicatorBBCreate {
     return this.bbIndicator.calculate(symbol, klines)
   }
 
   async createBB(indicator: IndicatorBBCreate): Promise<void> {
     await this.indicatorRepository.createBB(indicator)
+  }
+  async getBB(symbol: string): Promise<IndicatorBB | null> {
+    return this.indicatorRepository.getBB(symbol)
+  }
+
+  async calculateAndCreateAll(symbol: string, klines: Kline[]): Promise<void> {
+    const sma: IndicatorSMACreate = this.calculateSMA(symbol, klines)
+    await this.createSMA(sma)
+
+    const rsi: IndicatorRSICreate = this.calculateRSI(symbol, klines)
+    await this.createRSI(rsi)
+
+    const atr: IndicatorATRCreate = this.calculateATR(symbol, klines)
+    await this.createATR(atr)
+
+    const adx: IndicatorADXCreate = this.calculateADX(symbol, klines)
+    await this.createADX(adx)
+
+    const bb: IndicatorBBCreate = this.calculateBB(symbol, klines)
+    await this.createBB(bb)
   }
 }

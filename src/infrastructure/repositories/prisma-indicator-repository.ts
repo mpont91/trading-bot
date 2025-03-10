@@ -1,11 +1,25 @@
-import { Prisma, PrismaClient } from '@prisma/client'
+import {
+  Prisma,
+  PrismaClient,
+  IndicatorSMA as PrismaIndicatorSMA,
+  IndicatorRSI as PrismaIndicatorRSI,
+  IndicatorATR as PrismaIndicatorATR,
+  IndicatorADX as PrismaIndicatorADX,
+  IndicatorBB as PrismaIndicatorBB,
+} from '@prisma/client'
+
 import { IndicatorRepository } from '../../domain/repositories/indicator-repository'
 import {
+  IndicatorSMA,
   IndicatorADXCreate,
   IndicatorATRCreate,
   IndicatorBBCreate,
   IndicatorRSICreate,
   IndicatorSMACreate,
+  IndicatorRSI,
+  IndicatorATR,
+  IndicatorADX,
+  IndicatorBB,
 } from '../../domain/models/indicator'
 import Decimal from 'decimal.js'
 
@@ -18,10 +32,36 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     })
   }
 
+  async getSMA(symbol: string): Promise<IndicatorSMA | null> {
+    const indicator = await this.prisma.indicatorSMA.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!indicator) {
+      return null
+    }
+
+    return this.toDomainSMA(indicator as PrismaIndicatorSMA)
+  }
+
   async createRSI(indicator: IndicatorRSICreate): Promise<void> {
     await this.prisma.indicatorRSI.create({
       data: this.toPrismaRSI(indicator),
     })
+  }
+
+  async getRSI(symbol: string): Promise<IndicatorRSI | null> {
+    const indicator = await this.prisma.indicatorRSI.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!indicator) {
+      return null
+    }
+
+    return this.toDomainRSI(indicator as PrismaIndicatorRSI)
   }
 
   async createATR(indicator: IndicatorATRCreate): Promise<void> {
@@ -30,16 +70,55 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     })
   }
 
+  async getATR(symbol: string): Promise<IndicatorATR | null> {
+    const indicator = await this.prisma.indicatorATR.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!indicator) {
+      return null
+    }
+
+    return this.toDomainATR(indicator as PrismaIndicatorATR)
+  }
+
   async createADX(indicator: IndicatorADXCreate): Promise<void> {
     await this.prisma.indicatorADX.create({
       data: this.toPrismaADX(indicator),
     })
   }
 
+  async getADX(symbol: string): Promise<IndicatorADX | null> {
+    const indicator = await this.prisma.indicatorADX.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!indicator) {
+      return null
+    }
+
+    return this.toDomainADX(indicator as PrismaIndicatorADX)
+  }
+
   async createBB(indicator: IndicatorBBCreate): Promise<void> {
     await this.prisma.indicatorBB.create({
       data: this.toPrismaBB(indicator),
     })
+  }
+
+  async getBB(symbol: string): Promise<IndicatorBB | null> {
+    const indicator = await this.prisma.indicatorBB.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!indicator) {
+      return null
+    }
+
+    return this.toDomainBB(indicator as PrismaIndicatorBB)
   }
 
   private toPrismaSMA(
@@ -99,6 +178,66 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       middle: new Decimal(indicator.middle),
       lower: new Decimal(indicator.lower),
       pb: new Decimal(indicator.pb),
+    }
+  }
+
+  private toDomainSMA(prismaIndicatorSMA: PrismaIndicatorSMA): IndicatorSMA {
+    return {
+      id: prismaIndicatorSMA.id,
+      period: prismaIndicatorSMA.period,
+      symbol: prismaIndicatorSMA.symbol,
+      price: prismaIndicatorSMA.price.toNumber(),
+      sma: prismaIndicatorSMA.sma.toNumber(),
+      createdAt: prismaIndicatorSMA.created_at,
+    }
+  }
+
+  private toDomainRSI(prismaIndicatorRSI: PrismaIndicatorRSI): IndicatorRSI {
+    return {
+      id: prismaIndicatorRSI.id,
+      period: prismaIndicatorRSI.period,
+      symbol: prismaIndicatorRSI.symbol,
+      price: prismaIndicatorRSI.price.toNumber(),
+      rsi: prismaIndicatorRSI.rsi.toNumber(),
+      createdAt: prismaIndicatorRSI.created_at,
+    }
+  }
+
+  private toDomainATR(prismaIndicatorATR: PrismaIndicatorATR): IndicatorATR {
+    return {
+      id: prismaIndicatorATR.id,
+      period: prismaIndicatorATR.period,
+      symbol: prismaIndicatorATR.symbol,
+      price: prismaIndicatorATR.price.toNumber(),
+      atr: prismaIndicatorATR.atr.toNumber(),
+      createdAt: prismaIndicatorATR.created_at,
+    }
+  }
+
+  private toDomainADX(prismaIndicatorADX: PrismaIndicatorADX): IndicatorADX {
+    return {
+      id: prismaIndicatorADX.id,
+      period: prismaIndicatorADX.period,
+      symbol: prismaIndicatorADX.symbol,
+      price: prismaIndicatorADX.price.toNumber(),
+      adx: prismaIndicatorADX.adx.toNumber(),
+      pdi: prismaIndicatorADX.pdi.toNumber(),
+      mdi: prismaIndicatorADX.mdi.toNumber(),
+      createdAt: prismaIndicatorADX.created_at,
+    }
+  }
+
+  private toDomainBB(prismaIndicatorBB: PrismaIndicatorBB): IndicatorBB {
+    return {
+      id: prismaIndicatorBB.id,
+      period: prismaIndicatorBB.period,
+      symbol: prismaIndicatorBB.symbol,
+      price: prismaIndicatorBB.price.toNumber(),
+      upper: prismaIndicatorBB.upper.toNumber(),
+      middle: prismaIndicatorBB.middle.toNumber(),
+      lower: prismaIndicatorBB.lower.toNumber(),
+      pb: prismaIndicatorBB.pb.toNumber(),
+      createdAt: prismaIndicatorBB.created_at,
     }
   }
 }
