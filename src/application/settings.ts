@@ -74,7 +74,7 @@ export const settings: Settings = {
     },
   },
   stops: {
-    tp: null,
+    tp: 0.05,
     sl: 0.03,
   },
   leverage: 1,
