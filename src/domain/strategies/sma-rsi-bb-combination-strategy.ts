@@ -1,4 +1,4 @@
-import { IndicatorBB } from '../models/indicator'
+import { IndicatorBB, IndicatorRSI, IndicatorSMA } from '../models/indicator'
 import { StrategyCreate } from '../models/strategy'
 import { Side } from '../types/side'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
@@ -7,7 +7,7 @@ import { StopsService } from '../services/stops-service'
 import { IndicatorService } from '../services/indicator-service'
 import { getEmptyStrategy } from '../helpers/strategy-helper'
 
-export class BbStrategy {
+export class SmaRsiBbCombinationStrategy {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly leverageService: LeverageService,
@@ -15,9 +15,11 @@ export class BbStrategy {
   ) {}
 
   public async createStrategy(symbol: string): Promise<StrategyCreate> {
+    const sma: IndicatorSMA | null = await this.indicatorService.getSMA(symbol)
+    const rsi: IndicatorRSI | null = await this.indicatorService.getRSI(symbol)
     const bb: IndicatorBB | null = await this.indicatorService.getBB(symbol)
 
-    if (!bb) {
+    if (!bb || !sma || !rsi) {
       return getEmptyStrategy(symbol)
     }
 
@@ -26,9 +28,9 @@ export class BbStrategy {
     let tp: number | undefined = undefined
     let sl: number | undefined = undefined
 
-    if (bb.price <= bb.lower) {
+    if (bb.price <= bb.lower && sma.price < sma.sma && rsi.rsi < 30) {
       side = 'long'
-    } else if (bb.price >= bb.upper) {
+    } else if (bb.price >= bb.upper && sma.price > sma.sma && rsi.rsi > 70) {
       side = 'short'
     }
 

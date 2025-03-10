@@ -4,14 +4,14 @@ import { Kline } from '../types/kline'
 import { StrategyService } from '../services/strategy-service'
 import { StrategyCreate } from '../models/strategy'
 import { IndicatorService } from '../services/indicator-service'
-import { BbStrategy } from '../strategies/bb-strategy'
+import { SmaRsiBbCombinationStrategy } from '../strategies/sma-rsi-bb-combination-strategy'
 
 export class MarketManager implements ManagerInterface {
   constructor(
     private readonly symbols: string[],
     private readonly apiSpotService: ApiSpotService,
     private readonly indicatorService: IndicatorService,
-    private readonly bbStrategy: BbStrategy,
+    private readonly bbStrategy: SmaRsiBbCombinationStrategy,
     private readonly strategyService: StrategyService,
   ) {}
   async start(): Promise<void> {

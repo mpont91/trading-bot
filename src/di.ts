@@ -65,7 +65,7 @@ import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { PerformanceFullService } from './domain/services/performance-full-service'
 import { EquityFullService } from './domain/services/equity-full-service'
-import { BbStrategy } from './domain/strategies/bb-strategy'
+import { SmaRsiBbCombinationStrategy } from './domain/strategies/sma-rsi-bb-combination-strategy'
 
 class Container {
   private static launcherMarket: Launcher
@@ -213,11 +213,12 @@ class Container {
       bbIndicator,
     )
 
-    const bbStrategy: BbStrategy = new BbStrategy(
-      this.indicatorService,
-      this.leverageService,
-      this.stopsService,
-    )
+    const bbStrategy: SmaRsiBbCombinationStrategy =
+      new SmaRsiBbCombinationStrategy(
+        this.indicatorService,
+        this.leverageService,
+        this.stopsService,
+      )
 
     const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
