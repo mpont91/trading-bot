@@ -8,6 +8,8 @@ import { StrategyRepository } from '../../domain/repositories/strategy-repositor
 import { Strategy, StrategyCreate } from '../../domain/models/strategy'
 import { Side } from '../../domain/types/side'
 import { getEmptyStrategy } from '../../domain/helpers/strategy-helper'
+import { TimeInterval } from '../../domain/types/time-interval'
+import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 
 export class PrismaStrategyRepository implements StrategyRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -101,6 +103,49 @@ FROM strategy s
     ) last 
     ON s.symbol = last.symbol 
     AND s.created_at = last.max_created_at`
+
+    return this.toDomainList(strategies)
+  }
+
+  async getPriceGraph(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<Strategy[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const strategies = await this.prisma.strategy.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.desc,
+      },
+    })
+
+    return this.toDomainList(strategies)
+  }
+
+  async getOpportunitiesGraph(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<Strategy[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const strategies = await this.prisma.strategy.findMany({
+      where: {
+        symbol: symbol,
+        side: { not: 'hold' },
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.desc,
+      },
+    })
 
     return this.toDomainList(strategies)
   }

@@ -1,0 +1,2 @@
+GET http://localhost:3000/market/graph/signals/btcusdt?interval=all
+Accept: application/json

@@ -5,6 +5,9 @@ import {
   convertSymbolToSpotBaseCurrency,
   isSymbolForSpotBaseCurrency,
 } from '../helpers/symbol-helper'
+import { Signals } from '../types/signals'
+import { TimeInterval } from '../types/time-interval'
+import { reduceRecordsData } from '../helpers/graph-helper'
 
 export class StrategyService {
   constructor(private readonly strategyRepository: StrategyRepository) {}
@@ -44,5 +47,30 @@ export class StrategyService {
 
   async getLastManyOpportunitiesForEachSymbol(): Promise<Strategy[]> {
     return this.strategyRepository.getLastManyOpportunitiesForEachSymbol()
+  }
+
+  async signalsGraph(symbol: string, interval: TimeInterval): Promise<Signals> {
+    const prices: Strategy[] = await this.strategyRepository.getPriceGraph(
+      symbol,
+      interval,
+    )
+    const pricesReducedData: Strategy[] = reduceRecordsData(prices)
+
+    const opportunities: Strategy[] =
+      await this.strategyRepository.getOpportunitiesGraph(symbol, interval)
+    const opportunitiesReducedData: Strategy[] =
+      reduceRecordsData(opportunities)
+
+    return {
+      symbol: symbol,
+      prices: pricesReducedData.map((p: Strategy) => ({
+        amount: p.price,
+        date: p.createdAt,
+      })),
+      opportunities: opportunitiesReducedData.map((o: Strategy) => ({
+        side: o.side,
+        date: o.createdAt,
+      })),
+    }
   }
 }

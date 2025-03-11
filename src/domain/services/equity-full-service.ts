@@ -2,6 +2,7 @@ import { TimeInterval } from '../types/time-interval'
 import { Equity } from '../models/equity'
 import { EquityService } from './equity-service'
 import { EquityServiceInterface } from './equity-service-interface'
+import { reduceRecordsData } from '../helpers/graph-helper'
 
 export class EquityFullService implements EquityServiceInterface {
   constructor(
@@ -20,7 +21,7 @@ export class EquityFullService implements EquityServiceInterface {
       futuresEquities,
     )
 
-    return this.reduceToDesiredRecords(mergedEquities, 100)
+    return reduceRecordsData(mergedEquities)
   }
 
   private mergeEquities(spot: Equity[], futures: Equity[]): Equity[] {
@@ -35,27 +36,5 @@ export class EquityFullService implements EquityServiceInterface {
         amount: spotEquity.amount + futures[index].amount,
       }),
     )
-  }
-
-  private reduceToDesiredRecords(
-    equities: Equity[],
-    desiredRecords: number,
-  ): Equity[] {
-    if (equities.length <= desiredRecords) {
-      return equities
-    }
-
-    const step = (equities.length - 1) / (desiredRecords - 1)
-    const reducedData: Equity[] = []
-
-    for (let i = 0; i < desiredRecords - 1; i++) {
-      const index = Math.floor(i * step)
-      reducedData.push(equities[index])
-    }
-
-    // Asegurar el último punto
-    reducedData.push(equities[equities.length - 1])
-
-    return reducedData
   }
 }

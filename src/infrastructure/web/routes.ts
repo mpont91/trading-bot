@@ -17,6 +17,7 @@ import {
 import {
   getLastOpportunities,
   getLastStrategies,
+  getSignalsGraph,
 } from './controllers/strategy-controller'
 
 const router: Router = Router()
@@ -35,6 +36,7 @@ router.get('/graph/equity', getEquityFullGraph)
 const marketRouter: Router = Router()
 marketRouter.get('/last-strategies/:symbol?', getLastStrategies)
 marketRouter.get('/last-opportunities/:symbol?', getLastOpportunities)
+marketRouter.get('/graph/signals/:symbol', getSignalsGraph)
 
 const spotRouter: Router = Router()
 spotRouter.get('/graph/equity', getEquitySpotGraph)
