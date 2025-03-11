@@ -18,9 +18,26 @@ export class PrismaTradeSpotRepository implements TradeRepository {
     })
   }
 
-  async getLatest(limit: number = 5): Promise<TradeSpot[]> {
+  async getLastMany(limit: number = 10): Promise<TradeSpot[]> {
     const trades = await this.prisma.tradeSpot.findMany({
       take: limit,
+      orderBy: {
+        exit_at: Prisma.SortOrder.desc,
+      },
+    })
+
+    return this.toDomainList(trades)
+  }
+
+  async getLastManyForSymbol(
+    symbol: string,
+    limit: number = 10,
+  ): Promise<TradeSpot[]> {
+    const trades = await this.prisma.tradeSpot.findMany({
+      take: limit,
+      where: {
+        symbol: symbol,
+      },
       orderBy: {
         exit_at: Prisma.SortOrder.desc,
       },

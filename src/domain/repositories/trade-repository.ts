@@ -3,6 +3,7 @@ import { Performance } from '../types/performance'
 
 export interface TradeRepository {
   create(tradeCreate: TradeCreate): Promise<void>
-  getLatest(): Promise<Trade[]>
+  getLastMany(): Promise<Trade[]>
+  getLastManyForSymbol(symbol: string): Promise<Trade[]>
   getPerformance(): Promise<Performance>
 }

@@ -8,8 +8,8 @@ export class OrderService {
     await this.orderRepository.create(orderCreate)
   }
 
-  async getLatest(): Promise<Order[]> {
-    return this.orderRepository.getLatest()
+  async getLastMany(): Promise<Order[]> {
+    return this.orderRepository.getLastMany()
   }
 
   async getLastOrderForSymbol(symbol: string): Promise<Order | null> {

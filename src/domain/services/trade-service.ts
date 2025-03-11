@@ -10,8 +10,8 @@ export abstract class TradeService {
     await this.tradeRepository.create(tradeCreate)
   }
 
-  async getLatest(): Promise<Trade[]> {
-    return this.tradeRepository.getLatest()
+  async getLastMany(): Promise<Trade[]> {
+    return this.tradeRepository.getLastMany()
   }
 
   async getPerformance(): Promise<Performance> {

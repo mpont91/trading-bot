@@ -17,7 +17,7 @@ export class PrismaOrderFuturesRepository implements OrderRepository {
     })
   }
 
-  async getLatest(limit: number = 5): Promise<OrderFutures[]> {
+  async getLastMany(limit: number = 10): Promise<OrderFutures[]> {
     const orders = await this.prisma.orderFutures.findMany({
       take: limit,
       orderBy: {

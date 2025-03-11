@@ -6,12 +6,13 @@ import { StrategyService } from '../../../domain/services/strategy-service'
 
 const strategyService: StrategyService = Container.getStrategyService()
 
-export async function getLatestStrategies(
+export async function getLastStrategies(
   request: Request,
   response: Response,
 ): Promise<void> {
   try {
-    const strategies: Strategy[] = await strategyService.getLatest()
+    const strategies: Strategy[] =
+      await strategyService.getLastManyForEachSymbol()
 
     response.json({
       data: strategies,
@@ -21,13 +22,13 @@ export async function getLatestStrategies(
   }
 }
 
-export async function getLatestOpportunities(
+export async function getLastOpportunities(
   request: Request,
   response: Response,
 ): Promise<void> {
   try {
     const opportunities: Strategy[] =
-      await strategyService.getLatestOpportunities()
+      await strategyService.getLastManyOpportunitiesForEachSymbol()
 
     response.json({
       data: opportunities,

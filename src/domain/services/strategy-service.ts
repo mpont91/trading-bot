@@ -13,15 +13,7 @@ export class StrategyService {
     await this.strategyRepository.create(strategy)
   }
 
-  async getLatest(): Promise<Strategy[]> {
-    return this.strategyRepository.getLatest()
-  }
-
-  async getLatestOpportunities(): Promise<Strategy[]> {
-    return this.strategyRepository.getLatestOpportunities()
-  }
-
-  async getLatestForSymbol(symbol: string): Promise<Strategy> {
+  async getLastForSymbol(symbol: string): Promise<Strategy> {
     const needConversion: boolean = isSymbolForSpotBaseCurrency(symbol)
 
     if (needConversion) {
@@ -29,12 +21,28 @@ export class StrategyService {
     }
 
     const strategy: Strategy =
-      await this.strategyRepository.getLatestForSymbol(symbol)
+      await this.strategyRepository.getLastForSymbol(symbol)
 
     if (needConversion) {
       strategy.symbol = convertSymbolToSpotBaseCurrency(strategy.symbol)
     }
 
     return strategy
+  }
+
+  async getLastManyForSymbol(symbol: string): Promise<Strategy[]> {
+    return this.strategyRepository.getLastManyForSymbol(symbol)
+  }
+
+  async getLastManyOpportunitiesForSymbol(symbol: string): Promise<Strategy[]> {
+    return this.strategyRepository.getLastManyOpportunitiesForSymbol(symbol)
+  }
+
+  async getLastManyForEachSymbol(): Promise<Strategy[]> {
+    return this.strategyRepository.getLastManyForEachSymbol()
+  }
+
+  async getLastManyOpportunitiesForEachSymbol(): Promise<Strategy[]> {
+    return this.strategyRepository.getLastManyOpportunitiesForEachSymbol()
   }
 }
