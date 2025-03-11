@@ -27,7 +27,11 @@ async function getLastTrades(
   tradeService: TradeService,
 ): Promise<void> {
   try {
-    const trades: Trade[] = await tradeService.getLastMany()
+    const symbol: string | undefined = request.params.symbol
+
+    const trades: Trade[] = symbol
+      ? await tradeService.getLastManyForSymbol(symbol.toUpperCase())
+      : await tradeService.getLastMany()
 
     response.json({ data: trades })
   } catch (error: unknown) {

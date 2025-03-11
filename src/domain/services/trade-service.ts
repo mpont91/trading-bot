@@ -14,6 +14,10 @@ export abstract class TradeService {
     return this.tradeRepository.getLastMany()
   }
 
+  async getLastManyForSymbol(symbol: string): Promise<Trade[]> {
+    return this.tradeRepository.getLastManyForSymbol(symbol)
+  }
+
   async getPerformance(): Promise<Performance> {
     return this.tradeRepository.getPerformance()
   }

@@ -33,19 +33,19 @@ router.get('/performance', getPerformanceFull)
 router.get('/graph/equity', getEquityFullGraph)
 
 const marketRouter: Router = Router()
-marketRouter.get('/last-strategies', getLastStrategies)
-marketRouter.get('/last-opportunities', getLastOpportunities)
+marketRouter.get('/last-strategies/:symbol?', getLastStrategies)
+marketRouter.get('/last-opportunities/:symbol?', getLastOpportunities)
 
 const spotRouter: Router = Router()
 spotRouter.get('/graph/equity', getEquitySpotGraph)
 spotRouter.get('/commission-equity', getCommissionEquitySpot)
 spotRouter.get('/performance', getPerformanceSpot)
-spotRouter.get('/last-trades', getLastTradesSpot)
+spotRouter.get('/last-trades/:symbol?', getLastTradesSpot)
 
 const futuresRouter: Router = Router()
 futuresRouter.get('/graph/equity', getEquityFuturesGraph)
 futuresRouter.get('/performance', getPerformanceFutures)
-futuresRouter.get('/last-trades', getLastTradesFutures)
+futuresRouter.get('/last-trades/:symbol?', getLastTradesFutures)
 
 router.use('/market', marketRouter)
 router.use('/spot', spotRouter)

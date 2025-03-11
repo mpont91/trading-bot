@@ -11,8 +11,11 @@ export async function getLastStrategies(
   response: Response,
 ): Promise<void> {
   try {
-    const strategies: Strategy[] =
-      await strategyService.getLastManyForEachSymbol()
+    const symbol: string | undefined = request.params.symbol
+
+    const strategies: Strategy[] = symbol
+      ? await strategyService.getLastManyForSymbol(symbol.toUpperCase())
+      : await strategyService.getLastManyForEachSymbol()
 
     response.json({
       data: strategies,
@@ -27,8 +30,13 @@ export async function getLastOpportunities(
   response: Response,
 ): Promise<void> {
   try {
-    const opportunities: Strategy[] =
-      await strategyService.getLastManyOpportunitiesForEachSymbol()
+    const symbol: string | undefined = request.params.symbol
+
+    const opportunities: Strategy[] = symbol
+      ? await strategyService.getLastManyOpportunitiesForSymbol(
+          symbol.toUpperCase(),
+        )
+      : await strategyService.getLastManyOpportunitiesForEachSymbol()
 
     response.json({
       data: opportunities,
