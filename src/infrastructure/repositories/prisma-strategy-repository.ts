@@ -84,7 +84,8 @@ FROM strategy s
         GROUP BY symbol
     ) last 
     ON s.symbol = last.symbol 
-    AND s.created_at = last.max_created_at`
+    AND s.created_at = last.max_created_at
+    ORDER BY s.created_at DESC`
 
     return this.toDomainList(strategies)
   }
@@ -102,7 +103,8 @@ FROM strategy s
         GROUP BY symbol
     ) last 
     ON s.symbol = last.symbol 
-    AND s.created_at = last.max_created_at`
+    AND s.created_at = last.max_created_at
+    ORDER BY s.created_at DESC`
 
     return this.toDomainList(strategies)
   }
@@ -121,7 +123,7 @@ FROM strategy s
         },
       },
       orderBy: {
-        created_at: Prisma.SortOrder.desc,
+        created_at: Prisma.SortOrder.asc,
       },
     })
 
@@ -143,7 +145,7 @@ FROM strategy s
         },
       },
       orderBy: {
-        created_at: Prisma.SortOrder.desc,
+        created_at: Prisma.SortOrder.asc,
       },
     })
 
