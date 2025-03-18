@@ -65,7 +65,8 @@ import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { PerformanceFullService } from './domain/services/performance-full-service'
 import { EquityFullService } from './domain/services/equity-full-service'
-import { SmaRsiBbCombinationStrategy } from './domain/strategies/sma-rsi-bb-combination-strategy'
+import { CombinationStrategy } from './domain/strategies/combination-strategy'
+import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 
 class Container {
   private static launcherMarket: Launcher
@@ -148,6 +149,10 @@ class Container {
       indicatorsSettings.bb.period,
       indicatorsSettings.bb.multiplier,
     )
+    const smaCrossIndicator: SmaCrossIndicator = new SmaCrossIndicator(
+      indicatorsSettings.smaCross.periodLong,
+      indicatorsSettings.smaCross.periodShort,
+    )
 
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
     this.apiFuturesService = new ApiFuturesService(bitmartApi)
@@ -211,14 +216,14 @@ class Container {
       adxIndicator,
       atrIndicator,
       bbIndicator,
+      smaCrossIndicator,
     )
 
-    const bbStrategy: SmaRsiBbCombinationStrategy =
-      new SmaRsiBbCombinationStrategy(
-        this.indicatorService,
-        this.leverageService,
-        this.stopsService,
-      )
+    const combinationStrategy: CombinationStrategy = new CombinationStrategy(
+      this.indicatorService,
+      this.leverageService,
+      this.stopsService,
+    )
 
     const accountSpotManager: ManagerInterface = new AccountManager(
       this.apiSpotService,
@@ -236,7 +241,7 @@ class Container {
       marketSettings.symbols,
       this.apiSpotConcreteService,
       this.indicatorService,
-      bbStrategy,
+      combinationStrategy,
       this.strategyService,
     )
     const tradingSpotManager: TradingManager = new TradingManager(

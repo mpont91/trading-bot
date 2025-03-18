@@ -56,6 +56,10 @@ export interface IndicatorsSettings {
     period: number
     multiplier: number
   }
+  smaCross: {
+    periodLong: number
+    periodShort: number
+  }
 }
 
 export interface StopsSettings {

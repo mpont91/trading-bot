@@ -7,7 +7,7 @@ import { StopsService } from '../services/stops-service'
 import { IndicatorService } from '../services/indicator-service'
 import { getEmptyStrategy } from '../helpers/strategy-helper'
 
-export class SmaRsiBbCombinationStrategy {
+export class CombinationStrategy {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly leverageService: LeverageService,

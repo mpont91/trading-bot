@@ -57,3 +57,19 @@ export interface IndicatorBB {
 }
 
 export type IndicatorBBCreate = Omit<IndicatorBB, 'id' | 'createdAt'>
+
+export interface IndicatorSMACross {
+  id: number
+  periodLong: number
+  periodShort: number
+  symbol: string
+  price: number
+  smaLong: number
+  smaShort: number
+  createdAt: Date
+}
+
+export type IndicatorSMACrossCreate = Omit<
+  IndicatorSMACross,
+  'id' | 'createdAt'
+>

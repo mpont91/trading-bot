@@ -6,20 +6,23 @@ import {
   IndicatorATR as PrismaIndicatorATR,
   IndicatorADX as PrismaIndicatorADX,
   IndicatorBB as PrismaIndicatorBB,
+  IndicatorSMACross as PrismaIndicatorSMACross,
 } from '@prisma/client'
 
 import { IndicatorRepository } from '../../domain/repositories/indicator-repository'
 import {
-  IndicatorSMA,
   IndicatorADXCreate,
   IndicatorATRCreate,
   IndicatorBBCreate,
   IndicatorRSICreate,
   IndicatorSMACreate,
+  IndicatorSMACrossCreate,
+  IndicatorSMA,
   IndicatorRSI,
   IndicatorATR,
   IndicatorADX,
   IndicatorBB,
+  IndicatorSMACross,
 } from '../../domain/models/indicator'
 import Decimal from 'decimal.js'
 
@@ -121,6 +124,25 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainBB(indicator as PrismaIndicatorBB)
   }
 
+  async createSMACross(indicator: IndicatorSMACrossCreate): Promise<void> {
+    await this.prisma.indicatorSMACross.create({
+      data: this.toPrismaSMACross(indicator),
+    })
+  }
+
+  async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
+    const indicator = await this.prisma.indicatorSMACross.findFirst({
+      where: { symbol },
+      orderBy: { created_at: Prisma.SortOrder.desc },
+    })
+
+    if (!indicator) {
+      return null
+    }
+
+    return this.toDomainSMACross(indicator as PrismaIndicatorSMACross)
+  }
+
   private toPrismaSMA(
     indicator: IndicatorSMACreate,
   ): Prisma.IndicatorSMACreateInput {
@@ -181,6 +203,19 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     }
   }
 
+  private toPrismaSMACross(
+    indicator: IndicatorSMACrossCreate,
+  ): Prisma.IndicatorSMACrossCreateInput {
+    return {
+      period_long: indicator.periodLong,
+      period_short: indicator.periodShort,
+      symbol: indicator.symbol,
+      price: new Decimal(indicator.price),
+      sma_long: new Decimal(indicator.smaLong),
+      sma_short: new Decimal(indicator.smaShort),
+    }
+  }
+
   private toDomainSMA(prismaIndicatorSMA: PrismaIndicatorSMA): IndicatorSMA {
     return {
       id: prismaIndicatorSMA.id,
@@ -238,6 +273,21 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       lower: prismaIndicatorBB.lower.toNumber(),
       pb: prismaIndicatorBB.pb.toNumber(),
       createdAt: prismaIndicatorBB.created_at,
+    }
+  }
+
+  private toDomainSMACross(
+    prismaIndicatorSMACross: PrismaIndicatorSMACross,
+  ): IndicatorSMACross {
+    return {
+      id: prismaIndicatorSMACross.id,
+      periodLong: prismaIndicatorSMACross.period_long,
+      periodShort: prismaIndicatorSMACross.period_short,
+      symbol: prismaIndicatorSMACross.symbol,
+      price: prismaIndicatorSMACross.price.toNumber(),
+      smaLong: prismaIndicatorSMACross.sma_long.toNumber(),
+      smaShort: prismaIndicatorSMACross.sma_short.toNumber(),
+      createdAt: prismaIndicatorSMACross.created_at,
     }
   }
 }

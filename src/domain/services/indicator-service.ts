@@ -11,12 +11,15 @@ import {
   IndicatorBB,
   IndicatorRSI,
   IndicatorSMA,
+  IndicatorSMACross,
   IndicatorADXCreate,
   IndicatorATRCreate,
   IndicatorBBCreate,
   IndicatorRSICreate,
   IndicatorSMACreate,
+  IndicatorSMACrossCreate,
 } from '../models/indicator'
+import { SmaCrossIndicator } from '../indicators/sma-cross-indicator'
 
 export class IndicatorService {
   constructor(
@@ -26,6 +29,7 @@ export class IndicatorService {
     private readonly adxIndicator: AdxIndicator,
     private readonly atrIndicator: AtrIndicator,
     private readonly bbIndicator: BbIndicator,
+    private readonly smaCrossIndicator: SmaCrossIndicator,
   ) {}
 
   calculateSMA(symbol: string, klines: Kline[]): IndicatorSMACreate {
@@ -87,6 +91,17 @@ export class IndicatorService {
     return this.indicatorRepository.getBB(symbol)
   }
 
+  calculateSMACross(symbol: string, klines: Kline[]): IndicatorSMACrossCreate {
+    return this.smaCrossIndicator.calculate(symbol, klines)
+  }
+
+  async createSMACross(indicator: IndicatorSMACrossCreate): Promise<void> {
+    await this.indicatorRepository.createSMACross(indicator)
+  }
+  async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
+    return this.indicatorRepository.getSMACross(symbol)
+  }
+
   async calculateAndCreateAll(symbol: string, klines: Kline[]): Promise<void> {
     const sma: IndicatorSMACreate = this.calculateSMA(symbol, klines)
     await this.createSMA(sma)
@@ -102,5 +117,11 @@ export class IndicatorService {
 
     const bb: IndicatorBBCreate = this.calculateBB(symbol, klines)
     await this.createBB(bb)
+
+    const smaCross: IndicatorSMACrossCreate = this.calculateSMACross(
+      symbol,
+      klines,
+    )
+    await this.createSMACross(smaCross)
   }
 }

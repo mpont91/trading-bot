@@ -72,6 +72,10 @@ export const settings: Settings = {
       period: 20,
       multiplier: 2.5,
     },
+    smaCross: {
+      periodLong: 50,
+      periodShort: 20,
+    },
   },
   stops: {
     tp: 0.05,
