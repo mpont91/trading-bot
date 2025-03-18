@@ -4,6 +4,7 @@ import {
   IndicatorBB,
   IndicatorRSI,
   IndicatorSMA,
+  IndicatorSMACross,
   IndicatorADXCreate,
   IndicatorATRCreate,
   IndicatorBBCreate,
@@ -11,7 +12,6 @@ import {
   IndicatorSMACreate,
   IndicatorSMACrossCreate,
 } from '../models/indicator'
-import { IndicatorSMACross } from '@prisma/client'
 
 export interface IndicatorRepository {
   createSMA(indicator: IndicatorSMACreate): Promise<void>
