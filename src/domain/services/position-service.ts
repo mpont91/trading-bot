@@ -36,7 +36,7 @@ export abstract class PositionService {
     const position: Position | null = await this.getPosition(symbol)
     if (!position) {
       throw new Error(
-        'Tried to close a position when there is no open position!',
+        `Tried to close a position when there is no open position! Symbol: ${symbol}`,
       )
     }
 
@@ -47,7 +47,9 @@ export abstract class PositionService {
       await this.orderService.getLastOrderForSymbol(symbol)
 
     if (!entryOrder) {
-      throw new Error('There is no entry order. Something is broken!')
+      throw new Error(
+        `There is no entry order. Something is broken! Symbol: ${symbol}`,
+      )
     }
 
     const exitOrder: OrderCreate = await this.submitOrder(orderRequest)
