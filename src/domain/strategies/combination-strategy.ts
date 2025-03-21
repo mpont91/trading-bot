@@ -1,4 +1,9 @@
-import { IndicatorBB, IndicatorRSI, IndicatorSMA } from '../models/indicator'
+import {
+  IndicatorBB,
+  IndicatorRSI,
+  IndicatorSMA,
+  IndicatorSMACross,
+} from '../models/indicator'
 import { StrategyCreate } from '../models/strategy'
 import { Side } from '../types/side'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
@@ -18,8 +23,10 @@ export class CombinationStrategy {
     const sma: IndicatorSMA | null = await this.indicatorService.getSMA(symbol)
     const rsi: IndicatorRSI | null = await this.indicatorService.getRSI(symbol)
     const bb: IndicatorBB | null = await this.indicatorService.getBB(symbol)
+    const smaCross: IndicatorSMACross | null =
+      await this.indicatorService.getSMACross(symbol)
 
-    if (!bb || !sma || !rsi) {
+    if (!bb || !sma || !rsi || !smaCross) {
       return getEmptyStrategy(symbol)
     }
 
@@ -28,9 +35,19 @@ export class CombinationStrategy {
     let tp: number | undefined = undefined
     let sl: number | undefined = undefined
 
-    if (bb.price <= bb.lower && sma.price < sma.sma && rsi.rsi < 30) {
+    if (
+      bb.price <= bb.lower &&
+      sma.price < sma.sma &&
+      rsi.rsi < 30 &&
+      smaCross.smaShort > smaCross.smaLong
+    ) {
       side = 'long'
-    } else if (bb.price >= bb.upper && sma.price > sma.sma && rsi.rsi > 70) {
+    } else if (
+      bb.price >= bb.upper &&
+      sma.price > sma.sma &&
+      rsi.rsi > 70 &&
+      smaCross.smaShort < smaCross.smaLong
+    ) {
       side = 'short'
     }
 
