@@ -4,12 +4,29 @@ import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
 import { Position } from '../types/position'
+import { Kline, KlineInterval } from '../types/kline'
+import { ApiSettings } from '../types/settings'
 
 export abstract class ApiService {
-  protected constructor(private readonly api: Api) {}
+  protected constructor(
+    protected readonly settings: ApiSettings,
+    private readonly api: Api,
+  ) {}
 
   async getBalance(): Promise<Balance> {
     return this.api.getBalance()
+  }
+
+  async getPrice(symbol: string): Promise<number> {
+    return this.api.getPrice(symbol)
+  }
+
+  async getKlineHistory(symbol: string): Promise<Kline[]> {
+    const interval: KlineInterval = this.settings.klineHistoryInterval
+    const limit: number = this.settings.klineHistoryLimit
+    const end: Date = new Date()
+    const start: Date = new Date(end.getTime() - limit * interval * 60 * 1000)
+    return this.api.getKline(symbol, interval, start, end)
   }
 
   async getSymbol(symbol: string): Promise<Symbol> {

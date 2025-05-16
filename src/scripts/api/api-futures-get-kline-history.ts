@@ -3,7 +3,7 @@ import { ApiService } from '../../domain/services/api-service'
 import { Kline } from '../../domain/types/kline'
 
 async function start(): Promise<void> {
-  const apiService: ApiService = Container.getApiSpotService()
+  const apiService: ApiService = Container.getApiFuturesService()
   const symbol: string = process.argv[2]
 
   const response: Kline[] = await apiService.getKlineHistory(symbol)

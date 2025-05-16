@@ -12,6 +12,8 @@ import {
   SubmitFuturesOrderRequest,
   FuturesAccountTrade,
   FuturesAccountTradesRequest,
+  FuturesKlinesRequest,
+  FuturesKline,
 } from 'bitmart-api'
 import Bottleneck from 'bottleneck'
 import { Balance } from '../../domain/types/balance'
@@ -28,6 +30,11 @@ import { mapBitmartToDomainOrder } from './mappers/order-mapper'
 import { PositionFutures } from '../../domain/types/position'
 import { mapBitmartToDomainPosition } from './mappers/position-mapper'
 import { BitmartSettings } from '../../domain/types/settings'
+import { Kline, KlineInterval } from '../../domain/types/kline'
+import {
+  mapBitmartToDomainKline,
+  mapDomainToBitmartKlineInterval,
+} from './mappers/kline-mapper'
 
 export class BitmartClientApi implements BitmartApi {
   private readonly client: FuturesClientV2
@@ -51,6 +58,34 @@ export class BitmartClientApi implements BitmartApi {
 
       this.validateResponse(response)
       return mapBitmartToDomainBalance(response.data[0])
+    }
+
+    return executeWithRateLimit(this.limiter, task)
+  }
+
+  async getPrice(symbol: string): Promise<number> {
+    return (await this.getSymbol(symbol)).price
+  }
+
+  async getKline(
+    symbol: string,
+    interval: KlineInterval,
+    start: Date,
+    end: Date,
+  ): Promise<Kline[]> {
+    const task = async (): Promise<Kline[]> => {
+      const params: FuturesKlinesRequest = {
+        symbol: symbol,
+        start_time: start.getTime(),
+        end_time: end.getTime(),
+        step: mapDomainToBitmartKlineInterval(interval),
+      }
+      const response: APIResponse<FuturesKline[]> =
+        await this.client.getFuturesKlines(params)
+
+      this.validateResponse(response)
+
+      return response.data.map(mapBitmartToDomainKline)
     }
 
     return executeWithRateLimit(this.limiter, task)

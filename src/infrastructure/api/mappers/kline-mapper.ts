@@ -1,3 +1,4 @@
+import { FuturesKline } from 'bitmart-api'
 import { Kline, KlineInterval } from '../../../domain/types/kline'
 import { Interval } from '@binance/connector-typescript'
 
@@ -31,4 +32,21 @@ export function mapDomainToBinanceKlineInterval(
     10080: '1w' as Interval,
   }
   return mapping[klineInterval]
+}
+
+export function mapDomainToBitmartKlineInterval(
+  klineInterval: KlineInterval,
+): number {
+  return klineInterval
+}
+
+export function mapBitmartToDomainKline(kline: FuturesKline): Kline {
+  return {
+    time: new Date(kline.timestamp),
+    openPrice: parseFloat(kline.open_price),
+    highPrice: parseFloat(kline.high_price),
+    lowPrice: parseFloat(kline.low_price),
+    closePrice: parseFloat(kline.close_price),
+    volume: parseFloat(kline.volume),
+  }
 }

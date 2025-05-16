@@ -25,6 +25,8 @@
     "test:watch": "jest --watchAll",
     "api:futures-get-balance": "ts-node src/scripts/api/api-futures-get-balance.ts",
     "api:futures-get-order": "ts-node src/scripts/api/api-futures-get-order.ts",
+    "api:futures-get-price": "ts-node src/scripts/api/api-futures-get-price.ts",
+    "api:futures-get-kline-history": "ts-node src/scripts/api/api-futures-get-kline-history.ts",
     "api:futures-get-symbol": "ts-node src/scripts/api/api-futures-get-symbol.ts",
     "api:futures-set-leverage": "ts-node src/scripts/api/api-futures-set-leverage.ts",
     "api:futures-submit-order": "ts-node src/scripts/api/api-futures-submit-order.ts",

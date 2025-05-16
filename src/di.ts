@@ -155,9 +155,12 @@ class Container {
     )
 
     this.apiSpotService = new ApiSpotService(apiSettings, binanceApi)
-    this.apiFuturesService = new ApiFuturesService(bitmartApi)
+    this.apiFuturesService = new ApiFuturesService(apiSettings, bitmartApi)
     this.apiSpotConcreteService = new ApiSpotService(apiSettings, binanceApi)
-    this.apiFuturesConcreteService = new ApiFuturesService(bitmartApi)
+    this.apiFuturesConcreteService = new ApiFuturesService(
+      apiSettings,
+      bitmartApi,
+    )
 
     this.equitySpotService = new EquityService(equitySpotRepository)
     this.equityFuturesService = new EquityService(equityFuturesRepository)
