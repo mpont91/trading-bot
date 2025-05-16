@@ -27,6 +27,8 @@ export function createMockBitmartApi(): jest.Mocked<BitmartApi> {
     getOrder: jest.fn(),
     getPosition: jest.fn(),
     setLeverage: jest.fn(),
+    getPrice: jest.fn(),
+    getKline: jest.fn(),
   } as jest.Mocked<BitmartApi>
 }
 
@@ -38,5 +40,6 @@ export function createMockApiSpotService(): ApiService {
 
 export function createMockApiFuturesService(): ApiService {
   const mockBitmartApi: jest.Mocked<BitmartApi> = createMockBitmartApi()
-  return new ApiFuturesService(mockBitmartApi)
+  const mockApiSettings: ApiSettings = settings.api
+  return new ApiFuturesService(mockApiSettings, mockBitmartApi)
 }
