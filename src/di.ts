@@ -69,7 +69,8 @@ import { CombinationStrategy } from './domain/strategies/combination-strategy'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 
 class Container {
-  private static launcherMarket: Launcher
+  private static launcherSpotMarket: Launcher
+  private static launcherFuturesMarket: Launcher
   private static launcherSpotTrading: Launcher
   private static launcherSpotAccount: Launcher
   private static launcherFuturesTrading: Launcher
@@ -240,9 +241,16 @@ class Container {
       this.apiFuturesService,
       this.equityFuturesService,
     )
-    const marketManager: ManagerInterface = new MarketManager(
+    const marketSpotManager: ManagerInterface = new MarketManager(
       marketSettings.symbols,
-      this.apiSpotConcreteService,
+      this.apiSpotService,
+      this.indicatorService,
+      combinationStrategy,
+      this.strategyService,
+    )
+    const marketFuturesManager: ManagerInterface = new MarketManager(
+      marketSettings.symbols,
+      this.apiFuturesService,
       this.indicatorService,
       combinationStrategy,
       this.strategyService,
@@ -261,8 +269,11 @@ class Container {
       this.strategyService,
       this.trailingFuturesService,
     )
-    this.launcherMarket = new Launcher(settings.intervalMarketTime, [
-      marketManager,
+    this.launcherSpotMarket = new Launcher(settings.intervalMarketTime, [
+      marketSpotManager,
+    ])
+    this.launcherFuturesMarket = new Launcher(settings.intervalMarketTime, [
+      marketFuturesManager,
     ])
     this.launcherSpotTrading = new Launcher(settings.intervalTradingTime, [
       tradingSpotManager,
@@ -279,8 +290,11 @@ class Container {
     ])
   }
 
-  static getLauncherMarket(): Launcher {
-    return this.launcherMarket
+  static getLauncherSpotMarket(): Launcher {
+    return this.launcherSpotMarket
+  }
+  static getLauncherFuturesMarket(): Launcher {
+    return this.launcherFuturesMarket
   }
   static getLauncherSpotTrading(): Launcher {
     return this.launcherSpotTrading

@@ -1,5 +1,6 @@
 import { server } from './server'
-import { botMarket } from './bot-market'
+import { botSpotMarket } from './bot-spot-market'
+import { botFuturesMarket } from './bot-futures-market'
 import { botSpotTrading, botSpotAccount } from './bot-spot'
 import { botFuturesTrading, botFuturesAccount } from './bot-futures'
 
@@ -80,7 +81,8 @@ class App {
     }
 
     if (this.runMarket) {
-      botMarket()
+      botSpotMarket()
+      botFuturesMarket()
     }
 
     if (this.runSpotTrading) {
