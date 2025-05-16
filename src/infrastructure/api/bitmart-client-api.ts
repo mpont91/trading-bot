@@ -76,8 +76,8 @@ export class BitmartClientApi implements BitmartApi {
     const task = async (): Promise<Kline[]> => {
       const params: FuturesKlinesRequest = {
         symbol: symbol,
-        start_time: start.getTime(),
-        end_time: end.getTime(),
+        start_time: Math.floor(start.getTime() / 1000),
+        end_time: Math.floor(end.getTime() / 1000),
         step: mapDomainToBitmartKlineInterval(interval),
       }
       const response: APIResponse<FuturesKline[]> =

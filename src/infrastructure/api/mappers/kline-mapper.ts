@@ -42,7 +42,7 @@ export function mapDomainToBitmartKlineInterval(
 
 export function mapBitmartToDomainKline(kline: FuturesKline): Kline {
   return {
-    time: new Date(kline.timestamp),
+    time: new Date(kline.timestamp * 1000),
     openPrice: parseFloat(kline.open_price),
     highPrice: parseFloat(kline.high_price),
     lowPrice: parseFloat(kline.low_price),
