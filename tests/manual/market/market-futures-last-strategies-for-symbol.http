@@ -1,0 +1,2 @@
+GET http://localhost:3000/market/futures/last-strategies/adausdt
+Accept: application/json
