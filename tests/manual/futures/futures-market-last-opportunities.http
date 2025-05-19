@@ -1,0 +1,2 @@
+GET http://localhost:3000/futures/market/last-opportunities
+Accept: application/json

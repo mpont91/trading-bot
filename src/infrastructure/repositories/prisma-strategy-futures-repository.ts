@@ -82,10 +82,10 @@ export class PrismaStrategyFuturesRepository implements StrategyRepository {
       PrismaStrategyFutures[]
     >`
 SELECT s.*
-FROM strategy s
+FROM StrategyFutures s
     INNER JOIN (
         SELECT symbol, MAX(created_at) AS max_created_at
-        FROM strategy
+        FROM StrategyFutures
         GROUP BY symbol
     ) last
     ON s.symbol = last.symbol
@@ -100,10 +100,10 @@ FROM strategy s
       PrismaStrategyFutures[]
     >`
 SELECT s.*
-FROM strategy s
+FROM StrategyFutures s
     INNER JOIN (
         SELECT symbol, MAX(created_at) AS max_created_at
-        FROM strategy
+        FROM StrategyFutures
         WHERE side <> 'hold'
         GROUP BY symbol
     ) last

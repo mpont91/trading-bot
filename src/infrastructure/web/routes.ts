@@ -36,29 +36,26 @@ router.get('/uptime', (req: Request, res: Response): void => {
 router.get('/performance', getPerformanceFull)
 router.get('/graph/equity', getEquityFullGraph)
 
-const marketRouter: Router = Router()
-marketRouter.get('/spot/last-strategies/:symbol?', getLastStrategiesSpot)
-marketRouter.get('/spot/last-opportunities/:symbol?', getLastOpportunitiesSpot)
-marketRouter.get('/spot/graph/signals/:symbol', getSignalsGraphSpot)
-marketRouter.get('/futures/last-strategies/:symbol?', getLastStrategiesFutures)
-marketRouter.get(
-  '/futures/last-opportunities/:symbol?',
-  getLastOpportunitiesFutures,
-)
-marketRouter.get('/futures/graph/signals/:symbol', getSignalsGraphFutures)
-
 const spotRouter: Router = Router()
 spotRouter.get('/graph/equity', getEquitySpotGraph)
 spotRouter.get('/commission-equity', getCommissionEquitySpot)
 spotRouter.get('/performance', getPerformanceSpot)
 spotRouter.get('/last-trades/:symbol?', getLastTradesSpot)
+spotRouter.get('/market/last-strategies/:symbol?', getLastStrategiesSpot)
+spotRouter.get('/market/last-opportunities/:symbol?', getLastOpportunitiesSpot)
+spotRouter.get('/market/graph/signals/:symbol', getSignalsGraphSpot)
 
 const futuresRouter: Router = Router()
 futuresRouter.get('/graph/equity', getEquityFuturesGraph)
 futuresRouter.get('/performance', getPerformanceFutures)
 futuresRouter.get('/last-trades/:symbol?', getLastTradesFutures)
+futuresRouter.get('/market/last-strategies/:symbol?', getLastStrategiesFutures)
+futuresRouter.get(
+  '/market/last-opportunities/:symbol?',
+  getLastOpportunitiesFutures,
+)
+futuresRouter.get('/market/graph/signals/:symbol', getSignalsGraphFutures)
 
-router.use('/market', marketRouter)
 router.use('/spot', spotRouter)
 router.use('/futures', futuresRouter)
 

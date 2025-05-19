@@ -1,0 +1,2 @@
+GET http://localhost:3000/spot/market/last-strategies/adausdt
+Accept: application/json

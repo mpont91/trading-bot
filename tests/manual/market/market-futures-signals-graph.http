@@ -1,2 +1,0 @@
-GET http://localhost:3000/market/futures/graph/signals/btcusdt?interval=all
-Accept: application/json
