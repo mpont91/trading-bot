@@ -166,7 +166,21 @@ model IndicatorSMACross {
   created_at   DateTime @default(now())
 }
 
-model Strategy {
+model StrategySpot {
+  id         Int      @id @default(autoincrement())
+  symbol     String
+  price      Decimal
+  side       String
+  sl         Decimal?
+  tp         Decimal?
+  created_at DateTime @default(now())
+
+  @@index([symbol, side])
+  @@index([symbol])
+  @@index([side])
+}
+
+model StrategyFutures {
   id         Int      @id @default(autoincrement())
   symbol     String
   price      Decimal

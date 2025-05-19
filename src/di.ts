@@ -39,7 +39,8 @@ import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
 import { StrategyService } from './domain/services/strategy-service'
 import { StrategyRepository } from './domain/repositories/strategy-repository'
-import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-strategy-repository'
+import { PrismaStrategySpotRepository } from './infrastructure/repositories/prisma-strategy-spot-repository'
+import { PrismaStrategyFuturesRepository } from './infrastructure/repositories/prisma-strategy-futures-repository'
 import {
   ApiSettings,
   BinanceSettings,
@@ -65,7 +66,8 @@ import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { PerformanceFullService } from './domain/services/performance-full-service'
 import { EquityFullService } from './domain/services/equity-full-service'
-import { CombinationStrategy } from './domain/strategies/combination-strategy'
+import { SpotStrategy } from './domain/strategies/spot-strategy'
+import { FuturesStrategy } from './domain/strategies/futures-strategy'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 
 class Container {
@@ -97,7 +99,8 @@ class Container {
   private static leverageService: LeverageService
   private static stopsService: StopsService
   private static indicatorService: IndicatorService
-  private static strategyService: StrategyService
+  private static strategySpotService: StrategyService
+  private static strategyFuturesService: StrategyService
   private static trailingSpotService: TrailingService
   private static trailingFuturesService: TrailingService
 
@@ -134,9 +137,10 @@ class Container {
       new PrismaTradeFuturesRepository(prisma)
     const indicatorRepository: IndicatorRepository =
       new PrismaIndicatorRepository(prisma)
-    const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
-      prisma,
-    )
+    const strategySpotRepository: StrategyRepository =
+      new PrismaStrategySpotRepository(prisma)
+    const strategyFuturesRepository: StrategyRepository =
+      new PrismaStrategyFuturesRepository(prisma)
     const trailingSpotRepository: TrailingRepository =
       new PrismaTrailingSpotRepository(prisma)
     const trailingFuturesRepository: TrailingRepository =
@@ -169,7 +173,8 @@ class Container {
       this.equitySpotService,
       this.equityFuturesService,
     )
-    this.strategyService = new StrategyService(strategyRepository)
+    this.strategySpotService = new StrategyService(strategySpotRepository)
+    this.strategyFuturesService = new StrategyService(strategyFuturesRepository)
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
@@ -223,7 +228,12 @@ class Container {
       smaCrossIndicator,
     )
 
-    const combinationStrategy: CombinationStrategy = new CombinationStrategy(
+    const spotStrategy: SpotStrategy = new SpotStrategy(
+      this.indicatorService,
+      this.stopsService,
+    )
+
+    const futuresStrategy: FuturesStrategy = new FuturesStrategy(
       this.indicatorService,
       this.leverageService,
       this.stopsService,
@@ -245,28 +255,28 @@ class Container {
       marketSettings.symbols,
       this.apiSpotService,
       this.indicatorService,
-      combinationStrategy,
-      this.strategyService,
+      spotStrategy,
+      this.strategySpotService,
     )
     const marketFuturesManager: ManagerInterface = new MarketManager(
       marketSettings.symbols,
       this.apiFuturesService,
       this.indicatorService,
-      combinationStrategy,
-      this.strategyService,
+      futuresStrategy,
+      this.strategyFuturesService,
     )
     const tradingSpotManager: TradingManager = new TradingManager(
       'spot',
       tradingSpotSettings.symbols,
       this.positionSpotService,
-      this.strategyService,
+      this.strategySpotService,
       this.trailingSpotService,
     )
     const tradingFuturesManager: TradingManager = new TradingManager(
       'futures',
       tradingFuturesSettings.symbols,
       this.positionFuturesService,
-      this.strategyService,
+      this.strategyFuturesService,
       this.trailingFuturesService,
     )
     this.launcherSpotMarket = new Launcher(settings.intervalMarketTime, [
@@ -374,8 +384,11 @@ class Container {
   static getIndicatorService(): IndicatorService {
     return this.indicatorService
   }
-  static getStrategyService(): StrategyService {
-    return this.strategyService
+  static getStrategySpotService(): StrategyService {
+    return this.strategySpotService
+  }
+  static getStrategyFuturesService(): StrategyService {
+    return this.strategyFuturesService
   }
   static getTrailingSpotService(): TrailingService {
     return this.trailingSpotService

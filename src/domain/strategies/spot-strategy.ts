@@ -4,22 +4,21 @@ import {
   IndicatorSMA,
   IndicatorSMACross,
 } from '../models/indicator'
-import { StrategyCreate } from '../models/strategy'
+import { StrategySpotCreate } from '../models/strategy'
 import { Side } from '../types/side'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { LeverageService } from '../services/leverage-service'
 import { StopsService } from '../services/stops-service'
 import { IndicatorService } from '../services/indicator-service'
 import { getEmptyStrategy } from '../helpers/strategy-helper'
+import { StrategyInterface } from './strategy-interface'
 
-export class CombinationStrategy {
+export class SpotStrategy implements StrategyInterface {
   constructor(
     private readonly indicatorService: IndicatorService,
-    private readonly leverageService: LeverageService,
     private readonly stopsService: StopsService,
   ) {}
 
-  public async createStrategy(symbol: string): Promise<StrategyCreate> {
+  public async createStrategy(symbol: string): Promise<StrategySpotCreate> {
     const sma: IndicatorSMA | null = await this.indicatorService.getSMA(symbol)
     const rsi: IndicatorRSI | null = await this.indicatorService.getRSI(symbol)
     const bb: IndicatorBB | null = await this.indicatorService.getBB(symbol)
@@ -31,7 +30,6 @@ export class CombinationStrategy {
     }
 
     let side: Side = 'hold'
-    let leverage: number | undefined = undefined
     let tp: number | undefined = undefined
     let sl: number | undefined = undefined
 
@@ -52,7 +50,6 @@ export class CombinationStrategy {
     }
 
     if (side !== 'hold') {
-      leverage = this.leverageService.getLeverage()
       tp = calculateTP(side, bb.price, this.stopsService.getTakeProfit())
       sl = calculateSL(side, bb.price, this.stopsService.getStopLoss())
     }
@@ -61,7 +58,6 @@ export class CombinationStrategy {
       symbol: bb.symbol,
       price: bb.price,
       side: side,
-      leverage: leverage,
       tp: tp,
       sl: sl,
     }

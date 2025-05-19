@@ -1,27 +1,32 @@
 import {
-  Strategy as PrismaStrategy,
+  StrategyFutures as PrismaStrategyFutures,
   Prisma,
   PrismaClient,
 } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { StrategyRepository } from '../../domain/repositories/strategy-repository'
-import { Strategy, StrategyCreate } from '../../domain/models/strategy'
+import {
+  Strategy,
+  StrategyFutures,
+  StrategyCreate,
+  StrategyFuturesCreate,
+} from '../../domain/models/strategy'
 import { Side } from '../../domain/types/side'
 import { getEmptyStrategy } from '../../domain/helpers/strategy-helper'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 
-export class PrismaStrategyRepository implements StrategyRepository {
+export class PrismaStrategyFuturesRepository implements StrategyRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(strategy: StrategyCreate): Promise<void> {
-    await this.prisma.strategy.create({
+    await this.prisma.strategyFutures.create({
       data: this.toPrisma(strategy),
     })
   }
 
-  async getLastForSymbol(symbol: string): Promise<Strategy> {
-    const strategy = await this.prisma.strategy.findFirst({
+  async getLastForSymbol(symbol: string): Promise<StrategyFutures> {
+    const strategy = await this.prisma.strategyFutures.findFirst({
       where: {
         symbol: symbol,
       },
@@ -34,14 +39,14 @@ export class PrismaStrategyRepository implements StrategyRepository {
       return getEmptyStrategy(symbol)
     }
 
-    return this.toDomain(strategy as PrismaStrategy)
+    return this.toDomain(strategy as PrismaStrategyFutures)
   }
 
   async getLastManyForSymbol(
     symbol: string,
     limit: number = 10,
   ): Promise<Strategy[]> {
-    const strategies = await this.prisma.strategy.findMany({
+    const strategies = await this.prisma.strategyFutures.findMany({
       take: limit,
       where: {
         symbol: symbol,
@@ -58,7 +63,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     symbol: string,
     limit: number = 10,
   ): Promise<Strategy[]> {
-    const strategies = await this.prisma.strategy.findMany({
+    const strategies = await this.prisma.strategyFutures.findMany({
       take: limit,
       where: {
         symbol: symbol,
@@ -73,8 +78,8 @@ export class PrismaStrategyRepository implements StrategyRepository {
   }
 
   async getLastManyForEachSymbol(): Promise<Strategy[]> {
-    const strategies: PrismaStrategy[] = await this.prisma.$queryRaw<
-      PrismaStrategy[]
+    const strategies: PrismaStrategyFutures[] = await this.prisma.$queryRaw<
+      PrismaStrategyFutures[]
     >`
 SELECT s.*
 FROM strategy s
@@ -82,8 +87,8 @@ FROM strategy s
         SELECT symbol, MAX(created_at) AS max_created_at
         FROM strategy
         GROUP BY symbol
-    ) last 
-    ON s.symbol = last.symbol 
+    ) last
+    ON s.symbol = last.symbol
     AND s.created_at = last.max_created_at
     ORDER BY s.created_at DESC`
 
@@ -91,8 +96,8 @@ FROM strategy s
   }
 
   async getLastManyOpportunitiesForEachSymbol(): Promise<Strategy[]> {
-    const strategies: PrismaStrategy[] = await this.prisma.$queryRaw<
-      PrismaStrategy[]
+    const strategies: PrismaStrategyFutures[] = await this.prisma.$queryRaw<
+      PrismaStrategyFutures[]
     >`
 SELECT s.*
 FROM strategy s
@@ -101,8 +106,8 @@ FROM strategy s
         FROM strategy
         WHERE side <> 'hold'
         GROUP BY symbol
-    ) last 
-    ON s.symbol = last.symbol 
+    ) last
+    ON s.symbol = last.symbol
     AND s.created_at = last.max_created_at
     ORDER BY s.created_at DESC`
 
@@ -112,10 +117,10 @@ FROM strategy s
   async getPriceGraph(
     symbol: string,
     interval: TimeInterval,
-  ): Promise<Strategy[]> {
+  ): Promise<StrategyFutures[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const strategies = await this.prisma.strategy.findMany({
+    const strategies = await this.prisma.strategyFutures.findMany({
       where: {
         symbol: symbol,
         created_at: {
@@ -133,10 +138,10 @@ FROM strategy s
   async getOpportunitiesGraph(
     symbol: string,
     interval: TimeInterval,
-  ): Promise<Strategy[]> {
+  ): Promise<StrategyFutures[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const strategies = await this.prisma.strategy.findMany({
+    const strategies = await this.prisma.strategyFutures.findMany({
       where: {
         symbol: symbol,
         side: { not: 'hold' },
@@ -152,7 +157,7 @@ FROM strategy s
     return this.toDomainList(strategies)
   }
 
-  private toDomain(prismaStrategy: PrismaStrategy): Strategy {
+  private toDomain(prismaStrategy: PrismaStrategyFutures): StrategyFutures {
     return {
       id: prismaStrategy.id,
       symbol: prismaStrategy.symbol,
@@ -165,7 +170,9 @@ FROM strategy s
     }
   }
 
-  private toPrisma(strategyCreate: StrategyCreate): Prisma.StrategyCreateInput {
+  private toPrisma(
+    strategyCreate: StrategyFuturesCreate,
+  ): Prisma.StrategyFuturesCreateInput {
     return {
       symbol: strategyCreate.symbol,
       price: new Decimal(strategyCreate.price),
@@ -176,7 +183,9 @@ FROM strategy s
     }
   }
 
-  private toDomainList(prismaStrategy: PrismaStrategy[]): Strategy[] {
-    return prismaStrategy.map(this.toDomain)
+  private toDomainList(
+    prismaStrategyFutures: PrismaStrategyFutures[],
+  ): StrategyFutures[] {
+    return prismaStrategyFutures.map(this.toDomain)
   }
 }

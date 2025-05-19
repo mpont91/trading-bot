@@ -6,11 +6,56 @@ import { StrategyService } from '../../../domain/services/strategy-service'
 import { Signals } from '../../../domain/types/signals'
 import { TimeInterval } from '../../../domain/types/time-interval'
 
-const strategyService: StrategyService = Container.getStrategyService()
+const strategySpotService: StrategyService = Container.getStrategySpotService()
+const strategyFuturesService: StrategyService =
+  Container.getStrategyFuturesService()
 
-export async function getLastStrategies(
+export async function getLastStrategiesSpot(
   request: Request,
   response: Response,
+): Promise<void> {
+  return getLastStrategies(request, response, strategySpotService)
+}
+
+export async function getLastStrategiesFutures(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  return getLastStrategies(request, response, strategyFuturesService)
+}
+
+export async function getLastOpportunitiesSpot(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  return getLastOpportunities(request, response, strategySpotService)
+}
+
+export async function getLastOpportunitiesFutures(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  return getLastOpportunities(request, response, strategyFuturesService)
+}
+
+export async function getSignalsGraphSpot(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  return getSignalsGraph(request, response, strategySpotService)
+}
+
+export async function getSignalsGraphFutures(
+  request: Request,
+  response: Response,
+): Promise<void> {
+  return getSignalsGraph(request, response, strategyFuturesService)
+}
+
+async function getLastStrategies(
+  request: Request,
+  response: Response,
+  strategyService: StrategyService,
 ): Promise<void> {
   try {
     const symbol: string | undefined = request.params.symbol
@@ -27,9 +72,10 @@ export async function getLastStrategies(
   }
 }
 
-export async function getLastOpportunities(
+async function getLastOpportunities(
   request: Request,
   response: Response,
+  strategyService: StrategyService,
 ): Promise<void> {
   try {
     const symbol: string | undefined = request.params.symbol
@@ -48,9 +94,10 @@ export async function getLastOpportunities(
   }
 }
 
-export async function getSignalsGraph(
+async function getSignalsGraph(
   request: Request,
   response: Response,
+  strategyService: StrategyService,
 ): Promise<void> {
   try {
     const symbol: string = request.params.symbol.toUpperCase()
