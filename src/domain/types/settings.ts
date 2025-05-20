@@ -9,7 +9,6 @@ export interface Settings {
   api: ApiSettings
   spotTrading: TradingSettings
   futuresTrading: TradingSettings
-  market: MarketSettings
   indicators: IndicatorsSettings
   stops: StopsSettings
   leverage: number

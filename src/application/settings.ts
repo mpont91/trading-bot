@@ -49,20 +49,6 @@ export const settings: Settings = {
     ],
     safetyCapitalMargin: 0.3,
   },
-  market: {
-    symbols: [
-      'BTCUSDT',
-      'ETHUSDT',
-      'XRPUSDT',
-      'SOLUSDT',
-      'DOGEUSDT',
-      'ADAUSDT',
-      'TRXUSDT',
-      'LINKUSDT',
-      'XLMUSDT',
-      'HBARUSDT',
-    ],
-  },
   indicators: {
     sma: 20,
     rsi: 14,

@@ -46,7 +46,6 @@ import {
   BinanceSettings,
   BitmartSettings,
   IndicatorsSettings,
-  MarketSettings,
   StopsSettings,
   TradingSettings,
 } from './domain/types/settings'
@@ -110,7 +109,6 @@ class Container {
     const apiSettings: ApiSettings = settings.api
     const tradingSpotSettings: TradingSettings = settings.spotTrading
     const tradingFuturesSettings: TradingSettings = settings.futuresTrading
-    const marketSettings: MarketSettings = settings.market
     const indicatorsSettings: IndicatorsSettings = settings.indicators
     const stopsSettings: StopsSettings = settings.stops
     const leverageSettings: number = settings.leverage
@@ -252,14 +250,14 @@ class Container {
       this.equityFuturesService,
     )
     const marketSpotManager: ManagerInterface = new MarketManager(
-      marketSettings.symbols,
+      tradingSpotSettings.symbols,
       this.apiSpotService,
       this.indicatorService,
       spotStrategy,
       this.strategySpotService,
     )
     const marketFuturesManager: ManagerInterface = new MarketManager(
-      marketSettings.symbols,
+      tradingFuturesSettings.symbols,
       this.apiFuturesService,
       this.indicatorService,
       futuresStrategy,
