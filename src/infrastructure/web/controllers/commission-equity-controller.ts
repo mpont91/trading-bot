@@ -4,16 +4,16 @@ import { Container } from '../../../di'
 import { CommissionEquityService } from '../../../domain/services/commission-equity-service'
 import { CommissionEquity } from '../../../domain/models/commission-equity'
 
-const commissionEquitySpotService: CommissionEquityService =
+const commissionEquityService: CommissionEquityService =
   Container.getCommissionEquitySpotService()
 
-export async function getCommissionEquitySpot(
+export async function getCommissionEquity(
   request: Request,
   response: Response,
 ): Promise<void> {
   try {
     const commissionEquity: CommissionEquity =
-      await commissionEquitySpotService.get()
+      await commissionEquityService.get()
 
     response.json({
       data: commissionEquity,

@@ -3,14 +3,12 @@ import { StrategyService } from '../services/strategy-service'
 import { PositionService } from '../services/position-service'
 import { Strategy } from '../models/strategy'
 import { Position } from '../types/position'
-import { TradingMode } from '../types/trading-mode'
 import { TrailingService } from '../services/trailing-service'
 import { Trailing, TrailingCreate } from '../models/trailing'
 import { isSL, isTP } from '../helpers/stops-helper'
 
 export class TradingManager implements ManagerInterface {
   constructor(
-    private readonly tradingMode: TradingMode,
     private readonly symbols: string[],
     private readonly positionService: PositionService,
     private readonly strategyService: StrategyService,
@@ -57,10 +55,7 @@ export class TradingManager implements ManagerInterface {
     }
   }
   async handleOpportunity(strategy: Strategy): Promise<void> {
-    if (
-      (this.tradingMode === 'spot' && strategy.side === 'long') ||
-      (this.tradingMode === 'futures' && strategy.side !== 'hold')
-    ) {
+    if (strategy.side === 'long') {
       await this.positionService.openPosition(strategy.symbol, strategy.side)
       const trailing: TrailingCreate = {
         symbol: strategy.symbol,

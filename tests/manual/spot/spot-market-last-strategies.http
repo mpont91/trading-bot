@@ -1,2 +1,0 @@
-GET http://localhost:3000/spot/market/last-strategies
-Accept: application/json

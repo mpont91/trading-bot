@@ -14,15 +14,8 @@ export interface Order {
 
 export type OrderSpot = Order
 
-export interface OrderFutures extends Order {
-  amountLeveraged: number
-  contractSize: number
-  leverage: number
-}
-
 export type OrderCreate = Omit<Order, 'id'>
 export type OrderSpotCreate = Omit<OrderSpot, 'id'>
-export type OrderFuturesCreate = Omit<OrderFutures, 'id'>
 
 export interface OrderRequest {
   symbol: string
@@ -31,8 +24,3 @@ export interface OrderRequest {
 }
 
 export type OrderSpotRequest = OrderRequest
-
-export interface OrderFuturesRequest extends OrderRequest {
-  leverage: number
-  isClosePosition: boolean
-}

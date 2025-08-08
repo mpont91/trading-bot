@@ -4,27 +4,11 @@ import { createErrorResponse } from '../helpers/response-helper'
 import { TradeService } from '../../../domain/services/trade-service'
 import { Trade } from '../../../domain/models/trade'
 
-const tradeSpotService: TradeService = Container.getTradeSpotService()
-const tradeFuturesService: TradeService = Container.getTradeFuturesService()
+const tradeService: TradeService = Container.getTradeSpotService()
 
-export function getLastTradesSpot(
+export async function getLastTrades(
   request: Request,
   response: Response,
-): Promise<void> {
-  return getLastTrades(request, response, tradeSpotService)
-}
-
-export function getLastTradesFutures(
-  request: Request,
-  response: Response,
-): Promise<void> {
-  return getLastTrades(request, response, tradeFuturesService)
-}
-
-async function getLastTrades(
-  request: Request,
-  response: Response,
-  tradeService: TradeService,
 ): Promise<void> {
   try {
     const symbol: string | undefined = request.params.symbol

@@ -16,12 +16,6 @@ model EquitySpot {
   created_at DateTime @default(now())
 }
 
-model EquityFutures {
-  id         Int      @id @default(autoincrement())
-  amount     Decimal
-  created_at DateTime @default(now())
-}
-
 model CommissionEquitySpot {
   id         Int      @id @default(autoincrement())
   currency   String
@@ -46,51 +40,11 @@ model OrderSpot {
   @@index([side])
 }
 
-model OrderFutures {
-  id               Int      @id @default(autoincrement())
-  order_id         String
-  symbol           String
-  side             String
-  quantity         Decimal
-  contract_size    Decimal
-  leverage         Int
-  price            Decimal
-  amount           Decimal
-  amount_leveraged Decimal
-  fees             Decimal
-  created_at       DateTime
-
-  @@index([symbol, side])
-  @@index([symbol])
-  @@index([side])
-}
-
 model TradeSpot {
   id             Int      @id @default(autoincrement())
   symbol         String
   side           String
   quantity       Decimal
-  entry_order_id String
-  entry_price    Decimal
-  entry_at       DateTime
-  exit_order_id  String
-  exit_price     Decimal
-  exit_at        DateTime
-  fees           Decimal
-  pnl            Decimal
-
-  @@index([symbol, side])
-  @@index([symbol])
-  @@index([side])
-}
-
-model TradeFutures {
-  id             Int      @id @default(autoincrement())
-  symbol         String
-  side           String
-  quantity       Decimal
-  contract_size  Decimal
-  leverage       Int
   entry_order_id String
   entry_price    Decimal
   entry_at       DateTime
@@ -180,32 +134,7 @@ model StrategySpot {
   @@index([side])
 }
 
-model StrategyFutures {
-  id         Int      @id @default(autoincrement())
-  symbol     String
-  price      Decimal
-  side       String
-  sl         Decimal?
-  tp         Decimal?
-  leverage   Int?
-  created_at DateTime @default(now())
-
-  @@index([symbol, side])
-  @@index([symbol])
-  @@index([side])
-}
-
 model TrailingSpot {
-  symbol     String   @id
-  side       String
-  tp         Decimal?
-  sl         Decimal?
-  created_at DateTime @default(now())
-
-  @@index([side])
-}
-
-model TrailingFutures {
   symbol     String   @id
   side       String
   tp         Decimal?

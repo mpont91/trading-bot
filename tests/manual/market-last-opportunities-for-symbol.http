@@ -1,0 +1,2 @@
+GET http://localhost:3000/market/last-opportunities/btcusdc
+Accept: application/json

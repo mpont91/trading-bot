@@ -4,23 +4,12 @@ export interface Settings {
   intervalTradingTime: number
   intervalMarketTime: number
   intervalAccountTime: number
-  bitmart: BitmartSettings
   binance: BinanceSettings
   api: ApiSettings
   spotTrading: TradingSettings
-  futuresTrading: TradingSettings
   indicators: IndicatorsSettings
   stops: StopsSettings
   leverage: number
-}
-
-export interface BitmartSettings {
-  bitmartApiKey: string
-  bitmartApiSecret: string
-  bitmartApiMemo: string
-  bottleneckMaxConcurrent: number
-  bottleneckMinTime: number
-  baseCurrency: string
 }
 
 export interface BinanceSettings {
@@ -40,10 +29,6 @@ export interface ApiSettings {
 export interface TradingSettings {
   symbols: string[]
   safetyCapitalMargin: number
-}
-
-export interface MarketSettings {
-  symbols: string[]
 }
 
 export interface IndicatorsSettings {

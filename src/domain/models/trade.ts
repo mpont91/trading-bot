@@ -17,11 +17,5 @@ export interface Trade {
 
 export type TradeSpot = Trade
 
-export interface TradeFutures extends Trade {
-  contractSize: number
-  leverage: number
-}
-
 export type TradeCreate = Omit<Trade, 'id'>
 export type TradeSpotCreate = Omit<TradeSpot, 'id'>
-export type TradeFuturesCreate = Omit<TradeFutures, 'id'>

@@ -7,14 +7,6 @@ export const settings: Settings = {
   intervalTradingTime: parseInt(process.env.INTERVAL_TRADING_TIME!),
   intervalMarketTime: parseInt(process.env.INTERVAL_MARKET_TIME!),
   intervalAccountTime: parseInt(process.env.INTERVAL_ACCOUNT_TIME!),
-  bitmart: {
-    bitmartApiKey: process.env.BITMART_API_KEY!,
-    bitmartApiSecret: process.env.BITMART_SECRET_KEY!,
-    bitmartApiMemo: process.env.BITMART_MEMO!,
-    bottleneckMaxConcurrent: 1,
-    bottleneckMinTime: 1000,
-    baseCurrency: 'USDT',
-  },
   binance: {
     binanceApiKey: process.env.BINANCE_API_KEY!,
     binanceApiSecret: process.env.BINANCE_SECRET_KEY!,
@@ -35,17 +27,6 @@ export const settings: Settings = {
       'SOLUSDC',
       'ADAUSDC',
       'HBARUSDC',
-    ],
-    safetyCapitalMargin: 0.3,
-  },
-  futuresTrading: {
-    symbols: [
-      'DOGEUSDT',
-      'ADAUSDT',
-      'TRXUSDT',
-      'LINKUSDT',
-      'XLMUSDT',
-      'HBARUSDT',
     ],
     safetyCapitalMargin: 0.3,
   },

@@ -12,10 +12,5 @@ export interface Strategy {
 
 export type StrategySpot = Strategy
 
-export interface StrategyFutures extends Strategy {
-  leverage?: number
-}
-
 export type StrategyCreate = Omit<Strategy, 'id' | 'createdAt'>
 export type StrategySpotCreate = Omit<StrategySpot, 'id' | 'createdAt'>
-export type StrategyFuturesCreate = Omit<StrategyFutures, 'id' | 'createdAt'>

@@ -1,2 +1,0 @@
-GET http://localhost:3000/spot/last-trades/adausdc
-Accept: application/json
