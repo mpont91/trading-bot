@@ -38,4 +38,4 @@ restore-db:
 	$(RESTORE_DB_CMD)
 
 update-packages:
-	npx ncu -u
+	npx npm-check-updates -u
