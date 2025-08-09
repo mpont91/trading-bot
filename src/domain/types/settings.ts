@@ -9,7 +9,6 @@ export interface Settings {
   spotTrading: TradingSettings
   indicators: IndicatorsSettings
   stops: StopsSettings
-  leverage: number
 }
 
 export interface BinanceSettings {

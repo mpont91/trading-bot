@@ -23,7 +23,6 @@ import { PositionService } from './domain/services/position-service'
 import { InvestmentService } from './domain/services/investment-service'
 import { settings } from './application/settings'
 import { PositionSpotService } from './domain/services/position-spot-service'
-import { LeverageService } from './domain/services/leverage-service'
 import { TradeSpotService } from './domain/services/trade-spot-service'
 import { InvestmentSpotService } from './domain/services/investment-spot-service'
 import { MarketManager } from './domain/managers/market-manager'
@@ -67,7 +66,6 @@ class Container {
   private static tradeSpotService: TradeService
   private static positionSpotService: PositionService
   private static performanceSpotService: PerformanceService
-  private static leverageService: LeverageService
   private static stopsService: StopsService
   private static indicatorService: IndicatorService
   private static strategySpotService: StrategyService
@@ -79,7 +77,6 @@ class Container {
     const tradingSpotSettings: TradingSettings = settings.spotTrading
     const indicatorsSettings: IndicatorsSettings = settings.indicators
     const stopsSettings: StopsSettings = settings.stops
-    const leverageSettings: number = settings.leverage
 
     const binanceApi: BinanceApi = new BinanceClientApi(binanceSettings)
     const prisma: PrismaClient = new PrismaClient()
@@ -122,7 +119,6 @@ class Container {
     this.commissionEquitySpotService = new CommissionEquityService(
       commissionEquitySpotRepository,
     )
-    this.leverageService = new LeverageService(leverageSettings)
     this.stopsService = new StopsService(stopsSettings)
     this.trailingSpotService = new TrailingService(trailingSpotRepository)
     this.orderSpotService = new OrderService(orderSpotRepository)
@@ -222,9 +218,6 @@ class Container {
   }
   static getPerformanceSpotService(): PerformanceService {
     return this.performanceSpotService
-  }
-  static getLeverageService(): LeverageService {
-    return this.leverageService
   }
   static getStopsService(): StopsService {
     return this.stopsService

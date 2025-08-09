@@ -48,5 +48,4 @@ export const settings: Settings = {
     tp: 0.05,
     sl: 0.03,
   },
-  leverage: 1,
 }
