@@ -10,7 +10,7 @@ import { CommissionEquityCreate } from '../models/commission-equity'
 
 export class ApiService {
   constructor(
-    protected readonly settings: ApiSettings,
+    private readonly settings: ApiSettings,
     private readonly api: Api,
   ) {}
 
