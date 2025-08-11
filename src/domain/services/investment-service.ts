@@ -3,7 +3,7 @@ import { Balance } from '../types/balance'
 import { Symbol } from '../types/symbol'
 import { TradingSettings } from '../types/settings'
 
-export abstract class InvestmentService {
+export class InvestmentService {
   constructor(
     private readonly settings: TradingSettings,
     private readonly apiService: ApiService,
@@ -55,7 +55,7 @@ export abstract class InvestmentService {
     return this.roundQuantity(adjustedQuantity)
   }
 
-  protected roundQuantity(number: number): number {
+  private roundQuantity(number: number): number {
     return Math.round(number * 1e6) / 1e6
   }
 }

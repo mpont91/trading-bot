@@ -1,25 +1,21 @@
-import {
-  TradeSpot as PrismaTradeSpot,
-  Prisma,
-  PrismaClient,
-} from '@prisma/client'
+import { Trade as PrismaTrade, Prisma, PrismaClient } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { TradeRepository } from '../../domain/repositories/trade-repository'
-import { TradeSpot, TradeSpotCreate } from '../../domain/models/trade'
+import { Trade, TradeCreate } from '../../domain/models/trade'
 import { Side } from '../../domain/types/side'
 import { Performance } from '../../domain/types/performance'
 
-export class PrismaTradeSpotRepository implements TradeRepository {
+export class PrismaTradeRepository implements TradeRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(tradeCreate: TradeSpotCreate): Promise<void> {
-    await this.prisma.tradeSpot.create({
+  async create(tradeCreate: TradeCreate): Promise<void> {
+    await this.prisma.trade.create({
       data: this.toPrisma(tradeCreate),
     })
   }
 
-  async getLastMany(limit: number = 10): Promise<TradeSpot[]> {
-    const trades = await this.prisma.tradeSpot.findMany({
+  async getLastMany(limit: number = 10): Promise<Trade[]> {
+    const trades = await this.prisma.trade.findMany({
       take: limit,
       orderBy: {
         exit_at: Prisma.SortOrder.desc,
@@ -32,8 +28,8 @@ export class PrismaTradeSpotRepository implements TradeRepository {
   async getLastManyForSymbol(
     symbol: string,
     limit: number = 10,
-  ): Promise<TradeSpot[]> {
-    const trades = await this.prisma.tradeSpot.findMany({
+  ): Promise<Trade[]> {
+    const trades = await this.prisma.trade.findMany({
       take: limit,
       where: {
         symbol: symbol,
@@ -47,7 +43,7 @@ export class PrismaTradeSpotRepository implements TradeRepository {
   }
 
   async getPerformance(): Promise<Performance> {
-    const trades = await this.prisma.tradeSpot.findMany()
+    const trades = await this.prisma.trade.findMany()
 
     const totalTrades: number = trades.length
     const successTrades: number = trades.filter((t) => t.pnl.gt(0)).length
@@ -72,24 +68,24 @@ export class PrismaTradeSpotRepository implements TradeRepository {
     }
   }
 
-  private toDomain(prismaTradeSpot: PrismaTradeSpot): TradeSpot {
+  private toDomain(prismaTrade: PrismaTrade): Trade {
     return {
-      id: prismaTradeSpot.id,
-      symbol: prismaTradeSpot.symbol,
-      side: prismaTradeSpot.side as Side,
-      quantity: prismaTradeSpot.quantity.toNumber(),
-      entryOrderId: prismaTradeSpot.entry_order_id,
-      entryPrice: prismaTradeSpot.entry_price.toNumber(),
-      entryAt: prismaTradeSpot.entry_at,
-      exitOrderId: prismaTradeSpot.exit_order_id,
-      exitPrice: prismaTradeSpot.exit_price.toNumber(),
-      exitAt: prismaTradeSpot.exit_at,
-      fees: prismaTradeSpot.fees.toNumber(),
-      pnl: prismaTradeSpot.pnl.toNumber(),
+      id: prismaTrade.id,
+      symbol: prismaTrade.symbol,
+      side: prismaTrade.side as Side,
+      quantity: prismaTrade.quantity.toNumber(),
+      entryOrderId: prismaTrade.entry_order_id,
+      entryPrice: prismaTrade.entry_price.toNumber(),
+      entryAt: prismaTrade.entry_at,
+      exitOrderId: prismaTrade.exit_order_id,
+      exitPrice: prismaTrade.exit_price.toNumber(),
+      exitAt: prismaTrade.exit_at,
+      fees: prismaTrade.fees.toNumber(),
+      pnl: prismaTrade.pnl.toNumber(),
     }
   }
 
-  private toPrisma(tradeCreate: TradeSpotCreate): Prisma.TradeSpotCreateInput {
+  private toPrisma(tradeCreate: TradeCreate): Prisma.TradeCreateInput {
     return {
       symbol: tradeCreate.symbol,
       side: tradeCreate.side,
@@ -105,7 +101,7 @@ export class PrismaTradeSpotRepository implements TradeRepository {
     }
   }
 
-  private toDomainList(prismaTradesSpot: PrismaTradeSpot[]): TradeSpot[] {
-    return prismaTradesSpot.map(this.toDomain)
+  private toDomainList(prismaTrades: PrismaTrade[]): Trade[] {
+    return prismaTrades.map(this.toDomain)
   }
 }

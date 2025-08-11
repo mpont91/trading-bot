@@ -1,10 +1,12 @@
-import { Balance } from '../../domain/types/balance'
-import { Symbol } from '../../domain/types/symbol'
-import { OrderRequest, OrderCreate } from '../../domain/models/order'
-import { Position } from '../../domain/types/position'
-import { Kline, KlineInterval } from '../../domain/types/kline'
+import { Balance } from '../domain/types/balance'
+import { Symbol } from '../domain/types/symbol'
+import { OrderRequest, OrderCreate } from '../domain/models/order'
+import { Position } from '../domain/types/position'
+import { Kline, KlineInterval } from '../domain/types/kline'
+import { CommissionEquityCreate } from '../domain/models/commission-equity'
 
 export interface Api {
+  getCommissionEquity(): Promise<CommissionEquityCreate>
   getBalance(): Promise<Balance>
   getPrice(symbol: string): Promise<number>
   getKline(

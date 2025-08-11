@@ -6,7 +6,7 @@ import { timeIntervalRule } from '../../../application/rules/time-interval-rule'
 import { EquityService } from '../../../domain/services/equity-service'
 import { Equity } from '../../../domain/models/equity'
 
-const equityService: EquityService = Container.getEquitySpotService()
+const equityService: EquityService = Container.getEquityService()
 
 export async function getEquityGraph(
   request: Request,

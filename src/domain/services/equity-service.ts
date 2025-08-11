@@ -1,10 +1,9 @@
 import { TimeInterval } from '../types/time-interval'
 import { EquityRepository } from '../repositories/equity-repository'
 import { Equity, EquityCreate } from '../models/equity'
-import { EquityServiceInterface } from './equity-service-interface'
 import { reduceRecordsData } from '../helpers/graph-helper'
 
-export class EquityService implements EquityServiceInterface {
+export class EquityService {
   constructor(private readonly equityRepository: EquityRepository) {}
 
   async store(amount: number): Promise<void> {

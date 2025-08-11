@@ -2,7 +2,7 @@ import { Container } from '../../di'
 import { PositionService } from '../../domain/services/position-service'
 
 async function start(): Promise<void> {
-  const positionService: PositionService = Container.getPositionSpotService()
+  const positionService: PositionService = Container.getPositionService()
   const symbol: string = process.argv[2]
   await positionService.openPosition(symbol)
 }

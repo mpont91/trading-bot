@@ -1,5 +1,5 @@
 import {
-  TrailingSpot as PrismaTrailingSpot,
+  Trailing as PrismaTrailing,
   Prisma,
   PrismaClient,
 } from '@prisma/client'
@@ -8,17 +8,17 @@ import { Side } from '../../domain/types/side'
 import { TrailingRepository } from '../../domain/repositories/trailing-repository'
 import { Trailing, TrailingCreate } from '../../domain/models/trailing'
 
-export class PrismaTrailingSpotRepository implements TrailingRepository {
+export class PrismaTrailingRepository implements TrailingRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(trailing: TrailingCreate): Promise<void> {
-    await this.prisma.trailingSpot.create({
+    await this.prisma.trailing.create({
       data: this.toPrisma(trailing),
     })
   }
 
   async get(symbol: string): Promise<Trailing | null> {
-    const trailing = await this.prisma.trailingSpot.findFirst({
+    const trailing = await this.prisma.trailing.findFirst({
       where: {
         symbol: symbol,
       },
@@ -28,28 +28,28 @@ export class PrismaTrailingSpotRepository implements TrailingRepository {
       return null
     }
 
-    return this.toDomain(trailing as PrismaTrailingSpot)
+    return this.toDomain(trailing as PrismaTrailing)
   }
 
   async remove(symbol: string): Promise<void> {
-    await this.prisma.trailingSpot.delete({
+    await this.prisma.trailing.delete({
       where: {
         symbol: symbol,
       },
     })
   }
 
-  private toDomain(prismaTrailingSpot: PrismaTrailingSpot): Trailing {
+  private toDomain(prismaTrailing: PrismaTrailing): Trailing {
     return {
-      symbol: prismaTrailingSpot.symbol,
-      side: prismaTrailingSpot.side as Side,
-      tp: prismaTrailingSpot.tp ? prismaTrailingSpot.tp.toNumber() : undefined,
-      sl: prismaTrailingSpot.sl ? prismaTrailingSpot.sl.toNumber() : undefined,
-      createdAt: prismaTrailingSpot.created_at,
+      symbol: prismaTrailing.symbol,
+      side: prismaTrailing.side as Side,
+      tp: prismaTrailing.tp ? prismaTrailing.tp.toNumber() : undefined,
+      sl: prismaTrailing.sl ? prismaTrailing.sl.toNumber() : undefined,
+      createdAt: prismaTrailing.created_at,
     }
   }
 
-  private toPrisma(trailing: TrailingCreate): Prisma.TrailingSpotCreateInput {
+  private toPrisma(trailing: TrailingCreate): Prisma.TrailingCreateInput {
     return {
       symbol: trailing.symbol,
       side: trailing.side,

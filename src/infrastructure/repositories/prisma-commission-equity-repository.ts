@@ -1,5 +1,5 @@
 import {
-  CommissionEquitySpot as PrismaCommissionEquitySpot,
+  CommissionEquity as PrismaCommissionEquity,
   Prisma,
   PrismaClient,
 } from '@prisma/client'
@@ -8,22 +8,22 @@ import {
   CommissionEquityCreate,
 } from '../../domain/models/commission-equity'
 import { CommissionEquityRepository } from '../../domain/repositories/commission-equity-repository'
-import { getEmptyCommissionEquity } from '../../domain/helpers/commission-spot-helper'
+import { getEmptyCommissionEquity } from '../../domain/helpers/commission-helper'
 import Decimal from 'decimal.js'
 
-export class PrismaCommissionEquitySpotRepository
+export class PrismaCommissionEquityRepository
   implements CommissionEquityRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(commissionEquityCreate: CommissionEquityCreate): Promise<void> {
-    await this.prisma.commissionEquitySpot.create({
+    await this.prisma.commissionEquity.create({
       data: this.toPrisma(commissionEquityCreate),
     })
   }
 
   async get(): Promise<CommissionEquity> {
-    const commissionEquity = await this.prisma.commissionEquitySpot.findFirst({
+    const commissionEquity = await this.prisma.commissionEquity.findFirst({
       orderBy: {
         created_at: Prisma.SortOrder.desc,
       },
@@ -33,24 +33,24 @@ export class PrismaCommissionEquitySpotRepository
       return getEmptyCommissionEquity()
     }
 
-    return this.toDomain(commissionEquity as PrismaCommissionEquitySpot)
+    return this.toDomain(commissionEquity as PrismaCommissionEquity)
   }
 
   private toDomain(
-    prismaCommissionEquitySpot: PrismaCommissionEquitySpot,
+    prismaCommissionEquity: PrismaCommissionEquity,
   ): CommissionEquity {
     return {
-      id: prismaCommissionEquitySpot.id,
-      currency: prismaCommissionEquitySpot.currency,
-      quantity: prismaCommissionEquitySpot.quantity.toNumber(),
-      amount: prismaCommissionEquitySpot.amount.toNumber(),
-      createdAt: prismaCommissionEquitySpot.created_at,
+      id: prismaCommissionEquity.id,
+      currency: prismaCommissionEquity.currency,
+      quantity: prismaCommissionEquity.quantity.toNumber(),
+      amount: prismaCommissionEquity.amount.toNumber(),
+      createdAt: prismaCommissionEquity.created_at,
     }
   }
 
   private toPrisma(
     commissionEquityCreate: CommissionEquityCreate,
-  ): Prisma.CommissionEquitySpotCreateInput {
+  ): Prisma.CommissionEquityCreateInput {
     return {
       currency: commissionEquityCreate.currency,
       quantity: new Decimal(commissionEquityCreate.quantity),

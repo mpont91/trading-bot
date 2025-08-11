@@ -1,19 +1,12 @@
 -- CreateTable
-CREATE TABLE "EquitySpot" (
+CREATE TABLE "Equity" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "amount" DECIMAL NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
-CREATE TABLE "EquityFutures" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "amount" DECIMAL NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
--- CreateTable
-CREATE TABLE "CommissionEquitySpot" (
+CREATE TABLE "CommissionEquity" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "currency" TEXT NOT NULL,
     "quantity" DECIMAL NOT NULL,
@@ -22,7 +15,7 @@ CREATE TABLE "CommissionEquitySpot" (
 );
 
 -- CreateTable
-CREATE TABLE "OrderSpot" (
+CREATE TABLE "Order" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "order_id" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -35,45 +28,11 @@ CREATE TABLE "OrderSpot" (
 );
 
 -- CreateTable
-CREATE TABLE "OrderFutures" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "order_id" TEXT NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "side" TEXT NOT NULL,
-    "quantity" DECIMAL NOT NULL,
-    "contract_size" DECIMAL NOT NULL,
-    "leverage" INTEGER NOT NULL,
-    "price" DECIMAL NOT NULL,
-    "amount" DECIMAL NOT NULL,
-    "amount_leveraged" DECIMAL NOT NULL,
-    "fees" DECIMAL NOT NULL,
-    "created_at" DATETIME NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "TradeSpot" (
+CREATE TABLE "Trade" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "symbol" TEXT NOT NULL,
     "side" TEXT NOT NULL,
     "quantity" DECIMAL NOT NULL,
-    "entry_order_id" TEXT NOT NULL,
-    "entry_price" DECIMAL NOT NULL,
-    "entry_at" DATETIME NOT NULL,
-    "exit_order_id" TEXT NOT NULL,
-    "exit_price" DECIMAL NOT NULL,
-    "exit_at" DATETIME NOT NULL,
-    "fees" DECIMAL NOT NULL,
-    "pnl" DECIMAL NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "TradeFutures" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "symbol" TEXT NOT NULL,
-    "side" TEXT NOT NULL,
-    "quantity" DECIMAL NOT NULL,
-    "contract_size" DECIMAL NOT NULL,
-    "leverage" INTEGER NOT NULL,
     "entry_order_id" TEXT NOT NULL,
     "entry_price" DECIMAL NOT NULL,
     "entry_at" DATETIME NOT NULL,
@@ -140,6 +99,18 @@ CREATE TABLE "IndicatorBB" (
 );
 
 -- CreateTable
+CREATE TABLE "IndicatorSMACross" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "period_long" INTEGER NOT NULL,
+    "period_short" INTEGER NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL NOT NULL,
+    "sma_long" DECIMAL NOT NULL,
+    "sma_short" DECIMAL NOT NULL,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "Strategy" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "symbol" TEXT NOT NULL,
@@ -147,21 +118,11 @@ CREATE TABLE "Strategy" (
     "side" TEXT NOT NULL,
     "sl" DECIMAL,
     "tp" DECIMAL,
-    "leverage" INTEGER,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
-CREATE TABLE "TrailingSpot" (
-    "symbol" TEXT NOT NULL PRIMARY KEY,
-    "side" TEXT NOT NULL,
-    "tp" DECIMAL,
-    "sl" DECIMAL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
--- CreateTable
-CREATE TABLE "TrailingFutures" (
+CREATE TABLE "Trailing" (
     "symbol" TEXT NOT NULL PRIMARY KEY,
     "side" TEXT NOT NULL,
     "tp" DECIMAL,
@@ -170,40 +131,22 @@ CREATE TABLE "TrailingFutures" (
 );
 
 -- CreateIndex
-CREATE INDEX "OrderSpot_symbol_side_idx" ON "OrderSpot"("symbol", "side");
+CREATE INDEX "Order_symbol_side_idx" ON "Order"("symbol", "side");
 
 -- CreateIndex
-CREATE INDEX "OrderSpot_symbol_idx" ON "OrderSpot"("symbol");
+CREATE INDEX "Order_symbol_idx" ON "Order"("symbol");
 
 -- CreateIndex
-CREATE INDEX "OrderSpot_side_idx" ON "OrderSpot"("side");
+CREATE INDEX "Order_side_idx" ON "Order"("side");
 
 -- CreateIndex
-CREATE INDEX "OrderFutures_symbol_side_idx" ON "OrderFutures"("symbol", "side");
+CREATE INDEX "Trade_symbol_side_idx" ON "Trade"("symbol", "side");
 
 -- CreateIndex
-CREATE INDEX "OrderFutures_symbol_idx" ON "OrderFutures"("symbol");
+CREATE INDEX "Trade_symbol_idx" ON "Trade"("symbol");
 
 -- CreateIndex
-CREATE INDEX "OrderFutures_side_idx" ON "OrderFutures"("side");
-
--- CreateIndex
-CREATE INDEX "TradeSpot_symbol_side_idx" ON "TradeSpot"("symbol", "side");
-
--- CreateIndex
-CREATE INDEX "TradeSpot_symbol_idx" ON "TradeSpot"("symbol");
-
--- CreateIndex
-CREATE INDEX "TradeSpot_side_idx" ON "TradeSpot"("side");
-
--- CreateIndex
-CREATE INDEX "TradeFutures_symbol_side_idx" ON "TradeFutures"("symbol", "side");
-
--- CreateIndex
-CREATE INDEX "TradeFutures_symbol_idx" ON "TradeFutures"("symbol");
-
--- CreateIndex
-CREATE INDEX "TradeFutures_side_idx" ON "TradeFutures"("side");
+CREATE INDEX "Trade_side_idx" ON "Trade"("side");
 
 -- CreateIndex
 CREATE INDEX "Strategy_symbol_side_idx" ON "Strategy"("symbol", "side");
@@ -215,7 +158,4 @@ CREATE INDEX "Strategy_symbol_idx" ON "Strategy"("symbol");
 CREATE INDEX "Strategy_side_idx" ON "Strategy"("side");
 
 -- CreateIndex
-CREATE INDEX "TrailingSpot_side_idx" ON "TrailingSpot"("side");
-
--- CreateIndex
-CREATE INDEX "TrailingFutures_side_idx" ON "TrailingFutures"("side");
+CREATE INDEX "Trailing_side_idx" ON "Trailing"("side");

@@ -1,7 +1,6 @@
 import { InvestmentService } from '../../../src/domain/services/investment-service'
 import { ApiService } from '../../../src/domain/services/api-service'
-import { InvestmentSpotService } from '../../../src/domain/services/investment-spot-service'
-import { createMockApiSpotService } from '../../mocks/mock-api'
+import { createMockApiService } from '../../mocks/mock-api'
 import { TradingSettings } from '../../../src/domain/types/settings'
 
 let mockApiService: ApiService
@@ -9,7 +8,7 @@ let mockTradingSettings: TradingSettings
 let investmentService: InvestmentService
 
 function initialize(): void {
-  mockApiService = createMockApiSpotService()
+  mockApiService = createMockApiService()
 
   mockApiService.getBalance = jest
     .fn()
@@ -20,10 +19,7 @@ function initialize(): void {
     symbols: ['BTCUSDT'],
   }
 
-  investmentService = new InvestmentSpotService(
-    mockTradingSettings,
-    mockApiService,
-  )
+  investmentService = new InvestmentService(mockTradingSettings, mockApiService)
 }
 describe('InvestmentService - getInvestmentAmount', (): void => {
   beforeEach((): void => {

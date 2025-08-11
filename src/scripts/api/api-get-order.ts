@@ -3,7 +3,7 @@ import { OrderCreate } from '../../domain/models/order'
 import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const apiService: ApiService = Container.getApiSpotService()
+  const apiService: ApiService = Container.getApiService()
   const symbol: string = process.argv[2]
   const orderId: string = process.argv[3]
 

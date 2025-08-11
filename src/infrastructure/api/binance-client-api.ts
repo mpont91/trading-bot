@@ -5,7 +5,7 @@ import {
   RestTradeTypes,
   Spot,
 } from '@binance/connector-typescript'
-import { BinanceApi } from '../../application/api/binance-api'
+import { Api } from '../../application/api'
 import Bottleneck from 'bottleneck'
 import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { Kline, KlineInterval } from '../../domain/types/kline'
@@ -17,15 +17,15 @@ import { Balance } from '../../domain/types/balance'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
 import { CommissionEquityCreate } from '../../domain/models/commission-equity'
-import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-spot-helper'
+import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-helper'
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
-import { OrderSpotCreate, OrderSpotRequest } from '../../domain/models/order'
+import { OrderCreate, OrderRequest } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
-import { PositionSpot } from '../../domain/types/position'
+import { Position } from '../../domain/types/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 import { BinanceSettings } from '../../domain/types/settings'
 
-export class BinanceClientApi implements BinanceApi {
+export class BinanceClientApi implements Api {
   private readonly client: Spot
   private readonly limiter: Bottleneck
 
@@ -155,7 +155,7 @@ export class BinanceClientApi implements BinanceApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async submitOrder(orderRequest: OrderSpotRequest): Promise<string> {
+  async submitOrder(orderRequest: OrderRequest): Promise<string> {
     const task = async (): Promise<string> => {
       const options: RestTradeTypes.newOrderOptions = {
         quantity: orderRequest.quantity,
@@ -175,7 +175,7 @@ export class BinanceClientApi implements BinanceApi {
     return executeWithRateLimit(this.limiter, task)
   }
 
-  async getOrder(symbol: string, orderId: string): Promise<OrderSpotCreate> {
+  async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
     const orderResponse: RestTradeTypes.getOrderResponse =
       await this.getBinanceOrder(symbol, orderId)
     const tradesResponse: RestTradeTypes.accountTradeListResponse[] =
@@ -191,7 +191,7 @@ export class BinanceClientApi implements BinanceApi {
     )
   }
 
-  async getPosition(symbol: string): Promise<PositionSpot | null> {
+  async getPosition(symbol: string): Promise<Position | null> {
     const balances: RestTradeTypes.accountInformationBalances[] =
       await this.getBinanceBalance()
 

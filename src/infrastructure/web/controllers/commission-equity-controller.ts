@@ -5,7 +5,7 @@ import { CommissionEquityService } from '../../../domain/services/commission-equ
 import { CommissionEquity } from '../../../domain/models/commission-equity'
 
 const commissionEquityService: CommissionEquityService =
-  Container.getCommissionEquitySpotService()
+  Container.getCommissionEquityService()
 
 export async function getCommissionEquity(
   request: Request,

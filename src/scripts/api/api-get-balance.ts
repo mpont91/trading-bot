@@ -3,7 +3,7 @@ import { Balance } from '../../domain/types/balance'
 import { ApiService } from '../../domain/services/api-service'
 
 async function start(): Promise<void> {
-  const apiService: ApiService = Container.getApiSpotService()
+  const apiService: ApiService = Container.getApiService()
   const response: Balance = await apiService.getBalance()
   console.dir(response, { depth: null })
 }

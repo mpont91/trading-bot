@@ -6,7 +6,7 @@ export interface Settings {
   intervalAccountTime: number
   binance: BinanceSettings
   api: ApiSettings
-  spotTrading: TradingSettings
+  trading: TradingSettings
   indicators: IndicatorsSettings
   stops: StopsSettings
 }

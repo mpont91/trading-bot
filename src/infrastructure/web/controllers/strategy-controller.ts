@@ -6,7 +6,7 @@ import { StrategyService } from '../../../domain/services/strategy-service'
 import { Signals } from '../../../domain/types/signals'
 import { TimeInterval } from '../../../domain/types/time-interval'
 
-const strategyService: StrategyService = Container.getStrategySpotService()
+const strategyService: StrategyService = Container.getStrategyService()
 
 export async function getLastStrategies(
   request: Request,

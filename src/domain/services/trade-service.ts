@@ -3,7 +3,7 @@ import { TradeRepository } from '../repositories/trade-repository'
 import { Order, OrderCreate } from '../models/order'
 import { Performance } from '../types/performance'
 
-export abstract class TradeService {
+export class TradeService {
   constructor(private readonly tradeRepository: TradeRepository) {}
 
   async store(tradeCreate: TradeCreate): Promise<void> {
@@ -22,8 +22,24 @@ export abstract class TradeService {
     return this.tradeRepository.getPerformance()
   }
 
-  abstract storeTradeFromOrders(
+  async storeTradeFromOrders(
     entryOrder: Order,
     exitOrder: OrderCreate,
-  ): Promise<void>
+  ): Promise<void> {
+    const trade: TradeCreate = {
+      symbol: entryOrder.symbol,
+      side: entryOrder.side,
+      quantity: entryOrder.quantity,
+      entryOrderId: entryOrder.orderId,
+      entryPrice: entryOrder.price,
+      entryAt: entryOrder.createdAt,
+      exitOrderId: exitOrder.orderId,
+      exitPrice: exitOrder.price,
+      exitAt: exitOrder.createdAt,
+      fees: entryOrder.fees + exitOrder.fees,
+      pnl: (exitOrder.price - entryOrder.price) * entryOrder.quantity,
+    }
+
+    await this.store(trade)
+  }
 }

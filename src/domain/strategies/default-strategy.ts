@@ -4,7 +4,7 @@ import {
   IndicatorSMA,
   IndicatorSMACross,
 } from '../models/indicator'
-import { StrategySpotCreate } from '../models/strategy'
+import { StrategyCreate } from '../models/strategy'
 import { Side } from '../types/side'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
 import { StopsService } from '../services/stops-service'
@@ -12,13 +12,13 @@ import { IndicatorService } from '../services/indicator-service'
 import { getEmptyStrategy } from '../helpers/strategy-helper'
 import { StrategyInterface } from './strategy-interface'
 
-export class SpotStrategy implements StrategyInterface {
+export class DefaultStrategy implements StrategyInterface {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly stopsService: StopsService,
   ) {}
 
-  public async createStrategy(symbol: string): Promise<StrategySpotCreate> {
+  public async createStrategy(symbol: string): Promise<StrategyCreate> {
     const sma: IndicatorSMA | null = await this.indicatorService.getSMA(symbol)
     const rsi: IndicatorRSI | null = await this.indicatorService.getRSI(symbol)
     const bb: IndicatorBB | null = await this.indicatorService.getBB(symbol)

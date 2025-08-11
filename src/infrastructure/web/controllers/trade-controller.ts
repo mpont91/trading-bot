@@ -4,7 +4,7 @@ import { createErrorResponse } from '../helpers/response-helper'
 import { TradeService } from '../../../domain/services/trade-service'
 import { Trade } from '../../../domain/models/trade'
 
-const tradeService: TradeService = Container.getTradeSpotService()
+const tradeService: TradeService = Container.getTradeService()
 
 export async function getLastTrades(
   request: Request,

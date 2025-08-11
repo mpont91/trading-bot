@@ -15,7 +15,4 @@ export interface Trade {
   pnl: number
 }
 
-export type TradeSpot = Trade
-
 export type TradeCreate = Omit<Trade, 'id'>
-export type TradeSpotCreate = Omit<TradeSpot, 'id'>

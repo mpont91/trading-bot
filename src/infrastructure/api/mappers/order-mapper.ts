@@ -1,4 +1,4 @@
-import { OrderSpotCreate } from '../../../domain/models/order'
+import { OrderCreate } from '../../../domain/models/order'
 import { RestTradeTypes } from '@binance/connector-typescript'
 import { mapBinanceToDomainSide } from './side-mapper'
 import { Side } from '@binance/connector-typescript'
@@ -8,7 +8,7 @@ export function mapBinanceToDomainOrder(
   binanceOrder: RestTradeTypes.getOrderResponse,
   binanceTrades: RestTradeTypes.accountTradeListResponse[],
   feeCurrencyPrice: number,
-): OrderSpotCreate {
+): OrderCreate {
   let quantity: number = 0
   let fees: number = 0
   let weightedPrice: number = 0

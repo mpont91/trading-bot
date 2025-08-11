@@ -8,5 +8,3 @@ export interface Position {
   amount: number
   entryAt: Date
 }
-
-export type PositionSpot = Position

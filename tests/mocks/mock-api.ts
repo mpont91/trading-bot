@@ -1,10 +1,9 @@
-import { BinanceApi } from '../../src/application/api/binance-api'
-import { ApiSpotService } from '../../src/domain/services/api-spot-service'
+import { Api } from '../../src/application/api'
 import { ApiService } from '../../src/domain/services/api-service'
 import { settings } from '../../src/application/settings'
 import { ApiSettings } from '../../src/domain/types/settings'
 
-export function createMockBinanceApi(): jest.Mocked<BinanceApi> {
+export function createMockApi(): jest.Mocked<Api> {
   return {
     getBalance: jest.fn(),
     getSymbol: jest.fn(),
@@ -14,11 +13,11 @@ export function createMockBinanceApi(): jest.Mocked<BinanceApi> {
     getCommissionEquity: jest.fn(),
     getPrice: jest.fn(),
     getKline: jest.fn(),
-  } as jest.Mocked<BinanceApi>
+  } as jest.Mocked<Api>
 }
 
-export function createMockApiSpotService(): ApiService {
-  const mockBinanceApi: jest.Mocked<BinanceApi> = createMockBinanceApi()
+export function createMockApiService(): ApiService {
+  const mockApi: jest.Mocked<Api> = createMockApi()
   const mockApiSettings: ApiSettings = settings.api
-  return new ApiSpotService(mockApiSettings, mockBinanceApi)
+  return new ApiService(mockApiSettings, mockApi)
 }

@@ -19,7 +19,7 @@ export const settings: Settings = {
     klineHistoryInterval: 5, // 5 minutes
     klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
   },
-  spotTrading: {
+  trading: {
     symbols: [
       'BTCUSDC',
       'ETHUSDC',

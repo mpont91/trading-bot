@@ -6,8 +6,9 @@ import { OrderService } from './order-service'
 import { TradeService } from './trade-service'
 import { Side } from '../types/side'
 import { TrailingService } from './trailing-service'
+import { inverseSide } from '../helpers/side-helper'
 
-export abstract class PositionService {
+export class PositionService {
   constructor(
     private readonly apiService: ApiService,
     private readonly investmentService: InvestmentService,
@@ -58,12 +59,24 @@ export abstract class PositionService {
     await this.trailingService.remove(symbol)
   }
 
-  abstract createOpenPositionOrderRequest(
+  createOpenPositionOrderRequest(
     symbol: string,
     quantity: number,
     side: Side,
-  ): OrderRequest
-  abstract createClosePositionOrderRequest(position: Position): OrderRequest
+  ): OrderRequest {
+    return {
+      symbol: symbol,
+      side: side,
+      quantity: quantity,
+    }
+  }
+  createClosePositionOrderRequest(position: Position): OrderRequest {
+    return {
+      symbol: position.symbol,
+      side: inverseSide(position.side),
+      quantity: position.quantity,
+    }
+  }
 
   private async submitOrder(orderRequest: OrderRequest): Promise<OrderCreate> {
     const orderId: string = await this.apiService.submitOrder(orderRequest)

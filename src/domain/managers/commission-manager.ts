@@ -1,16 +1,16 @@
 import { ManagerInterface } from './manager-interface'
 import { CommissionEquityService } from '../services/commission-equity-service'
 import { CommissionEquityCreate } from '../models/commission-equity'
-import { ApiSpotService } from '../services/api-spot-service'
+import { ApiService } from '../services/api-service'
 
-export class CommissionSpotManager implements ManagerInterface {
+export class CommissionManager implements ManagerInterface {
   constructor(
-    private readonly apiSpotService: ApiSpotService,
+    private readonly apiService: ApiService,
     private readonly commissionEquityService: CommissionEquityService,
   ) {}
   async start(): Promise<void> {
     const commissionEquityCreate: CommissionEquityCreate =
-      await this.apiSpotService.getCommissionEquity()
+      await this.apiService.getCommissionEquity()
     await this.commissionEquityService.store(commissionEquityCreate)
   }
 }

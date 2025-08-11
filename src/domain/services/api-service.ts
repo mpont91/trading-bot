@@ -1,17 +1,22 @@
 import { Balance } from '../types/balance'
-import { Api } from '../../application/api/api'
+import { Api } from '../../application/api'
 import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
 import { Position } from '../types/position'
 import { Kline, KlineInterval } from '../types/kline'
 import { ApiSettings } from '../types/settings'
+import { CommissionEquityCreate } from '../models/commission-equity'
 
-export abstract class ApiService {
-  protected constructor(
+export class ApiService {
+  constructor(
     protected readonly settings: ApiSettings,
     private readonly api: Api,
   ) {}
+
+  async getCommissionEquity(): Promise<CommissionEquityCreate> {
+    return this.api.getCommissionEquity()
+  }
 
   async getBalance(): Promise<Balance> {
     return this.api.getBalance()

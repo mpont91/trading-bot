@@ -12,15 +12,10 @@ export interface Order {
   createdAt: Date
 }
 
-export type OrderSpot = Order
-
 export type OrderCreate = Omit<Order, 'id'>
-export type OrderSpotCreate = Omit<OrderSpot, 'id'>
 
 export interface OrderRequest {
   symbol: string
   side: Side
   quantity: number
 }
-
-export type OrderSpotRequest = OrderRequest

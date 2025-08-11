@@ -1,10 +1,10 @@
-import { PositionSpot } from '../../../domain/types/position'
+import { Position } from '../../../domain/types/position'
 import { mapBinanceToDomainSide } from './side-mapper'
 import { RestTradeTypes, Side } from '@binance/connector-typescript'
 
 export function mapBinanceToDomainPosition(
   binanceOrder: RestTradeTypes.allOrdersResponse,
-): PositionSpot {
+): Position {
   const quantity: number = parseFloat(binanceOrder.executedQty)
   const amount: number = parseFloat(binanceOrder.cummulativeQuoteQty)
 

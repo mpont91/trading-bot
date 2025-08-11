@@ -10,13 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model EquitySpot {
+model Equity {
   id         Int      @id @default(autoincrement())
   amount     Decimal
   created_at DateTime @default(now())
 }
 
-model CommissionEquitySpot {
+model CommissionEquity {
   id         Int      @id @default(autoincrement())
   currency   String
   quantity   Decimal
@@ -24,7 +24,7 @@ model CommissionEquitySpot {
   created_at DateTime @default(now())
 }
 
-model OrderSpot {
+model Order {
   id         Int      @id @default(autoincrement())
   order_id   String
   symbol     String
@@ -40,7 +40,7 @@ model OrderSpot {
   @@index([side])
 }
 
-model TradeSpot {
+model Trade {
   id             Int      @id @default(autoincrement())
   symbol         String
   side           String
@@ -120,7 +120,7 @@ model IndicatorSMACross {
   created_at   DateTime @default(now())
 }
 
-model StrategySpot {
+model Strategy {
   id         Int      @id @default(autoincrement())
   symbol     String
   price      Decimal
@@ -134,7 +134,7 @@ model StrategySpot {
   @@index([side])
 }
 
-model TrailingSpot {
+model Trailing {
   symbol     String   @id
   side       String
   tp         Decimal?

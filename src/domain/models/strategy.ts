@@ -10,7 +10,4 @@ export interface Strategy {
   createdAt: Date
 }
 
-export type StrategySpot = Strategy
-
 export type StrategyCreate = Omit<Strategy, 'id' | 'createdAt'>
-export type StrategySpotCreate = Omit<StrategySpot, 'id' | 'createdAt'>
