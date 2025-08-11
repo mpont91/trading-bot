@@ -66,10 +66,9 @@ describe('InvestmentService - getQuantityAdjustedFromAmount', (): void => {
     initialize()
   })
 
-  it('Given price: 500, contract size: 1, step size 1 and amount to invest: 3000, the quantity should be: 6', async (): Promise<void> => {
+  it('Given price: 500, step size 1 and amount to invest: 3000, the quantity should be: 6', async (): Promise<void> => {
     mockApiService.getSymbol = jest.fn().mockResolvedValue({
       price: 500,
-      contractSize: 1,
       stepSize: 1,
     })
 
@@ -82,35 +81,33 @@ describe('InvestmentService - getQuantityAdjustedFromAmount', (): void => {
     expect(adjustedQuantity).toBe(6)
   })
 
-  it('Given price: 200, contract size: 2, step size 0.1 and amount to invest: 150, the quantity should be: 0.3', async (): Promise<void> => {
+  it('Given price: 200, step size 0.1 and amount to invest: 100, the quantity should be: 0.5', async (): Promise<void> => {
     mockApiService.getSymbol = jest.fn().mockResolvedValue({
       price: 200,
-      contractSize: 2,
       stepSize: 0.1,
     })
 
     const symbol: string = 'BTCUSDT'
-    const amount: number = 150
+    const amount: number = 100
 
     const adjustedQuantity: number =
       await investmentService.getQuantityAdjustedFromAmount(symbol, amount)
 
-    expect(adjustedQuantity).toBe(0.3)
+    expect(adjustedQuantity).toBe(0.5)
   })
 
-  it('Given price: 100000, contract size: 0.001, step size 0.01 and amount to invest: 250, the quantity should be: 2.5', async (): Promise<void> => {
+  it('Given price: 100000, step size 0.01 and amount to invest: 25000, the quantity should be: 0.25', async (): Promise<void> => {
     mockApiService.getSymbol = jest.fn().mockResolvedValue({
       price: 100000,
-      contractSize: 0.001,
       stepSize: 0.01,
     })
 
     const symbol: string = 'BTCUSDT'
-    const amount: number = 250
+    const amount: number = 25000
 
     const adjustedQuantity: number =
       await investmentService.getQuantityAdjustedFromAmount(symbol, amount)
 
-    expect(adjustedQuantity).toBe(2.5)
+    expect(adjustedQuantity).toBe(0.25)
   })
 })

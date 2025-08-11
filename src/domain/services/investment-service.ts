@@ -44,10 +44,8 @@ export abstract class InvestmentService {
     const symbolInformation: Symbol = await this.apiService.getSymbol(symbol)
 
     const quantity: number = amount / symbolInformation.price
-    const quantityContractSize: number =
-      quantity / symbolInformation.contractSize
     const adjustedQuantity: number =
-      Math.floor(quantityContractSize / symbolInformation.stepSize) *
+      Math.floor(quantity / symbolInformation.stepSize) *
       symbolInformation.stepSize
 
     if (adjustedQuantity <= 0) {

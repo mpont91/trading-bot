@@ -17,6 +17,5 @@ export function mapBinanceToDomainSymbol(
     name: binanceSymbol.symbol,
     price: price,
     stepSize: parseFloat(lotSize.stepSize),
-    contractSize: 1,
   }
 }
