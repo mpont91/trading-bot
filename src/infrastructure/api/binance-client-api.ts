@@ -3,11 +3,8 @@ import {
   OrderType,
   RestMarketTypes,
   RestTradeTypes,
-  Spot,
 } from '@binance/connector-typescript'
 import { Api } from '../../application/api'
-import Bottleneck from 'bottleneck'
-import { executeWithRateLimit } from './helpers/execute-with-rate-limit'
 import { Kline, KlineInterval } from '../../domain/types/kline'
 import {
   mapBinanceToDomainKline,
@@ -24,25 +21,18 @@ import { mapBinanceToDomainOrder } from './mappers/order-mapper'
 import { Position } from '../../domain/types/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 import { BinanceSettings } from '../../domain/types/settings'
+import { BinanceSpotApi } from './binance-spot-api'
 
 export class BinanceClientApi implements Api {
-  private readonly client: Spot
-  private readonly limiter: Bottleneck
-
-  constructor(private readonly settings: BinanceSettings) {
-    this.client = new Spot(
-      this.settings.binanceApiKey,
-      this.settings.binanceApiSecret,
-    )
-    this.limiter = new Bottleneck({
-      maxConcurrent: this.settings.bottleneckMaxConcurrent,
-      minTime: this.settings.bottleneckMinTime,
-    })
-  }
+  constructor(
+    private readonly api: BinanceSpotApi,
+    private readonly settings: BinanceSettings,
+  ) {}
 
   async getBalance(): Promise<Balance> {
-    const balances: RestTradeTypes.accountInformationBalances[] =
-      await this.getBinanceBalance()
+    const balances: RestTradeTypes.accountInformationBalances[] = (
+      await this.api.accountInformation()
+    ).balances
 
     let equity: number = 0
     let available: number = 0
@@ -73,8 +63,9 @@ export class BinanceClientApi implements Api {
   }
 
   async getCommissionEquity(): Promise<CommissionEquityCreate> {
-    const balances: RestTradeTypes.accountInformationBalances[] =
-      await this.getBinanceBalance()
+    const balances: RestTradeTypes.accountInformationBalances[] = (
+      await this.api.accountInformation()
+    ).balances
 
     const balance: RestTradeTypes.accountInformationBalances | undefined =
       balances.find(
@@ -100,18 +91,11 @@ export class BinanceClientApi implements Api {
   }
 
   async getPrice(symbol: string): Promise<number> {
-    const task = async (): Promise<number> => {
-      const params: RestMarketTypes.symbolPriceTickerOptions = {
-        symbol: symbol,
-      }
-      const response: RestMarketTypes.symbolPriceTickerResponse =
-        (await this.client.symbolPriceTicker(
-          params,
-        )) as RestMarketTypes.symbolPriceTickerResponse
-      return parseFloat(response.price)
-    }
-
-    return executeWithRateLimit(this.limiter, task)
+    const response: RestMarketTypes.symbolPriceTickerResponse =
+      (await this.api.symbolPriceTicker(
+        symbol,
+      )) as RestMarketTypes.symbolPriceTickerResponse
+    return parseFloat(response.price)
   }
 
   async getKline(
@@ -120,66 +104,47 @@ export class BinanceClientApi implements Api {
     start: Date,
     end: Date,
   ): Promise<Kline[]> {
-    const task = async (): Promise<Kline[]> => {
-      const options: RestMarketTypes.klineCandlestickDataOptions = {
-        startTime: start.getTime(),
-        endTime: end.getTime(),
-      }
-      const binanceKlineInterval: Interval =
-        mapDomainToBinanceKlineInterval(interval)
-      const response: RestMarketTypes.klineCandlestickDataResponse[] =
-        await this.client.klineCandlestickData(
-          symbol,
-          binanceKlineInterval,
-          options,
-        )
-
-      return response.map(mapBinanceToDomainKline)
+    const options: RestMarketTypes.klineCandlestickDataOptions = {
+      startTime: start.getTime(),
+      endTime: end.getTime(),
     }
+    const binanceKlineInterval: Interval =
+      mapDomainToBinanceKlineInterval(interval)
+    const response: RestMarketTypes.klineCandlestickDataResponse[] =
+      await this.api.klineCandlestickData(symbol, binanceKlineInterval, options)
 
-    return executeWithRateLimit(this.limiter, task)
+    return response.map(mapBinanceToDomainKline)
   }
 
   async getSymbol(symbol: string): Promise<Symbol> {
     const price: number = await this.getPrice(symbol)
-    const task = async (): Promise<Symbol> => {
-      const params: RestMarketTypes.exchangeInformationOptions = {
-        symbol: symbol,
-      }
-      const exchangeInfo: RestMarketTypes.exchangeInformationResponse =
-        await this.client.exchangeInformation(params)
 
-      return mapBinanceToDomainSymbol(exchangeInfo.symbols[0], price)
-    }
+    const exchangeInfo: RestMarketTypes.exchangeInformationResponse =
+      await this.api.exchangeInformation(symbol)
 
-    return executeWithRateLimit(this.limiter, task)
+    return mapBinanceToDomainSymbol(exchangeInfo.symbols[0], price)
   }
 
   async submitOrder(orderRequest: OrderRequest): Promise<string> {
-    const task = async (): Promise<string> => {
-      const options: RestTradeTypes.newOrderOptions = {
-        quantity: orderRequest.quantity,
-      }
-
-      const response: RestTradeTypes.newOrderResponse =
-        await this.client.newOrder(
-          orderRequest.symbol,
-          mapDomainToBinanceSide(orderRequest.side),
-          'MARKET' as OrderType,
-          options,
-        )
-
-      return response.orderId.toString()
+    const options: RestTradeTypes.newOrderOptions = {
+      quantity: orderRequest.quantity,
     }
 
-    return executeWithRateLimit(this.limiter, task)
+    const response: RestTradeTypes.newOrderResponse = await this.api.newOrder(
+      orderRequest.symbol,
+      mapDomainToBinanceSide(orderRequest.side),
+      'MARKET' as OrderType,
+      options,
+    )
+
+    return response.orderId.toString()
   }
 
   async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
     const orderResponse: RestTradeTypes.getOrderResponse =
-      await this.getBinanceOrder(symbol, orderId)
+      await this.api.getOrder(symbol, orderId)
     const tradesResponse: RestTradeTypes.accountTradeListResponse[] =
-      await this.getBinanceTrades(symbol, orderId)
+      await this.api.accountTradeList(symbol, orderId)
     const feeCurrencyPrice: number = await this.getPrice(
       this.settings.feeCurrency + this.settings.baseCurrency,
     )
@@ -192,8 +157,9 @@ export class BinanceClientApi implements Api {
   }
 
   async getPosition(symbol: string): Promise<Position | null> {
-    const balances: RestTradeTypes.accountInformationBalances[] =
-      await this.getBinanceBalance()
+    const balances: RestTradeTypes.accountInformationBalances[] = (
+      await this.api.accountInformation()
+    ).balances
 
     const currency: string = symbol.replace(
       new RegExp(`${this.settings.baseCurrency}$`),
@@ -211,7 +177,7 @@ export class BinanceClientApi implements Api {
     }
 
     const order: RestTradeTypes.allOrdersResponse | null =
-      await this.getBinanceLastOrder(symbol)
+      await this.getLastOrder(symbol)
 
     if (!order) {
       throw new Error(
@@ -228,70 +194,21 @@ export class BinanceClientApi implements Api {
     return mapBinanceToDomainPosition(order)
   }
 
-  private async getBinanceOrder(
-    symbol: string,
-    orderId: string,
-  ): Promise<RestTradeTypes.getOrderResponse> {
-    const task = async (): Promise<RestTradeTypes.getOrderResponse> => {
-      const options: RestTradeTypes.getOrderOptions = {
-        orderId: parseInt(orderId),
-      }
-      return this.client.getOrder(symbol, options)
-    }
-
-    return executeWithRateLimit(this.limiter, task)
-  }
-
-  private async getBinanceTrades(
-    symbol: string,
-    orderId: string,
-  ): Promise<RestTradeTypes.accountTradeListResponse[]> {
-    const task = async (): Promise<
-      RestTradeTypes.accountTradeListResponse[]
-    > => {
-      const options: RestTradeTypes.accountTradeListOptions = {
-        orderId: parseInt(orderId),
-      }
-      return this.client.accountTradeList(symbol, options)
-    }
-
-    return executeWithRateLimit(this.limiter, task)
-  }
-
-  private async getBinanceBalance(): Promise<
-    RestTradeTypes.accountInformationBalances[]
-  > {
-    const task = async (): Promise<
-      RestTradeTypes.accountInformationBalances[]
-    > => {
-      const params: RestTradeTypes.accountInformationOptions = {
-        omitZeroBalances: true,
-      }
-      const response: RestTradeTypes.accountInformationResponse =
-        await this.client.accountInformation(params)
-
-      return response.balances
-    }
-
-    return executeWithRateLimit(this.limiter, task)
-  }
-
-  private async getBinanceLastOrder(
+  private async getLastOrder(
     symbol: string,
   ): Promise<RestTradeTypes.allOrdersResponse | null> {
-    const task = async (): Promise<RestTradeTypes.allOrdersResponse | null> => {
-      const options: RestTradeTypes.allOrdersOptions = {
-        limit: 1,
-      }
-      const orders: RestTradeTypes.allOrdersResponse[] =
-        await this.client.allOrders(symbol, options)
-
-      if (orders.length === 0) {
-        return null
-      }
-
-      return orders[0]
+    const options: RestTradeTypes.allOrdersOptions = {
+      limit: 1,
     }
-    return executeWithRateLimit(this.limiter, task)
+    const orders: RestTradeTypes.allOrdersResponse[] = await this.api.allOrders(
+      symbol,
+      options,
+    )
+
+    if (orders.length === 0) {
+      return null
+    }
+
+    return orders[0]
   }
 }

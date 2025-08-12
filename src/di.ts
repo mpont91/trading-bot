@@ -49,6 +49,7 @@ import { TradingManager } from './domain/managers/trading-manager'
 import { DefaultStrategy } from './domain/strategies/default-strategy'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 import { StrategyInterface } from './domain/strategies/strategy-interface'
+import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
 
 class Container {
   private static launcherMarket: Launcher
@@ -74,7 +75,8 @@ class Container {
     const indicatorsSettings: IndicatorsSettings = settings.indicators
     const stopsSettings: StopsSettings = settings.stops
 
-    const api: Api = new BinanceClientApi(binanceSettings)
+    const spot: BinanceSpotApi = new BinanceSpotApi(binanceSettings)
+    const api: Api = new BinanceClientApi(spot, binanceSettings)
     const prisma: PrismaClient = new PrismaClient()
 
     const equityRepository: EquityRepository = new PrismaEquityRepository(
