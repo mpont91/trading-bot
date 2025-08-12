@@ -20,14 +20,7 @@ export const settings: Settings = {
     klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
   },
   trading: {
-    symbols: [
-      'BTCUSDC',
-      'ETHUSDC',
-      'XRPUSDC',
-      'SOLUSDC',
-      'ADAUSDC',
-      'HBARUSDC',
-    ],
+    symbols: ['BTCUSDC', 'ETHUSDC', 'XRPUSDC', 'SOLUSDC', 'ADAUSDC'],
     safetyCapitalMargin: 0.3,
   },
   indicators: {
