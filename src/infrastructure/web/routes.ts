@@ -22,9 +22,12 @@ router.get('/uptime', (req: Request, res: Response): void => {
 router.get('/graph/equity', getEquityGraph)
 router.get('/commission-equity', getCommissionEquity)
 router.get('/performance', getPerformance)
-router.get('/last-trades/:symbol?', getLastTrades)
-router.get('/market/last-strategies/:symbol?', getLastStrategies)
-router.get('/market/last-opportunities/:symbol?', getLastOpportunities)
+router.get('/last-trades', getLastTrades)
+router.get('/last-trades/:symbol', getLastTrades)
+router.get('/market/last-strategies', getLastStrategies)
+router.get('/market/last-strategies/:symbol', getLastStrategies)
+router.get('/market/last-opportunities', getLastOpportunities)
+router.get('/market/last-opportunities/:symbol', getLastOpportunities)
 router.get('/market/graph/signals/:symbol', getSignalsGraph)
 
 export default router
