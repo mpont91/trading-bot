@@ -50,6 +50,9 @@ import { DefaultStrategy } from './domain/strategies/default-strategy'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 import { StrategyInterface } from './domain/strategies/strategy-interface'
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
+import { PnlService } from './domain/services/pnl-service'
+import { PnlRepository } from './domain/repositories/pnl-repository'
+import { PrismaPnlRepository } from './infrastructure/repositories/prisma-pnl-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -67,6 +70,7 @@ class Container {
   private static indicatorService: IndicatorService
   private static strategyService: StrategyService
   private static trailingService: TrailingService
+  private static pnlService: PnlService
 
   static initialize(): void {
     const binanceSettings: BinanceSettings = settings.binance
@@ -94,6 +98,7 @@ class Container {
     const trailingRepository: TrailingRepository = new PrismaTrailingRepository(
       prisma,
     )
+    const pnlRepository: PnlRepository = new PrismaPnlRepository(prisma)
 
     const adxIndicator: AdxIndicator = new AdxIndicator(indicatorsSettings.adx)
     const atrIndicator: AtrIndicator = new AtrIndicator(indicatorsSettings.atr)
@@ -131,6 +136,7 @@ class Container {
       this.tradeService,
       this.trailingService,
     )
+    this.pnlService = new PnlService(pnlRepository)
     this.indicatorService = new IndicatorService(
       indicatorRepository,
       smaIndicator,
@@ -149,6 +155,8 @@ class Container {
     const accountManager: ManagerInterface = new AccountManager(
       this.apiService,
       this.equityService,
+      this.pnlService,
+      this.performanceService,
     )
     const commissionManager: ManagerInterface = new CommissionManager(
       this.apiService,
@@ -223,6 +231,9 @@ class Container {
   }
   static getTrailingService(): TrailingService {
     return this.trailingService
+  }
+  static getPnlService(): PnlService {
+    return this.pnlService
   }
 }
 

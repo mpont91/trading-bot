@@ -3,6 +3,7 @@ import { getEquityGraph } from './controllers/equity-controller'
 import { getCommissionEquity } from './controllers/commission-equity-controller'
 import { getPerformance } from './controllers/performance-controller'
 import { getLastTrades } from './controllers/trade-controller'
+import { getPnlGraph } from './controllers/pnl-controller'
 import {
   getLastOpportunities,
   getLastStrategies,
@@ -20,6 +21,7 @@ router.get('/uptime', (req: Request, res: Response): void => {
 })
 
 router.get('/graph/equity', getEquityGraph)
+router.get('/graph/pnl', getPnlGraph)
 router.get('/commission-equity', getCommissionEquity)
 router.get('/performance', getPerformance)
 router.get('/last-trades', getLastTrades)

@@ -43,6 +43,6 @@ A short-term trading strategy that aims to make small profits on minor price cha
 The goal is to make around 2–3% profit/loss foreach position.
 More than that would be long-term, and less than that makes it impossible to profit
 because of the commissions.
-Instead of immediately closing the position when it reaches the Take-Profit (TP) level, 
-a trader might decide to let the winner run. This means they keep the trade open to see 
+Instead of immediately closing the position when it reaches the Take-Profit (TP) level,
+a trader might decide to let the winner run. This means they keep the trade open to see
 if the price continues to move in their favor beyond the initial target.
