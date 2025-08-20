@@ -16,12 +16,6 @@ model Equity {
   created_at DateTime @default(now())
 }
 
-model Pnl {
-  id         Int      @id @default(autoincrement())
-  amount     Decimal
-  created_at DateTime @default(now())
-}
-
 model CommissionEquity {
   id         Int      @id @default(autoincrement())
   currency   String
