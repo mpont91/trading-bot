@@ -6,8 +6,7 @@ import { reduceRecordsData } from '../helpers/graph-helper'
 export class EquityService {
   constructor(private readonly equityRepository: EquityRepository) {}
 
-  async store(amount: number): Promise<void> {
-    const equity: EquityCreate = { amount: amount }
+  async store(equity: EquityCreate): Promise<void> {
     await this.equityRepository.create(equity)
   }
 

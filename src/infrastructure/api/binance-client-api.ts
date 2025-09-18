@@ -22,6 +22,7 @@ import { Position } from '../../domain/types/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 import { BinanceSettings } from '../../domain/types/settings'
 import { BinanceSpotApi } from './binance-spot-api'
+import { EquityCreate } from '../../domain/models/equity'
 
 export class BinanceClientApi implements Api {
   constructor(
@@ -59,6 +60,36 @@ export class BinanceClientApi implements Api {
     return {
       equity: equity,
       available: available,
+    }
+  }
+
+  async getEquity(): Promise<EquityCreate> {
+    const balances: RestTradeTypes.accountInformationBalances[] = (
+      await this.api.accountInformation()
+    ).balances
+
+    let equity: number = 0
+
+    for (const balance of balances) {
+      if (balance.asset === this.settings.feeCurrency) {
+        continue
+      }
+
+      const quantity: number = parseFloat(balance.free)
+
+      if (balance.asset === this.settings.baseCurrency) {
+        equity += quantity
+        continue
+      }
+
+      const price: number = await this.getPrice(
+        balance.asset + this.settings.baseCurrency,
+      )
+      equity += parseFloat(balance.free) * price
+    }
+
+    return {
+      amount: equity,
     }
   }
 

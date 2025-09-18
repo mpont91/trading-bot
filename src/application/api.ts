@@ -4,8 +4,10 @@ import { OrderRequest, OrderCreate } from '../domain/models/order'
 import { Position } from '../domain/types/position'
 import { Kline, KlineInterval } from '../domain/types/kline'
 import { CommissionEquityCreate } from '../domain/models/commission-equity'
+import { EquityCreate } from '../domain/models/equity'
 
 export interface Api {
+  getEquity(): Promise<EquityCreate>
   getCommissionEquity(): Promise<CommissionEquityCreate>
   getBalance(): Promise<Balance>
   getPrice(symbol: string): Promise<number>

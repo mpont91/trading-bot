@@ -1,6 +1,12 @@
 type Fn = (args: string[]) => Promise<void>
 
 const scripts: Record<string, Fn> = {
+  'api-get-equity': async () => {
+    await (await import('./api/api-get-equity')).default()
+  },
+  'api-get-commission-equity': async () => {
+    await (await import('./api/api-get-commission-equity')).default()
+  },
   'api-get-balance': async () => {
     await (await import('./api/api-get-balance')).default()
   },

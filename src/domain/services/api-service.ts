@@ -7,12 +7,17 @@ import { Position } from '../types/position'
 import { Kline, KlineInterval } from '../types/kline'
 import { ApiSettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
+import { EquityCreate } from '../models/equity'
 
 export class ApiService {
   constructor(
     private readonly settings: ApiSettings,
     private readonly api: Api,
   ) {}
+
+  async getEquity(): Promise<EquityCreate> {
+    return this.api.getEquity()
+  }
 
   async getCommissionEquity(): Promise<CommissionEquityCreate> {
     return this.api.getCommissionEquity()
@@ -26,7 +31,7 @@ export class ApiService {
     return this.api.getPrice(symbol)
   }
 
-  async getKlineHistory(symbol: string): Promise<Kline[]> {
+  async getKline(symbol: string): Promise<Kline[]> {
     const interval: KlineInterval = this.settings.klineHistoryInterval
     const limit: number = this.settings.klineHistoryLimit
     const end: Date = new Date()

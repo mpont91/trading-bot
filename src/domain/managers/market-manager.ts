@@ -16,7 +16,7 @@ export class MarketManager implements ManagerInterface {
   ) {}
   async start(): Promise<void> {
     for (const symbol of this.symbols) {
-      const klines: Kline[] = await this.apiService.getKlineHistory(symbol)
+      const klines: Kline[] = await this.apiService.getKline(symbol)
       await this.indicatorService.calculateAndCreateAll(symbol, klines)
       const strategy: StrategyCreate =
         await this.strategy.createStrategy(symbol)

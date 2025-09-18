@@ -10,6 +10,6 @@ export default async function (args: string[]): Promise<void> {
     throw new Error('Missing required argument: symbol')
   }
 
-  const response: Kline[] = await apiService.getKlineHistory(symbol)
+  const response: Kline[] = await apiService.getKline(symbol)
   console.dir(response, { depth: null })
 }
