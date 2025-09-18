@@ -1,12 +1,15 @@
 import { Container } from '../../di'
 import { PositionService } from '../../domain/services/position-service'
 
-async function start(): Promise<void> {
+export default async function (args: string[]): Promise<void> {
   const positionService: PositionService = Container.getPositionService()
-  const symbol: string = process.argv[2]
-  await positionService.openPosition(symbol)
-}
+  const [symbol] = args
 
-start().catch((error: unknown): void => {
-  console.error(`Error opening the position:`, error)
-})
+  if (!symbol) {
+    throw new Error('Missing required argument: symbol')
+  }
+
+  await positionService.openPosition(symbol)
+
+  console.log('Position opened successfully!')
+}

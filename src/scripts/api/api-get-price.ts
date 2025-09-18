@@ -1,13 +1,14 @@
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
 
-async function start(): Promise<void> {
+export default async function (args: string[]): Promise<void> {
   const apiService: ApiService = Container.getApiService()
-  const symbol: string = process.argv[2]
+  const [symbol] = args
+
+  if (!symbol) {
+    throw new Error('Missing required argument: symbol')
+  }
+
   const response: number = await apiService.getPrice(symbol)
   console.log(response)
 }
-
-start().catch((error: unknown): void => {
-  console.error(`Error getting the price:`, error)
-})

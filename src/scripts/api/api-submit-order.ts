@@ -4,11 +4,13 @@ import { OrderRequest } from '../../domain/models/order'
 import { Side } from '../../domain/types/side'
 import { ApiService } from '../../domain/services/api-service'
 
-async function start(): Promise<void> {
+export default async function (args: string[]): Promise<void> {
   const apiService: ApiService = Container.getApiService()
-  const symbol: string = process.argv[2]
-  const side: string = process.argv[3]
-  const quantity: string = process.argv[4]
+  const [symbol, side, quantity] = args
+
+  if (!symbol || !side || !quantity) {
+    throw new Error('Missing required arguments: symbol or side or quantity')
+  }
 
   sideRule(side)
 
@@ -19,8 +21,6 @@ async function start(): Promise<void> {
   }
 
   await apiService.submitOrder(orderRequest)
-}
 
-start().catch((error: unknown): void => {
-  console.error('Error submitting the order:', error)
-})
+  console.log('Order submitted successfully!')
+}
