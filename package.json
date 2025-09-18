@@ -36,7 +36,7 @@
   "license": "ISC",
   "dependencies": {
     "@binance/connector-typescript": "^0.3.16",
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.16.2",
     "bottleneck": "^2.19.5",
     "cors": "^2.8.5",
     "decimal.js": "^10.6.0",
@@ -61,7 +61,7 @@
     "jest": "^30.0.5",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
-    "prisma": "^6.13.0",
+    "prisma": "^6.16.2",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.39.1"
