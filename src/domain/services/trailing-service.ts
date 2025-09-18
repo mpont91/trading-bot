@@ -15,4 +15,8 @@ export class TrailingService {
   async remove(symbol: string): Promise<void> {
     await this.trailingRepository.remove(symbol)
   }
+
+  async list(): Promise<Trailing[]> {
+    return this.trailingRepository.list()
+  }
 }

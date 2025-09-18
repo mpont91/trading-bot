@@ -31,6 +31,12 @@ export class PrismaTrailingRepository implements TrailingRepository {
     return this.toDomain(trailing as PrismaTrailing)
   }
 
+  async list(): Promise<Trailing[]> {
+    const trailingList = await this.prisma.trailing.findMany()
+
+    return this.toDomainList(trailingList)
+  }
+
   async remove(symbol: string): Promise<void> {
     await this.prisma.trailing.delete({
       where: {
@@ -56,5 +62,9 @@ export class PrismaTrailingRepository implements TrailingRepository {
       tp: trailing.tp ? new Decimal(trailing.tp) : undefined,
       sl: trailing.sl ? new Decimal(trailing.sl) : undefined,
     }
+  }
+
+  private toDomainList(prismaTrailing: PrismaTrailing[]): Trailing[] {
+    return prismaTrailing.map(this.toDomain)
   }
 }

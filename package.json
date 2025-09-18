@@ -29,7 +29,8 @@
     "api-submit-order": "ts-node src/scripts/api/api-submit-order.ts",
     "position:close": "ts-node src/scripts/position/position-close.ts",
     "position:get": "ts-node src/scripts/position/position-get.ts",
-    "position:open": "ts-node src/scripts/position/position-open.ts"
+    "position:open": "ts-node src/scripts/position/position-open.ts",
+    "trailing:list": "ts-node src/scripts/trailing/trailing-list.ts"
   },
   "author": "Marc Pont",
   "license": "ISC",
