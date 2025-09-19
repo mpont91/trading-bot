@@ -73,38 +73,26 @@ export class PrismaStrategyRepository implements StrategyRepository {
   }
 
   async getLastManyForEachSymbol(): Promise<Strategy[]> {
-    const strategies: PrismaStrategy[] = await this.prisma.$queryRaw<
-      PrismaStrategy[]
-    >`
-SELECT s.*
-FROM Strategy s
-    INNER JOIN (
-        SELECT symbol, MAX(created_at) AS max_created_at
-        FROM Strategy
-        GROUP BY symbol
-    ) last
-    ON s.symbol = last.symbol
-    AND s.created_at = last.max_created_at
-    ORDER BY s.created_at DESC`
+    const strategies = await this.prisma.strategy.findMany({
+      distinct: ['symbol'],
+      orderBy: [
+        { symbol: Prisma.SortOrder.asc },
+        { created_at: Prisma.SortOrder.desc },
+      ],
+    })
 
     return this.toDomainList(strategies)
   }
 
   async getLastManyOpportunitiesForEachSymbol(): Promise<Strategy[]> {
-    const strategies: PrismaStrategy[] = await this.prisma.$queryRaw<
-      PrismaStrategy[]
-    >`
-SELECT s.*
-FROM Strategy s
-    INNER JOIN (
-        SELECT symbol, MAX(created_at) AS max_created_at
-        FROM Strategy
-        WHERE side <> 'hold'
-        GROUP BY symbol
-    ) last
-    ON s.symbol = last.symbol
-    AND s.created_at = last.max_created_at
-    ORDER BY s.created_at DESC`
+    const strategies = await this.prisma.strategy.findMany({
+      where: { side: { not: 'hold' } },
+      distinct: ['symbol'],
+      orderBy: [
+        { symbol: Prisma.SortOrder.asc },
+        { created_at: Prisma.SortOrder.desc },
+      ],
+    })
 
     return this.toDomainList(strategies)
   }
