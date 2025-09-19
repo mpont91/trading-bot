@@ -1,20 +1,23 @@
 type Fn = (args: string[]) => Promise<void>
 
 const scripts: Record<string, Fn> = {
-  'api-get-equity': async () => {
-    await (await import('./api/api-get-equity')).default()
+  'api-get-balance': async () => {
+    await (await import('./api/api-get-balance')).default()
   },
   'api-get-commission-equity': async () => {
     await (await import('./api/api-get-commission-equity')).default()
   },
-  'api-get-balance': async () => {
-    await (await import('./api/api-get-balance')).default()
+  'api-get-equity': async () => {
+    await (await import('./api/api-get-equity')).default()
   },
-  'api-get-kline-history': async (args: string[]) => {
-    await (await import('./api/api-get-kline-history')).default(args)
+  'api-get-kline': async (args: string[]) => {
+    await (await import('./api/api-get-kline')).default(args)
   },
   'api-get-order': async (args: string[]) => {
     await (await import('./api/api-get-order')).default(args)
+  },
+  'api-get-position': async (args: string[]) => {
+    await (await import('./api/api-get-position')).default(args)
   },
   'api-get-price': async (args: string[]) => {
     await (await import('./api/api-get-price')).default(args)
