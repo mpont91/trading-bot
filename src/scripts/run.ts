@@ -28,6 +28,18 @@ const scripts: Record<string, Fn> = {
   'api-submit-order': async (args: string[]) => {
     await (await import('./api/api-submit-order')).default(args)
   },
+  'investment-get-amount': async () => {
+    await (await import('./investment/investment-get-amount')).default()
+  },
+  'investment-get-quantity': async (args: string[]) => {
+    await (await import('./investment/investment-get-quantity')).default(args)
+  },
+  'order-get-last': async () => {
+    await (await import('./order/order-get-last')).default()
+  },
+  'order-get-last-symbol': async (args: string[]) => {
+    await (await import('./order/order-get-last-symbol')).default(args)
+  },
   'position-close': async (args: string[]) => {
     await (await import('./position/position-close')).default(args)
   },
@@ -36,6 +48,9 @@ const scripts: Record<string, Fn> = {
   },
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)
+  },
+  'performance-get': async () => {
+    await (await import('./performance/performance-get')).default()
   },
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()

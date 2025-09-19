@@ -6,5 +6,6 @@ export default async function (): Promise<void> {
   const apiService: ApiService = Container.getApiService()
   const response: CommissionEquityCreate =
     await apiService.getCommissionEquity()
+
   console.dir(response, { depth: null })
 }

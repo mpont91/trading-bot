@@ -1,7 +1,6 @@
 import { Trade, TradeCreate } from '../models/trade'
 import { TradeRepository } from '../repositories/trade-repository'
 import { Order, OrderCreate } from '../models/order'
-import { Performance } from '../types/performance'
 
 export class TradeService {
   constructor(private readonly tradeRepository: TradeRepository) {}
@@ -16,10 +15,6 @@ export class TradeService {
 
   async getLastManyForSymbol(symbol: string): Promise<Trade[]> {
     return this.tradeRepository.getLastManyForSymbol(symbol)
-  }
-
-  async getPerformance(): Promise<Performance> {
-    return this.tradeRepository.getPerformance()
   }
 
   async storeTradeFromOrders(

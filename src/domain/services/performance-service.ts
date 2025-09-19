@@ -1,9 +1,9 @@
 import { Performance } from '../types/performance'
-import { TradeService } from './trade-service'
+import { TradeRepository } from '../repositories/trade-repository'
 
 export class PerformanceService {
-  constructor(private readonly tradeService: TradeService) {}
+  constructor(private readonly tradeRepository: TradeRepository) {}
   async getPerformance(): Promise<Performance> {
-    return this.tradeService.getPerformance()
+    return this.tradeRepository.getPerformance()
   }
 }

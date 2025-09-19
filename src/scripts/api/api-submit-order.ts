@@ -5,7 +5,6 @@ import { Side } from '../../domain/types/side'
 import { ApiService } from '../../domain/services/api-service'
 
 export default async function (args: string[]): Promise<void> {
-  const apiService: ApiService = Container.getApiService()
   const [symbol, side, quantity] = args
 
   if (!symbol || !side || !quantity) {
@@ -14,12 +13,12 @@ export default async function (args: string[]): Promise<void> {
 
   sideRule(side)
 
+  const apiService: ApiService = Container.getApiService()
   const orderRequest: OrderRequest = {
     symbol: symbol,
     side: side as Side,
     quantity: parseFloat(quantity),
   }
-
   await apiService.submitOrder(orderRequest)
 
   console.log('Order submitted successfully!')

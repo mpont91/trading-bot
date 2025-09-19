@@ -9,6 +9,7 @@ import {
 
 export class AdxIndicator {
   constructor(private readonly period: number) {}
+
   calculate(symbol: string, klines: Kline[]): IndicatorADXCreate {
     validateIndicatorKlines(this.period, klines.length)
     const values: ADXOutput[] = ADX.calculate({

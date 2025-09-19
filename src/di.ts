@@ -119,7 +119,7 @@ class Container {
     this.trailingService = new TrailingService(trailingRepository)
     this.orderService = new OrderService(orderRepository)
     this.tradeService = new TradeService(tradeRepository)
-    this.performanceService = new PerformanceService(this.tradeService)
+    this.performanceService = new PerformanceService(tradeRepository)
     this.investmentService = new InvestmentService(
       tradingSettings,
       this.apiService,
