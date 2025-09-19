@@ -47,8 +47,8 @@ export class TradingManager implements ManagerInterface {
 
     if (
       !trailing ||
-      isTP(trailing.side, price, trailing.tp) ||
-      isSL(trailing.side, price, trailing.sl)
+      isTP('long', price, trailing.tp) ||
+      isSL('long', price, trailing.sl)
     ) {
       await this.positionService.closePosition(position.symbol)
       return
@@ -59,9 +59,8 @@ export class TradingManager implements ManagerInterface {
       await this.positionService.openPosition(strategy.symbol, strategy.side)
       const trailing: TrailingCreate = {
         symbol: strategy.symbol,
-        side: strategy.side,
-        tp: strategy.tp,
-        sl: strategy.sl,
+        tp: strategy.tp!,
+        sl: strategy.sl!,
       }
       await this.trailingService.create(trailing)
     }
