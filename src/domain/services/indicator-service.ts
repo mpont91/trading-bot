@@ -36,7 +36,7 @@ export class IndicatorService {
     return this.smaIndicator.calculate(symbol, klines)
   }
 
-  async createSMA(indicator: IndicatorSMACreate): Promise<void> {
+  async storeSMA(indicator: IndicatorSMACreate): Promise<void> {
     await this.indicatorRepository.createSMA(indicator)
   }
 
@@ -48,7 +48,7 @@ export class IndicatorService {
     return this.rsiIndicator.calculate(symbol, klines)
   }
 
-  async createRSI(indicator: IndicatorRSICreate): Promise<void> {
+  async storeRSI(indicator: IndicatorRSICreate): Promise<void> {
     await this.indicatorRepository.createRSI(indicator)
   }
 
@@ -60,7 +60,7 @@ export class IndicatorService {
     return this.atrIndicator.calculate(symbol, klines)
   }
 
-  async createATR(indicator: IndicatorATRCreate): Promise<void> {
+  async storeATR(indicator: IndicatorATRCreate): Promise<void> {
     await this.indicatorRepository.createATR(indicator)
   }
 
@@ -72,7 +72,7 @@ export class IndicatorService {
     return this.adxIndicator.calculate(symbol, klines)
   }
 
-  async createADX(indicator: IndicatorADXCreate): Promise<void> {
+  async storeADX(indicator: IndicatorADXCreate): Promise<void> {
     await this.indicatorRepository.createADX(indicator)
   }
 
@@ -84,7 +84,7 @@ export class IndicatorService {
     return this.bbIndicator.calculate(symbol, klines)
   }
 
-  async createBB(indicator: IndicatorBBCreate): Promise<void> {
+  async storeBB(indicator: IndicatorBBCreate): Promise<void> {
     await this.indicatorRepository.createBB(indicator)
   }
   async getBB(symbol: string): Promise<IndicatorBB | null> {
@@ -95,7 +95,7 @@ export class IndicatorService {
     return this.smaCrossIndicator.calculate(symbol, klines)
   }
 
-  async createSMACross(indicator: IndicatorSMACrossCreate): Promise<void> {
+  async storeSMACross(indicator: IndicatorSMACrossCreate): Promise<void> {
     await this.indicatorRepository.createSMACross(indicator)
   }
   async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
@@ -104,24 +104,24 @@ export class IndicatorService {
 
   async calculateAndCreateAll(symbol: string, klines: Kline[]): Promise<void> {
     const sma: IndicatorSMACreate = this.calculateSMA(symbol, klines)
-    await this.createSMA(sma)
+    await this.storeSMA(sma)
 
     const rsi: IndicatorRSICreate = this.calculateRSI(symbol, klines)
-    await this.createRSI(rsi)
+    await this.storeRSI(rsi)
 
     const atr: IndicatorATRCreate = this.calculateATR(symbol, klines)
-    await this.createATR(atr)
+    await this.storeATR(atr)
 
     const adx: IndicatorADXCreate = this.calculateADX(symbol, klines)
-    await this.createADX(adx)
+    await this.storeADX(adx)
 
     const bb: IndicatorBBCreate = this.calculateBB(symbol, klines)
-    await this.createBB(bb)
+    await this.storeBB(bb)
 
     const smaCross: IndicatorSMACrossCreate = this.calculateSMACross(
       symbol,
       klines,
     )
-    await this.createSMACross(smaCross)
+    await this.storeSMACross(smaCross)
   }
 }

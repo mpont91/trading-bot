@@ -20,7 +20,7 @@ export class MarketManager implements ManagerInterface {
       await this.indicatorService.calculateAndCreateAll(symbol, klines)
       const strategy: StrategyCreate =
         await this.strategy.createStrategy(symbol)
-      await this.strategyService.create(strategy)
+      await this.strategyService.store(strategy)
     }
   }
 }

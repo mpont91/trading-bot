@@ -7,7 +7,7 @@ import { reduceRecordsData } from '../helpers/graph-helper'
 export class StrategyService {
   constructor(private readonly strategyRepository: StrategyRepository) {}
 
-  async create(strategy: StrategyCreate): Promise<void> {
+  async store(strategy: StrategyCreate): Promise<void> {
     await this.strategyRepository.create(strategy)
   }
 
