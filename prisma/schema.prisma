@@ -43,7 +43,6 @@ model Order {
 model Trade {
   id             Int      @id @default(autoincrement())
   symbol         String
-  side           String
   quantity       Decimal
   entry_order_id String
   entry_price    Decimal
@@ -54,9 +53,7 @@ model Trade {
   fees           Decimal
   pnl            Decimal
 
-  @@index([symbol, side])
   @@index([symbol])
-  @@index([side])
 }
 
 model IndicatorSMA {

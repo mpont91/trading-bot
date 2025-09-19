@@ -1,9 +1,6 @@
-import { Side } from '../types/side'
-
 export interface Trade {
   id: number
   symbol: string
-  side: Side
   quantity: number
   entryOrderId: string
   entryPrice: number

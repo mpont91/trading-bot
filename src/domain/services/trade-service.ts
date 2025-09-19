@@ -28,7 +28,6 @@ export class TradeService {
   ): Promise<void> {
     const trade: TradeCreate = {
       symbol: entryOrder.symbol,
-      side: entryOrder.side,
       quantity: entryOrder.quantity,
       entryOrderId: entryOrder.orderId,
       entryPrice: entryOrder.price,

@@ -2,7 +2,6 @@ import { Trade as PrismaTrade, Prisma, PrismaClient } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { TradeRepository } from '../../domain/repositories/trade-repository'
 import { Trade, TradeCreate } from '../../domain/models/trade'
-import { Side } from '../../domain/types/side'
 import { Performance } from '../../domain/types/performance'
 
 export class PrismaTradeRepository implements TradeRepository {
@@ -72,7 +71,6 @@ export class PrismaTradeRepository implements TradeRepository {
     return {
       id: prismaTrade.id,
       symbol: prismaTrade.symbol,
-      side: prismaTrade.side as Side,
       quantity: prismaTrade.quantity.toNumber(),
       entryOrderId: prismaTrade.entry_order_id,
       entryPrice: prismaTrade.entry_price.toNumber(),
@@ -88,7 +86,6 @@ export class PrismaTradeRepository implements TradeRepository {
   private toPrisma(tradeCreate: TradeCreate): Prisma.TradeCreateInput {
     return {
       symbol: tradeCreate.symbol,
-      side: tradeCreate.side,
       quantity: new Decimal(tradeCreate.quantity),
       entry_order_id: tradeCreate.entryOrderId,
       entry_price: new Decimal(tradeCreate.entryPrice),
