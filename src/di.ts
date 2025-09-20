@@ -128,6 +128,7 @@ class Container {
       this.trailingService,
     )
     this.indicatorService = new IndicatorService(
+      this.apiService,
       indicatorRepository,
       smaIndicator,
       rsiIndicator,
@@ -148,7 +149,6 @@ class Container {
     )
     const marketManager: ManagerInterface = new MarketManager(
       tradingSettings.symbols,
-      this.apiService,
       this.indicatorService,
       this.strategyService,
     )

@@ -42,6 +42,12 @@ const scripts: Record<string, Fn> = {
   'equity-store': async () => {
     await (await import('./equity/equity-store')).default()
   },
+  'indicator-get-sma': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-sma')).default(args)
+  },
+  'indicator-store-sma': async (args: string[]) => {
+    await (await import('./indicator/indicator-store-sma')).default(args)
+  },
   'investment-get-amount': async () => {
     await (await import('./investment/investment-get-amount')).default()
   },
