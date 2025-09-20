@@ -45,9 +45,7 @@ import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
-import { DefaultStrategy } from './domain/strategies/default-strategy'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
-import { StrategyInterface } from './domain/strategies/strategy-interface'
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
 
 class Container {
@@ -108,9 +106,7 @@ class Container {
     )
 
     this.apiService = new ApiService(apiSettings, api)
-
     this.equityService = new EquityService(equityRepository)
-    this.strategyService = new StrategyService(strategyRepository)
     this.commissionEquityService = new CommissionEquityService(
       commissionEquityRepository,
     )
@@ -139,8 +135,8 @@ class Container {
       bbIndicator,
       smaCrossIndicator,
     )
-
-    const defaultStrategy: StrategyInterface = new DefaultStrategy(
+    this.strategyService = new StrategyService(
+      strategyRepository,
       this.indicatorService,
       this.stopsService,
     )
@@ -154,7 +150,6 @@ class Container {
       tradingSettings.symbols,
       this.apiService,
       this.indicatorService,
-      defaultStrategy,
       this.strategyService,
     )
     const tradingManager: TradingManager = new TradingManager(

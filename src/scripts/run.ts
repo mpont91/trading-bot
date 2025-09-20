@@ -40,6 +40,9 @@ const scripts: Record<string, Fn> = {
   'order-get-last-symbol': async (args: string[]) => {
     await (await import('./order/order-get-last-symbol')).default(args)
   },
+  'performance-get': async () => {
+    await (await import('./performance/performance-get')).default()
+  },
   'position-close': async (args: string[]) => {
     await (await import('./position/position-close')).default(args)
   },
@@ -49,8 +52,8 @@ const scripts: Record<string, Fn> = {
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)
   },
-  'performance-get': async () => {
-    await (await import('./performance/performance-get')).default()
+  'strategy-create': async (args: string[]) => {
+    await (await import('./strategy/strategy-create')).default(args)
   },
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()
