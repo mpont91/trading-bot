@@ -42,11 +42,26 @@ const scripts: Record<string, Fn> = {
   'equity-store': async () => {
     await (await import('./equity/equity-store')).default()
   },
+  'indicator-get-adx': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-adx')).default(args)
+  },
+  'indicator-get-atr': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-atr')).default(args)
+  },
+  'indicator-get-bb': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-bb')).default(args)
+  },
+  'indicator-get-rsi': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-rsi')).default(args)
+  },
   'indicator-get-sma': async (args: string[]) => {
     await (await import('./indicator/indicator-get-sma')).default(args)
   },
-  'indicator-store-sma': async (args: string[]) => {
-    await (await import('./indicator/indicator-store-sma')).default(args)
+  'indicator-get-sma-cross': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-sma-cross')).default(args)
+  },
+  'indicator-store-all': async (args: string[]) => {
+    await (await import('./indicator/indicator-store-all')).default(args)
   },
   'investment-get-amount': async () => {
     await (await import('./investment/investment-get-amount')).default()
