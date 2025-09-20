@@ -28,6 +28,20 @@ const scripts: Record<string, Fn> = {
   'api-submit-order': async (args: string[]) => {
     await (await import('./api/api-submit-order')).default(args)
   },
+  'commission-equity-get': async () => {
+    await (await import('./commission-equity/commission-equity-get')).default()
+  },
+  'commission-equity-store': async () => {
+    await (
+      await import('./commission-equity/commission-equity-store')
+    ).default()
+  },
+  'equity-graph': async (args: string[]) => {
+    await (await import('./equity/equity-graph')).default(args)
+  },
+  'equity-store': async () => {
+    await (await import('./equity/equity-store')).default()
+  },
   'investment-get-amount': async () => {
     await (await import('./investment/investment-get-amount')).default()
   },

@@ -106,9 +106,10 @@ class Container {
     )
 
     this.apiService = new ApiService(apiSettings, api)
-    this.equityService = new EquityService(equityRepository)
+    this.equityService = new EquityService(equityRepository, this.apiService)
     this.commissionEquityService = new CommissionEquityService(
       commissionEquityRepository,
+      this.apiService,
     )
     this.stopsService = new StopsService(stopsSettings)
     this.trailingService = new TrailingService(trailingRepository)
@@ -142,7 +143,6 @@ class Container {
     )
 
     const accountManager: ManagerInterface = new AccountManager(
-      this.apiService,
       this.equityService,
       this.commissionEquityService,
     )
