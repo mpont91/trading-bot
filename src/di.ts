@@ -10,7 +10,6 @@ import { AccountManager } from './domain/managers/account-manager'
 import { CommissionEquityService } from './domain/services/commission-equity-service'
 import { CommissionEquityRepository } from './domain/repositories/commission-equity-repository'
 import { PrismaCommissionEquityRepository } from './infrastructure/repositories/prisma-commission-equity-repository'
-import { CommissionManager } from './domain/managers/commission-manager'
 import { PerformanceService } from './domain/services/performance-service'
 import { OrderService } from './domain/services/order-service'
 import { TradeService } from './domain/services/trade-service'
@@ -149,9 +148,6 @@ class Container {
     const accountManager: ManagerInterface = new AccountManager(
       this.apiService,
       this.equityService,
-    )
-    const commissionManager: ManagerInterface = new CommissionManager(
-      this.apiService,
       this.commissionEquityService,
     )
     const marketManager: ManagerInterface = new MarketManager(
@@ -175,7 +171,6 @@ class Container {
     ])
     this.launcherAccount = new Launcher(settings.intervalAccountTime, [
       accountManager,
-      commissionManager,
     ])
   }
 
