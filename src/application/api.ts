@@ -5,8 +5,10 @@ import { Position } from '../domain/types/position'
 import { Kline, KlineInterval } from '../domain/types/kline'
 import { CommissionEquityCreate } from '../domain/models/commission-equity'
 import { EquityCreate } from '../domain/models/equity'
+import { Coin } from '../domain/types/coin'
 
 export interface Api {
+  getCoins(): Promise<Coin[]>
   getEquity(): Promise<EquityCreate>
   getCommissionEquity(): Promise<CommissionEquityCreate>
   getBalance(): Promise<Balance>

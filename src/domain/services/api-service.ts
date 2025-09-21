@@ -8,12 +8,17 @@ import { Kline, KlineInterval } from '../types/kline'
 import { ApiSettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
 import { EquityCreate } from '../models/equity'
+import { Coin } from '../types/coin'
 
 export class ApiService {
   constructor(
     private readonly settings: ApiSettings,
     private readonly api: Api,
   ) {}
+
+  async getCoins(): Promise<Coin[]> {
+    return this.api.getCoins()
+  }
 
   async getEquity(): Promise<EquityCreate> {
     return this.api.getEquity()

@@ -5,6 +5,7 @@ import { ApiSettings } from '../../src/domain/types/settings'
 
 export function createMockApi(): jest.Mocked<Api> {
   return {
+    getCoins: jest.fn(),
     getEquity: jest.fn(),
     getCommissionEquity: jest.fn(),
     getBalance: jest.fn(),

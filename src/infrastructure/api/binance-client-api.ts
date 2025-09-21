@@ -23,6 +23,7 @@ import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 import { BinanceSettings } from '../../domain/types/settings'
 import { BinanceSpotApi } from './binance-spot-api'
 import { EquityCreate } from '../../domain/models/equity'
+import { Coin } from '../../domain/types/coin'
 
 export class BinanceClientApi implements Api {
   constructor(
@@ -30,31 +31,44 @@ export class BinanceClientApi implements Api {
     private readonly settings: BinanceSettings,
   ) {}
 
-  async getBalance(): Promise<Balance> {
+  async getCoins(): Promise<Coin[]> {
     const balances: RestTradeTypes.accountInformationBalances[] = (
       await this.api.accountInformation()
     ).balances
 
+    const coins: Coin[] = []
+
+    for (const balance of balances) {
+      coins.push({
+        name: balance.asset,
+        quantity: parseFloat(balance.free),
+      })
+    }
+
+    return coins
+  }
+
+  async getBalance(): Promise<Balance> {
+    const coins: Coin[] = await this.getCoins()
+
     let equity: number = 0
     let available: number = 0
 
-    for (const balance of balances) {
-      if (balance.asset === this.settings.feeCurrency) {
+    for (const coin of coins) {
+      if (coin.name === this.settings.feeCurrency) {
         continue
       }
 
-      const quantity: number = parseFloat(balance.free)
-
-      if (balance.asset === this.settings.baseCurrency) {
-        equity += quantity
-        available += quantity
+      if (coin.name === this.settings.baseCurrency) {
+        equity += coin.quantity
+        available += coin.quantity
         continue
       }
 
       const price: number = await this.getPrice(
-        balance.asset + this.settings.baseCurrency,
+        coin.name + this.settings.baseCurrency,
       )
-      equity += parseFloat(balance.free) * price
+      equity += coin.quantity * price
     }
 
     return {
@@ -64,28 +78,24 @@ export class BinanceClientApi implements Api {
   }
 
   async getEquity(): Promise<EquityCreate> {
-    const balances: RestTradeTypes.accountInformationBalances[] = (
-      await this.api.accountInformation()
-    ).balances
+    const coins: Coin[] = await this.getCoins()
 
     let equity: number = 0
 
-    for (const balance of balances) {
-      if (balance.asset === this.settings.feeCurrency) {
+    for (const coin of coins) {
+      if (coin.name === this.settings.feeCurrency) {
         continue
       }
 
-      const quantity: number = parseFloat(balance.free)
-
-      if (balance.asset === this.settings.baseCurrency) {
-        equity += quantity
+      if (coin.name === this.settings.baseCurrency) {
+        equity += coin.quantity
         continue
       }
 
       const price: number = await this.getPrice(
-        balance.asset + this.settings.baseCurrency,
+        coin.name + this.settings.baseCurrency,
       )
-      equity += parseFloat(balance.free) * price
+      equity += coin.quantity * price
     }
 
     return {
@@ -94,29 +104,25 @@ export class BinanceClientApi implements Api {
   }
 
   async getCommissionEquity(): Promise<CommissionEquityCreate> {
-    const balances: RestTradeTypes.accountInformationBalances[] = (
-      await this.api.accountInformation()
-    ).balances
+    const coins: Coin[] = await this.getCoins()
 
-    const balance: RestTradeTypes.accountInformationBalances | undefined =
-      balances.find(
-        (balance: RestTradeTypes.accountInformationBalances): boolean =>
-          balance.asset === this.settings.feeCurrency,
-      )
+    const coin: Coin | undefined = coins.find(
+      (c: Coin): boolean => c.name === this.settings.feeCurrency,
+    )
 
-    if (!balance) {
+    if (!coin) {
       return getEmptyCommissionEquityCreate()
     }
 
     const price: number = await this.getPrice(
-      balance.asset + this.settings.baseCurrency,
+      coin.name + this.settings.baseCurrency,
     )
-    const quantity: number = parseFloat(balance.free)
-    const amount: number = quantity * price
+
+    const amount: number = coin.quantity * price
 
     return {
       currency: this.settings.feeCurrency,
-      quantity: quantity,
+      quantity: coin.quantity,
       amount: amount,
     }
   }

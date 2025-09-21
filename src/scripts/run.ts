@@ -4,6 +4,9 @@ const scripts: Record<string, Fn> = {
   'api-get-balance': async () => {
     await (await import('./api/api-get-balance')).default()
   },
+  'api-get-coins': async () => {
+    await (await import('./api/api-get-coins')).default()
+  },
   'api-get-commission-equity': async () => {
     await (await import('./api/api-get-commission-equity')).default()
   },
