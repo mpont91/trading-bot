@@ -22,6 +22,7 @@ production:
 	git pull && \
 	npm --silent ci --no-progress && \
 	npm run build && \
+	npm run migrate && \
 	npm run format:check && \
 	npm run lint && \
 	npm run test && \
