@@ -56,7 +56,7 @@ export class TradingManager implements ManagerInterface {
   }
   async handleOpportunity(strategy: Strategy): Promise<void> {
     if (strategy.side === 'long') {
-      await this.positionService.openPosition(strategy.symbol, strategy.side)
+      await this.positionService.openPosition(strategy.symbol)
       const trailing: TrailingCreate = {
         symbol: strategy.symbol,
         tp: strategy.tp!,

@@ -1,12 +1,10 @@
 import { Position } from '../types/position'
 import { ApiService } from './api-service'
 import { InvestmentService } from './investment-service'
-import { Order, OrderCreate, OrderRequest } from '../models/order'
+import { Order, OrderCreate } from '../models/order'
 import { OrderService } from './order-service'
 import { TradeService } from './trade-service'
-import { Side } from '../types/side'
 import { TrailingService } from './trailing-service'
-import { inverseSide } from '../helpers/side-helper'
 
 export class PositionService {
   constructor(
@@ -21,16 +19,15 @@ export class PositionService {
     return this.apiService.getPosition(symbol)
   }
 
-  async openPosition(symbol: string, side: Side = 'long'): Promise<void> {
+  async openPosition(symbol: string): Promise<void> {
     const quantity: number =
       await this.investmentService.getInvestmentQuantity(symbol)
-    const orderRequest: OrderRequest = this.createOpenPositionOrderRequest(
+
+    await this.orderService.submitOrder({
       symbol,
       quantity,
-      side,
-    )
-
-    await this.orderService.submitOrder(orderRequest)
+      side: 'long',
+    })
   }
 
   async closePosition(symbol: string): Promise<void> {
@@ -41,9 +38,6 @@ export class PositionService {
       )
     }
 
-    const orderRequest: OrderRequest =
-      this.createClosePositionOrderRequest(position)
-
     const entryOrder: Order | null =
       await this.orderService.getLastOrderForSymbol(symbol)
 
@@ -53,29 +47,13 @@ export class PositionService {
       )
     }
 
-    const exitOrder: OrderCreate =
-      await this.orderService.submitOrder(orderRequest)
+    const exitOrder: OrderCreate = await this.orderService.submitOrder({
+      symbol: position.symbol,
+      side: 'short',
+      quantity: position.quantity,
+    })
 
     await this.tradeService.storeTradeFromOrders(entryOrder, exitOrder)
     await this.trailingService.remove(symbol)
-  }
-
-  createOpenPositionOrderRequest(
-    symbol: string,
-    quantity: number,
-    side: Side,
-  ): OrderRequest {
-    return {
-      symbol: symbol,
-      side: side,
-      quantity: quantity,
-    }
-  }
-  createClosePositionOrderRequest(position: Position): OrderRequest {
-    return {
-      symbol: position.symbol,
-      side: inverseSide(position.side),
-      quantity: position.quantity,
-    }
   }
 }
