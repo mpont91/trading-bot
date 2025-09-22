@@ -30,7 +30,7 @@ export class PositionService {
       side,
     )
 
-    await this.submitOrder(orderRequest)
+    await this.orderService.submitOrder(orderRequest)
   }
 
   async closePosition(symbol: string): Promise<void> {
@@ -53,7 +53,8 @@ export class PositionService {
       )
     }
 
-    const exitOrder: OrderCreate = await this.submitOrder(orderRequest)
+    const exitOrder: OrderCreate =
+      await this.orderService.submitOrder(orderRequest)
 
     await this.tradeService.storeTradeFromOrders(entryOrder, exitOrder)
     await this.trailingService.remove(symbol)
@@ -76,16 +77,5 @@ export class PositionService {
       side: inverseSide(position.side),
       quantity: position.quantity,
     }
-  }
-
-  private async submitOrder(orderRequest: OrderRequest): Promise<OrderCreate> {
-    const orderId: string = await this.apiService.submitOrder(orderRequest)
-    const order: OrderCreate = await this.apiService.getOrder(
-      orderRequest.symbol,
-      orderId,
-    )
-    await this.orderService.store(order)
-
-    return order
   }
 }
