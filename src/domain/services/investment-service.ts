@@ -9,38 +9,28 @@ export class InvestmentService {
     private readonly apiService: ApiService,
   ) {}
 
-  async getInvestmentQuantityFromSymbol(symbol: string): Promise<number> {
-    const investmentAmount: number = await this.getInvestmentAmount()
-    return this.getQuantityAdjustedFromAmount(symbol, investmentAmount)
+  async getInvestmentQuantity(symbol: string): Promise<number> {
+    const investment: number = await this.getInvestmentAmount()
+    return this.getQuantityAdjusted(symbol, investment)
   }
 
   async getInvestmentAmount(): Promise<number> {
     const balance: Balance = await this.apiService.getBalance()
-    const total: number = balance.equity
-    const margin: number = total * this.settings.safetyCapitalMargin
-    const totalInvestment: number = total - margin
+    const margin: number = balance.equity * this.settings.safetyCapitalMargin
+    const total: number = balance.equity - margin
 
-    const symbols: string[] = this.settings.symbols
+    const investment: number = total / this.settings.maxPositionsOpened
 
-    if (symbols.length === 0) {
-      throw new Error('There are no symbols to invest.')
-    }
-
-    const totalInvestmentForSymbol: number = totalInvestment / symbols.length
-
-    if (totalInvestmentForSymbol > balance.available) {
+    if (investment > balance.available) {
       throw new Error(
         'The investment amount calculated exceeds the available balance. Check the open positions and holdings',
       )
     }
 
-    return this.roundQuantity(totalInvestmentForSymbol)
+    return this.roundQuantity(investment)
   }
 
-  async getQuantityAdjustedFromAmount(
-    symbol: string,
-    amount: number,
-  ): Promise<number> {
+  async getQuantityAdjusted(symbol: string, amount: number): Promise<number> {
     const symbolInformation: Symbol = await this.apiService.getSymbol(symbol)
 
     const quantity: number = amount / symbolInformation.price

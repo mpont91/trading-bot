@@ -26,6 +26,7 @@ export interface ApiSettings {
 }
 
 export interface TradingSettings {
+  maxPositionsOpened: number
   symbols: string[]
   safetyCapitalMargin: number
 }

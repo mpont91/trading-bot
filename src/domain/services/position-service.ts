@@ -23,7 +23,7 @@ export class PositionService {
 
   async openPosition(symbol: string, side: Side = 'long'): Promise<void> {
     const quantity: number =
-      await this.investmentService.getInvestmentQuantityFromSymbol(symbol)
+      await this.investmentService.getInvestmentQuantity(symbol)
     const orderRequest: OrderRequest = this.createOpenPositionOrderRequest(
       symbol,
       quantity,

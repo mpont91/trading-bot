@@ -15,6 +15,7 @@ function initialize(): void {
     .mockResolvedValue({ equity: 100, available: 100 })
 
   mockTradingSettings = {
+    maxPositionsOpened: 1,
     safetyCapitalMargin: 0.3,
     symbols: ['BTCUSDT'],
   }
@@ -33,17 +34,10 @@ describe('InvestmentService - getInvestmentAmount', (): void => {
 
   test('Should return 35 when having 100 equity with 30% margin and 2 symbols to invest', async (): Promise<void> => {
     mockTradingSettings.symbols = ['BTCUSDT', 'ETHUSDT']
+    mockTradingSettings.maxPositionsOpened = 2
 
     const result: number = await investmentService.getInvestmentAmount()
     expect(result).toBe(35)
-  })
-
-  test('Should throw error when there are no symbols to invest', async (): Promise<void> => {
-    mockTradingSettings.symbols = []
-
-    await expect(investmentService.getInvestmentAmount()).rejects.toThrow(
-      'There are no symbols to invest.',
-    )
   })
 
   test('Should throw error when investment amount exceeds available balance', async (): Promise<void> => {
@@ -72,7 +66,7 @@ describe('InvestmentService - getQuantityAdjustedFromAmount', (): void => {
     const amount: number = 3000
 
     const adjustedQuantity: number =
-      await investmentService.getQuantityAdjustedFromAmount(symbol, amount)
+      await investmentService.getQuantityAdjusted(symbol, amount)
 
     expect(adjustedQuantity).toBe(6)
   })
@@ -87,7 +81,7 @@ describe('InvestmentService - getQuantityAdjustedFromAmount', (): void => {
     const amount: number = 100
 
     const adjustedQuantity: number =
-      await investmentService.getQuantityAdjustedFromAmount(symbol, amount)
+      await investmentService.getQuantityAdjusted(symbol, amount)
 
     expect(adjustedQuantity).toBe(0.5)
   })
@@ -102,7 +96,7 @@ describe('InvestmentService - getQuantityAdjustedFromAmount', (): void => {
     const amount: number = 25000
 
     const adjustedQuantity: number =
-      await investmentService.getQuantityAdjustedFromAmount(symbol, amount)
+      await investmentService.getQuantityAdjusted(symbol, amount)
 
     expect(adjustedQuantity).toBe(0.25)
   })
