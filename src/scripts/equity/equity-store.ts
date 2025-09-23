@@ -1,9 +1,10 @@
 import { Container } from '../../di'
 import { EquityService } from '../../domain/services/equity-service'
+import { Equity } from '../../domain/models/equity'
 
 export default async function (): Promise<void> {
   const equityService: EquityService = Container.getEquityService()
-  await equityService.store()
+  const response: Equity = await equityService.store()
 
-  console.log('Equity stored successfully!')
+  console.dir(response, { depth: null })
 }

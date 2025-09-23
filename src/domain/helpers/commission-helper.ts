@@ -6,7 +6,7 @@ import { settings } from '../../application/settings'
 
 export function getEmptyCommissionEquity(): CommissionEquity {
   return {
-    id: 1,
+    id: -1,
     currency: settings.binance.feeCurrency,
     quantity: 0,
     amount: 0,

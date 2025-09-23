@@ -10,9 +10,9 @@ export class EquityService {
     private readonly apiService: ApiService,
   ) {}
 
-  async store(): Promise<void> {
+  async store(): Promise<Equity> {
     const equity: EquityCreate = await this.apiService.getEquity()
-    await this.equityRepository.create(equity)
+    return this.equityRepository.create(equity)
   }
 
   async graph(interval: TimeInterval): Promise<Equity[]> {

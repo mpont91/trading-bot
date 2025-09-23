@@ -8,10 +8,12 @@ import Decimal from 'decimal.js'
 export class PrismaEquityRepository implements EquityRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(equity: EquityCreate): Promise<void> {
-    await this.prisma.equity.create({
-      data: this.toPrisma(equity),
-    })
+  async create(equity: EquityCreate): Promise<Equity> {
+    return this.toDomain(
+      await this.prisma.equity.create({
+        data: this.toPrisma(equity),
+      }),
+    )
   }
 
   async get(interval: TimeInterval): Promise<Equity[]> {

@@ -4,6 +4,6 @@ import {
 } from '../models/commission-equity'
 
 export interface CommissionEquityRepository {
-  create(commissionEquity: CommissionEquityCreate): Promise<void>
+  create(commissionEquity: CommissionEquityCreate): Promise<CommissionEquity>
   get(): Promise<CommissionEquity>
 }

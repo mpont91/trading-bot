@@ -11,10 +11,10 @@ export class CommissionEquityService {
     private readonly apiService: ApiService,
   ) {}
 
-  async store(): Promise<void> {
+  async store(): Promise<CommissionEquity> {
     const commissionEquity: CommissionEquityCreate =
       await this.apiService.getCommissionEquity()
-    await this.commissionEquityRepository.create(commissionEquity)
+    return this.commissionEquityRepository.create(commissionEquity)
   }
 
   async get(): Promise<CommissionEquity> {

@@ -16,10 +16,14 @@ export class PrismaCommissionEquityRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(commissionEquityCreate: CommissionEquityCreate): Promise<void> {
-    await this.prisma.commissionEquity.create({
-      data: this.toPrisma(commissionEquityCreate),
-    })
+  async create(
+    commissionEquityCreate: CommissionEquityCreate,
+  ): Promise<CommissionEquity> {
+    return this.toDomain(
+      await this.prisma.commissionEquity.create({
+        data: this.toPrisma(commissionEquityCreate),
+      }),
+    )
   }
 
   async get(): Promise<CommissionEquity> {
