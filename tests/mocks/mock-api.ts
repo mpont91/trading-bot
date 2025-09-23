@@ -12,7 +12,6 @@ export function createMockApi(): jest.Mocked<Api> {
     getSymbol: jest.fn(),
     submitOrder: jest.fn(),
     getOrder: jest.fn(),
-    getPosition: jest.fn(),
     getPrice: jest.fn(),
     getKline: jest.fn(),
   } as jest.Mocked<Api>

@@ -41,19 +41,6 @@ export class PrismaOrderRepository implements OrderRepository {
     return this.toDomainList(orders)
   }
 
-  async last(symbol: string): Promise<Order | null> {
-    const order = await this.prisma.order.findFirst({
-      where: { symbol },
-      orderBy: { created_at: Prisma.SortOrder.desc },
-    })
-
-    if (!order) {
-      return null
-    }
-
-    return this.toDomain(order as PrismaOrder)
-  }
-
   private toDomain(prismaOrder: PrismaOrder): Order {
     return {
       id: prismaOrder.id,

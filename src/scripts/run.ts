@@ -72,9 +72,6 @@ const scripts: Record<string, Fn> = {
   'order-get': async (args: string[]) => {
     await (await import('./order/order-get')).default(args)
   },
-  'order-last': async (args: string[]) => {
-    await (await import('./order/order-last')).default(args)
-  },
   'order-list': async () => {
     await (await import('./order/order-list')).default()
   },
