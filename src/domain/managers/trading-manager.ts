@@ -28,11 +28,13 @@ export class TradingManager implements ManagerInterface {
         await this.positionService.getPosition(symbol)
 
       if (!position) {
-        await this.handleOpportunity(strategy)
+        if (strategy.side === 'long') {
+          await this.handleOpportunity(strategy)
+        }
         continue
       }
 
-      if (position.side !== strategy.side) {
+      if (strategy.side === 'short') {
         await this.positionService.closePosition(symbol)
       }
 
@@ -55,14 +57,12 @@ export class TradingManager implements ManagerInterface {
     }
   }
   async handleOpportunity(strategy: Strategy): Promise<void> {
-    if (strategy.side === 'long') {
-      await this.positionService.openPosition(strategy.symbol)
-      const trailing: TrailingCreate = {
-        symbol: strategy.symbol,
-        tp: strategy.tp!,
-        sl: strategy.sl!,
-      }
-      await this.trailingService.create(trailing)
+    await this.positionService.openPosition(strategy.symbol)
+    const trailing: TrailingCreate = {
+      symbol: strategy.symbol,
+      tp: strategy.tp!,
+      sl: strategy.sl!,
     }
+    await this.trailingService.create(trailing)
   }
 }

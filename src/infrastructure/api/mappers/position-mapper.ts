@@ -1,6 +1,5 @@
 import { Position } from '../../../domain/types/position'
-import { mapBinanceToDomainSide } from './side-mapper'
-import { RestTradeTypes, Side } from '@binance/connector-typescript'
+import { RestTradeTypes } from '@binance/connector-typescript'
 
 export function mapBinanceToDomainPosition(
   binanceOrder: RestTradeTypes.allOrdersResponse,
@@ -10,7 +9,6 @@ export function mapBinanceToDomainPosition(
 
   return {
     symbol: binanceOrder.symbol,
-    side: mapBinanceToDomainSide(binanceOrder.side as Side),
     quantity: quantity,
     price: amount / quantity,
     amount: amount,

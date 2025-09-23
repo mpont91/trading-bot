@@ -194,22 +194,18 @@ export class BinanceClientApi implements Api {
   }
 
   async getPosition(symbol: string): Promise<Position | null> {
-    const balances: RestTradeTypes.accountInformationBalances[] = (
-      await this.api.accountInformation()
-    ).balances
+    const coins: Coin[] = await this.getCoins()
 
     const currency: string = symbol.replace(
       new RegExp(`${this.settings.baseCurrency}$`),
       '',
     )
 
-    const balance: RestTradeTypes.accountInformationBalances | undefined =
-      balances.find(
-        (b: RestTradeTypes.accountInformationBalances): boolean =>
-          b.asset === currency,
-      )
+    const coin: Coin | undefined = coins.find(
+      (c: Coin): boolean => c.name === currency,
+    )
 
-    if (!balance) {
+    if (!coin) {
       return null
     }
 
@@ -222,7 +218,7 @@ export class BinanceClientApi implements Api {
       )
     }
 
-    if (order.executedQty !== balance.free) {
+    if (parseFloat(order.executedQty) !== coin.quantity) {
       throw new Error(
         'The amount in currency does not match with the order quantity. Something is broken!',
       )
