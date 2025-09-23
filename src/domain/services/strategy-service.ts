@@ -67,7 +67,8 @@ export class StrategyService {
     }
   }
 
-  async store(strategy: StrategyCreate): Promise<Strategy> {
+  async store(symbol: string): Promise<Strategy> {
+    const strategy: StrategyCreate = await this.create(symbol)
     return this.strategyRepository.create(strategy)
   }
 
