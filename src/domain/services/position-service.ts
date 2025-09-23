@@ -1,5 +1,4 @@
 import { Position } from '../models/position'
-import { ApiService } from './api-service'
 import { InvestmentService } from './investment-service'
 import { Order } from '../models/order'
 import { OrderService } from './order-service'
@@ -9,7 +8,6 @@ import { PositionRepository } from '../repositories/position-repository'
 export class PositionService {
   constructor(
     private readonly positionRepository: PositionRepository,
-    private readonly apiService: ApiService,
     private readonly investmentService: InvestmentService,
     private readonly orderService: OrderService,
     private readonly tradeService: TradeService,
@@ -31,53 +29,24 @@ export class PositionService {
     return this.positionRepository.list()
   }
 
-  async check(symbol: string): Promise<boolean> {
-    const real: Position | null = await this.apiService.getPosition(symbol)
-    const stored: Position | null = await this.get(symbol)
-
-    if (!real && !stored) {
-      return true
-    }
-
-    if (!real && stored) {
-      throw new Error(
-        'There is not a position in the API but there is one stored into database. Something is broken.',
-      )
-    }
-
-    if (real && !stored) {
-      throw new Error(
-        'There is a position in the API but there is not stored into database. Something is broken.',
-      )
-    }
-
-    if (real?.quantity !== stored?.quantity) {
-      throw new Error(
-        'The quantity of the position in the API is different from the stored one. Something is broken.',
-      )
-    }
-
-    return true
-  }
-
   async openPosition(symbol: string): Promise<Position> {
     const quantity: number =
       await this.investmentService.getInvestmentQuantity(symbol)
 
-    await this.orderService.submitOrder({
+    const order: Order = await this.orderService.submitOrder({
       symbol,
       quantity,
       side: 'long',
     })
 
-    const position: Position | null = await this.apiService.getPosition(symbol)
-    if (!position) {
-      throw new Error(
-        `Opened a position but it does not exist! Symbol: ${symbol}`,
-      )
-    }
-
-    return this.store(position)
+    return this.store({
+      symbol,
+      entryOrderId: order.id,
+      quantity: order.quantity,
+      price: order.price,
+      amount: order.amount,
+      entryAt: order.createdAt,
+    })
   }
 
   async closePosition(symbol: string): Promise<void> {

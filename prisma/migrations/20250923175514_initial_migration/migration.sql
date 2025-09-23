@@ -38,10 +38,10 @@ CREATE TABLE "public"."Trade" (
     "id" SERIAL NOT NULL,
     "symbol" TEXT NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
-    "entry_order_id" TEXT NOT NULL,
+    "entry_order_id" INTEGER NOT NULL,
     "entry_price" DECIMAL(65,30) NOT NULL,
     "entry_at" TIMESTAMP(3) NOT NULL,
-    "exit_order_id" TEXT NOT NULL,
+    "exit_order_id" INTEGER NOT NULL,
     "exit_price" DECIMAL(65,30) NOT NULL,
     "exit_at" TIMESTAMP(3) NOT NULL,
     "fees" DECIMAL(65,30) NOT NULL,
@@ -145,6 +145,7 @@ CREATE TABLE "public"."Strategy" (
 -- CreateTable
 CREATE TABLE "public"."Position" (
     "symbol" TEXT NOT NULL,
+    "entry_order_id" INTEGER NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,

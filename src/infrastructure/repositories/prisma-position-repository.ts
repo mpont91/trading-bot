@@ -49,6 +49,7 @@ export class PrismaPositionRepository implements PositionRepository {
   private toDomain(prismaPosition: PrismaPosition): Position {
     return {
       symbol: prismaPosition.symbol,
+      entryOrderId: prismaPosition.entry_order_id,
       quantity: prismaPosition.quantity.toNumber(),
       price: prismaPosition.price.toNumber(),
       amount: prismaPosition.amount.toNumber(),
@@ -59,6 +60,7 @@ export class PrismaPositionRepository implements PositionRepository {
   private toPrisma(position: Position): Prisma.PositionCreateInput {
     return {
       symbol: position.symbol,
+      entry_order_id: position.entryOrderId,
       quantity: new Decimal(position.quantity),
       price: new Decimal(position.price),
       amount: new Decimal(position.amount),

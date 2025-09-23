@@ -18,8 +18,6 @@ import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
 import { OrderCreate, OrderRequest } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
-import { Position } from '../../domain/models/position'
-import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 import { BinanceSettings } from '../../domain/types/settings'
 import { BinanceSpotApi } from './binance-spot-api'
 import { EquityCreate } from '../../domain/models/equity'
@@ -191,57 +189,5 @@ export class BinanceClientApi implements Api {
       tradesResponse,
       feeCurrencyPrice,
     )
-  }
-
-  async getPosition(symbol: string): Promise<Position | null> {
-    const coins: Coin[] = await this.getCoins()
-
-    const currency: string = symbol.replace(
-      new RegExp(`${this.settings.baseCurrency}$`),
-      '',
-    )
-
-    const coin: Coin | undefined = coins.find(
-      (c: Coin): boolean => c.name === currency,
-    )
-
-    if (!coin) {
-      return null
-    }
-
-    const order: RestTradeTypes.allOrdersResponse | null =
-      await this.getLastOrder(symbol)
-
-    if (!order) {
-      throw new Error(
-        'There is amount in currency but no order. Something is broken!',
-      )
-    }
-
-    if (parseFloat(order.executedQty) !== coin.quantity) {
-      throw new Error(
-        'The amount in currency does not match with the order quantity. Something is broken!',
-      )
-    }
-
-    return mapBinanceToDomainPosition(order)
-  }
-
-  private async getLastOrder(
-    symbol: string,
-  ): Promise<RestTradeTypes.allOrdersResponse | null> {
-    const options: RestTradeTypes.allOrdersOptions = {
-      limit: 1,
-    }
-    const orders: RestTradeTypes.allOrdersResponse[] = await this.api.allOrders(
-      symbol,
-      options,
-    )
-
-    if (orders.length === 0) {
-      return null
-    }
-
-    return orders[0]
   }
 }

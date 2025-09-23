@@ -19,9 +19,6 @@ const scripts: Record<string, Fn> = {
   'api-get-order': async (args: string[]) => {
     await (await import('./api/api-get-order')).default(args)
   },
-  'api-get-position': async (args: string[]) => {
-    await (await import('./api/api-get-position')).default(args)
-  },
   'api-get-price': async (args: string[]) => {
     await (await import('./api/api-get-price')).default(args)
   },
@@ -80,9 +77,6 @@ const scripts: Record<string, Fn> = {
   },
   'performance-get': async () => {
     await (await import('./performance/performance-get')).default()
-  },
-  'position-check': async (args: string[]) => {
-    await (await import('./position/position-check')).default(args)
   },
   'position-close': async (args: string[]) => {
     await (await import('./position/position-close')).default(args)

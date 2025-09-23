@@ -127,7 +127,6 @@ class Container {
     )
     this.positionService = new PositionService(
       positionRepository,
-      this.apiService,
       this.investmentService,
       this.orderService,
       this.tradeService,

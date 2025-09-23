@@ -1,6 +1,6 @@
 import { Trade, TradeCreate } from '../models/trade'
 import { TradeRepository } from '../repositories/trade-repository'
-import { Order, OrderCreate } from '../models/order'
+import { Order } from '../models/order'
 
 export class TradeService {
   constructor(private readonly tradeRepository: TradeRepository) {}
@@ -15,15 +15,15 @@ export class TradeService {
 
   async storeTradeFromOrders(
     entryOrder: Order,
-    exitOrder: OrderCreate,
+    exitOrder: Order,
   ): Promise<void> {
     const trade: TradeCreate = {
       symbol: entryOrder.symbol,
       quantity: entryOrder.quantity,
-      entryOrderId: entryOrder.orderId,
+      entryOrderId: entryOrder.id,
       entryPrice: entryOrder.price,
       entryAt: entryOrder.createdAt,
-      exitOrderId: exitOrder.orderId,
+      exitOrderId: exitOrder.id,
       exitPrice: exitOrder.price,
       exitAt: exitOrder.createdAt,
       fees: entryOrder.fees + exitOrder.fees,

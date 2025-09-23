@@ -44,10 +44,10 @@ model Trade {
   id             Int      @id @default(autoincrement())
   symbol         String
   quantity       Decimal
-  entry_order_id String
+  entry_order_id Int
   entry_price    Decimal
   entry_at       DateTime
-  exit_order_id  String
+  exit_order_id  Int
   exit_price     Decimal
   exit_at        DateTime
   fees           Decimal
@@ -132,11 +132,12 @@ model Strategy {
 }
 
 model Position {
-  symbol   String   @id
-  quantity Decimal
-  price    Decimal
-  amount   Decimal
-  entry_at DateTime
+  symbol         String   @id
+  entry_order_id Int
+  quantity       Decimal
+  price          Decimal
+  amount         Decimal
+  entry_at       DateTime
 }
 
 model Trailing {

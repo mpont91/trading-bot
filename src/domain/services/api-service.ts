@@ -3,7 +3,6 @@ import { Api } from '../../application/api'
 import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
-import { Position } from '../models/position'
 import { Kline, KlineInterval } from '../types/kline'
 import { ApiSettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
@@ -54,9 +53,5 @@ export class ApiService {
 
   async getOrder(symbol: string, orderId: string): Promise<OrderCreate> {
     return this.api.getOrder(symbol, orderId)
-  }
-
-  async getPosition(symbol: string): Promise<Position | null> {
-    return this.api.getPosition(symbol)
   }
 }
