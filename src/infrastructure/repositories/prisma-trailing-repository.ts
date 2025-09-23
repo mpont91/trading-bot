@@ -10,10 +10,12 @@ import { Trailing, TrailingCreate } from '../../domain/models/trailing'
 export class PrismaTrailingRepository implements TrailingRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(trailing: TrailingCreate): Promise<void> {
-    await this.prisma.trailing.create({
-      data: this.toPrisma(trailing),
-    })
+  async create(trailing: TrailingCreate): Promise<Trailing> {
+    return this.toDomain(
+      await this.prisma.trailing.create({
+        data: this.toPrisma(trailing),
+      }),
+    )
   }
 
   async get(symbol: string): Promise<Trailing | null> {

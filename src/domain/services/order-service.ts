@@ -8,19 +8,17 @@ export class OrderService {
     private readonly orderRepository: OrderRepository,
   ) {}
 
-  async submitOrder(orderRequest: OrderRequest): Promise<OrderCreate> {
+  async submitOrder(orderRequest: OrderRequest): Promise<Order> {
     const orderId: string = await this.apiService.submitOrder(orderRequest)
     const order: OrderCreate = await this.apiService.getOrder(
       orderRequest.symbol,
       orderId,
     )
-    await this.store(order)
-
-    return order
+    return this.store(order)
   }
 
-  async store(orderCreate: OrderCreate): Promise<void> {
-    await this.orderRepository.create(orderCreate)
+  async store(orderCreate: OrderCreate): Promise<Order> {
+    return this.orderRepository.create(orderCreate)
   }
 
   async list(): Promise<Order[]> {

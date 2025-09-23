@@ -1,7 +1,7 @@
 import { Position } from '../models/position'
 import { ApiService } from './api-service'
 import { InvestmentService } from './investment-service'
-import { Order, OrderCreate } from '../models/order'
+import { Order } from '../models/order'
 import { OrderService } from './order-service'
 import { TradeService } from './trade-service'
 import { PositionRepository } from '../repositories/position-repository'
@@ -15,8 +15,8 @@ export class PositionService {
     private readonly tradeService: TradeService,
   ) {}
 
-  async store(position: Position): Promise<void> {
-    await this.positionRepository.create(position)
+  async store(position: Position): Promise<Position> {
+    return this.positionRepository.create(position)
   }
 
   async get(symbol: string): Promise<Position | null> {
@@ -60,7 +60,7 @@ export class PositionService {
     return true
   }
 
-  async openPosition(symbol: string): Promise<void> {
+  async openPosition(symbol: string): Promise<Position> {
     const quantity: number =
       await this.investmentService.getInvestmentQuantity(symbol)
 
@@ -77,7 +77,7 @@ export class PositionService {
       )
     }
 
-    await this.store(position)
+    return this.store(position)
   }
 
   async closePosition(symbol: string): Promise<void> {
@@ -96,7 +96,7 @@ export class PositionService {
       )
     }
 
-    const exitOrder: OrderCreate = await this.orderService.submitOrder({
+    const exitOrder: Order = await this.orderService.submitOrder({
       symbol: position.symbol,
       side: 'short',
       quantity: position.quantity,

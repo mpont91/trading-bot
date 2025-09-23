@@ -7,10 +7,12 @@ import { Performance } from '../../domain/types/performance'
 export class PrismaTradeRepository implements TradeRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(tradeCreate: TradeCreate): Promise<void> {
-    await this.prisma.trade.create({
-      data: this.toPrisma(tradeCreate),
-    })
+  async create(tradeCreate: TradeCreate): Promise<Trade> {
+    return this.toDomain(
+      await this.prisma.trade.create({
+        data: this.toPrisma(tradeCreate),
+      }),
+    )
   }
 
   async list(symbol?: string): Promise<Trade[]> {

@@ -7,10 +7,12 @@ import { Side } from '../../domain/types/side'
 export class PrismaOrderRepository implements OrderRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(orderCreate: OrderCreate): Promise<void> {
-    await this.prisma.order.create({
-      data: this.toPrisma(orderCreate),
-    })
+  async create(orderCreate: OrderCreate): Promise<Order> {
+    return this.toDomain(
+      await this.prisma.order.create({
+        data: this.toPrisma(orderCreate),
+      }),
+    )
   }
 
   async list(): Promise<Order[]> {

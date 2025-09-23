@@ -10,10 +10,12 @@ import { Position } from '../../domain/models/position'
 export class PrismaPositionRepository implements PositionRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(position: Position): Promise<void> {
-    await this.prisma.position.create({
-      data: this.toPrisma(position),
-    })
+  async create(position: Position): Promise<Position> {
+    return this.toDomain(
+      await this.prisma.position.create({
+        data: this.toPrisma(position),
+      }),
+    )
   }
 
   async get(symbol: string): Promise<Position | null> {

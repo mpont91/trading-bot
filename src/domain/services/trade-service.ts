@@ -5,8 +5,8 @@ import { Order, OrderCreate } from '../models/order'
 export class TradeService {
   constructor(private readonly tradeRepository: TradeRepository) {}
 
-  async store(tradeCreate: TradeCreate): Promise<void> {
-    await this.tradeRepository.create(tradeCreate)
+  async store(tradeCreate: TradeCreate): Promise<Trade> {
+    return this.tradeRepository.create(tradeCreate)
   }
 
   async list(symbol?: string): Promise<Trade[]> {

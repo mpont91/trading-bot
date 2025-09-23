@@ -14,10 +14,12 @@ import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval
 export class PrismaStrategyRepository implements StrategyRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(strategy: StrategyCreate): Promise<void> {
-    await this.prisma.strategy.create({
-      data: this.toPrisma(strategy),
-    })
+  async create(strategy: StrategyCreate): Promise<Strategy> {
+    return this.toDomain(
+      await this.prisma.strategy.create({
+        data: this.toPrisma(strategy),
+      }),
+    )
   }
 
   async last(symbol: string): Promise<Strategy> {
