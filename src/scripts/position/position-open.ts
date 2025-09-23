@@ -1,6 +1,6 @@
 import { Container } from '../../di'
 import { PositionService } from '../../domain/services/position-service'
-import { Position } from '../../domain/models/position'
+import { Order } from '../../domain/models/order'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args
@@ -10,7 +10,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const positionService: PositionService = Container.getPositionService()
-  const response: Position = await positionService.openPosition(symbol)
+  const response: Order = await positionService.openPosition(symbol)
 
   console.dir(response, { depth: null })
 }

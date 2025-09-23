@@ -2,7 +2,6 @@ import { Position } from '../models/position'
 import { InvestmentService } from './investment-service'
 import { Order } from '../models/order'
 import { OrderService } from './order-service'
-import { TradeService } from './trade-service'
 import { PositionRepository } from '../repositories/position-repository'
 
 export class PositionService {
@@ -10,7 +9,6 @@ export class PositionService {
     private readonly positionRepository: PositionRepository,
     private readonly investmentService: InvestmentService,
     private readonly orderService: OrderService,
-    private readonly tradeService: TradeService,
   ) {}
 
   async store(position: Position): Promise<Position> {
@@ -29,41 +27,34 @@ export class PositionService {
     return this.positionRepository.list()
   }
 
-  async openPosition(symbol: string): Promise<Position> {
+  async openPosition(symbol: string): Promise<Order> {
     const quantity: number =
       await this.investmentService.getInvestmentQuantity(symbol)
 
-    const order: Order = await this.orderService.submitOrder({
+    const entryOrder: Order = await this.orderService.submitOrder({
       symbol,
       quantity,
       side: 'long',
     })
 
-    return this.store({
+    await this.store({
       symbol,
-      entryOrderId: order.id,
-      quantity: order.quantity,
-      price: order.price,
-      amount: order.amount,
-      entryAt: order.createdAt,
+      entryOrderId: entryOrder.id,
+      quantity: entryOrder.quantity,
+      price: entryOrder.price,
+      amount: entryOrder.amount,
+      entryAt: entryOrder.createdAt,
     })
+
+    return entryOrder
   }
 
-  async closePosition(symbol: string): Promise<void> {
+  async closePosition(symbol: string): Promise<Order> {
     const position: Position | null = await this.get(symbol)
+
     if (!position) {
       throw new Error(
         `Tried to close a position when there is no open position! Symbol: ${symbol}`,
-      )
-    }
-
-    const entryOrder: Order | null = await this.orderService.get(
-      position.entryOrderId,
-    )
-
-    if (!entryOrder) {
-      throw new Error(
-        `There is no entry order. Something is broken! Symbol: ${symbol}`,
       )
     }
 
@@ -73,7 +64,8 @@ export class PositionService {
       quantity: position.quantity,
     })
 
-    await this.tradeService.storeTradeFromOrders(entryOrder, exitOrder)
     await this.remove(symbol)
+
+    return exitOrder
   }
 }

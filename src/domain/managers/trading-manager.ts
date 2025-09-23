@@ -6,6 +6,9 @@ import { Position } from '../models/position'
 import { TrailingService } from '../services/trailing-service'
 import { Trailing, TrailingCreate } from '../models/trailing'
 import { isSL, isTP } from '../helpers/stops-helper'
+import { Order } from '../models/order'
+import { OrderService } from '../services/order-service'
+import { TradeService } from '../services/trade-service'
 
 export class TradingManager implements ManagerInterface {
   constructor(
@@ -13,6 +16,8 @@ export class TradingManager implements ManagerInterface {
     private readonly positionService: PositionService,
     private readonly strategyService: StrategyService,
     private readonly trailingService: TrailingService,
+    private readonly orderService: OrderService,
+    private readonly tradeService: TradeService,
   ) {}
 
   async start(): Promise<void> {
@@ -33,8 +38,20 @@ export class TradingManager implements ManagerInterface {
       }
 
       if (strategy.side === 'short') {
-        await this.positionService.closePosition(symbol)
+        const entryOrder: Order | null = await this.orderService.get(
+          position.entryOrderId,
+        )
+
+        if (!entryOrder) {
+          throw new Error(
+            'Closing a position when there is no entry order! Something is broken!',
+          )
+        }
+
+        const exitOrder: Order =
+          await this.positionService.closePosition(symbol)
         await this.trailingService.remove(symbol)
+        await this.tradeService.storeTradeFromOrders(entryOrder, exitOrder)
       }
 
       await this.handlePosition(position, strategy.price)

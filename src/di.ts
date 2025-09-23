@@ -129,7 +129,6 @@ class Container {
       positionRepository,
       this.investmentService,
       this.orderService,
-      this.tradeService,
     )
     this.indicatorService = new IndicatorService(
       this.apiService,
@@ -161,6 +160,8 @@ class Container {
       this.positionService,
       this.strategyService,
       this.trailingService,
+      this.orderService,
+      this.tradeService,
     )
     this.launcherMarket = new Launcher(settings.intervalMarketTime, [
       marketManager,
