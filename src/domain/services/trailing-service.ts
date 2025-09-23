@@ -4,7 +4,7 @@ import { Trailing, TrailingCreate } from '../models/trailing'
 export class TrailingService {
   constructor(private readonly trailingRepository: TrailingRepository) {}
 
-  async create(trailing: TrailingCreate): Promise<void> {
+  async store(trailing: TrailingCreate): Promise<void> {
     await this.trailingRepository.create(trailing)
   }
 

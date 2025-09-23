@@ -64,6 +64,6 @@ export class TradingManager implements ManagerInterface {
       tp: strategy.tp!,
       sl: strategy.sl!,
     }
-    await this.trailingService.create(trailing)
+    await this.trailingService.store(trailing)
   }
 }
