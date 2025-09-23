@@ -143,6 +143,17 @@ CREATE TABLE "public"."Strategy" (
 );
 
 -- CreateTable
+CREATE TABLE "public"."Position" (
+    "symbol" TEXT NOT NULL,
+    "quantity" DECIMAL(65,30) NOT NULL,
+    "price" DECIMAL(65,30) NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
+    "entry_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Position_pkey" PRIMARY KEY ("symbol")
+);
+
+-- CreateTable
 CREATE TABLE "public"."Trailing" (
     "symbol" TEXT NOT NULL,
     "tp" DECIMAL(65,30) NOT NULL,

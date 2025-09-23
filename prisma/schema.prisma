@@ -131,6 +131,14 @@ model Strategy {
   @@index([side])
 }
 
+model Position {
+  symbol   String   @id
+  quantity Decimal
+  price    Decimal
+  amount   Decimal
+  entry_at DateTime
+}
+
 model Trailing {
   symbol     String   @id
   tp         Decimal

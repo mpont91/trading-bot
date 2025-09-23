@@ -81,11 +81,17 @@ const scripts: Record<string, Fn> = {
   'performance-get': async () => {
     await (await import('./performance/performance-get')).default()
   },
+  'position-check': async (args: string[]) => {
+    await (await import('./position/position-check')).default(args)
+  },
   'position-close': async (args: string[]) => {
     await (await import('./position/position-close')).default(args)
   },
   'position-get': async (args: string[]) => {
     await (await import('./position/position-get')).default(args)
+  },
+  'position-list': async () => {
+    await (await import('./position/position-list')).default()
   },
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)

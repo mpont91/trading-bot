@@ -47,6 +47,8 @@ import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
+import { PositionRepository } from './domain/repositories/position-repository'
+import { PrismaPositionRepository } from './infrastructure/repositories/prisma-position-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -88,6 +90,9 @@ class Container {
     const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
       prisma,
     )
+    const positionRepository: PositionRepository = new PrismaPositionRepository(
+      prisma,
+    )
     const trailingRepository: TrailingRepository = new PrismaTrailingRepository(
       prisma,
     )
@@ -121,11 +126,11 @@ class Container {
       this.apiService,
     )
     this.positionService = new PositionService(
+      positionRepository,
       this.apiService,
       this.investmentService,
       this.orderService,
       this.tradeService,
-      this.trailingService,
     )
     this.indicatorService = new IndicatorService(
       this.apiService,

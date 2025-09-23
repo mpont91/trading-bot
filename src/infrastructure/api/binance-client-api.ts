@@ -18,7 +18,7 @@ import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
 import { OrderCreate, OrderRequest } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
-import { Position } from '../../domain/types/position'
+import { Position } from '../../domain/models/position'
 import { mapBinanceToDomainPosition } from './mappers/position-mapper'
 import { BinanceSettings } from '../../domain/types/settings'
 import { BinanceSpotApi } from './binance-spot-api'

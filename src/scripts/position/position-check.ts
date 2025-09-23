@@ -1,6 +1,5 @@
 import { Container } from '../../di'
 import { PositionService } from '../../domain/services/position-service'
-import { Position } from '../../domain/models/position'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args
@@ -10,7 +9,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const positionService: PositionService = Container.getPositionService()
-  const response: Position | null = await positionService.get(symbol)
+  await positionService.check(symbol)
 
-  console.dir(response, { depth: null })
+  console.log('The position is consistent between API and database!')
 }

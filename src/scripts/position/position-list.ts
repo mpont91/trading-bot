@@ -2,15 +2,9 @@ import { Container } from '../../di'
 import { PositionService } from '../../domain/services/position-service'
 import { Position } from '../../domain/models/position'
 
-export default async function (args: string[]): Promise<void> {
-  const [symbol] = args
-
-  if (!symbol) {
-    throw new Error('Missing required argument: symbol')
-  }
-
+export default async function (): Promise<void> {
   const positionService: PositionService = Container.getPositionService()
-  const response: Position | null = await positionService.get(symbol)
+  const response: Position[] = await positionService.list()
 
   console.dir(response, { depth: null })
 }

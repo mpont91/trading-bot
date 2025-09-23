@@ -2,7 +2,7 @@ import { ManagerInterface } from './manager-interface'
 import { StrategyService } from '../services/strategy-service'
 import { PositionService } from '../services/position-service'
 import { Strategy } from '../models/strategy'
-import { Position } from '../types/position'
+import { Position } from '../models/position'
 import { TrailingService } from '../services/trailing-service'
 import { Trailing, TrailingCreate } from '../models/trailing'
 import { isSL, isTP } from '../helpers/stops-helper'
@@ -24,8 +24,7 @@ export class TradingManager implements ManagerInterface {
         continue
       }
 
-      const position: Position | null =
-        await this.positionService.getPosition(symbol)
+      const position: Position | null = await this.positionService.get(symbol)
 
       if (!position) {
         if (strategy.side === 'long') {
@@ -36,6 +35,7 @@ export class TradingManager implements ManagerInterface {
 
       if (strategy.side === 'short') {
         await this.positionService.closePosition(symbol)
+        await this.trailingService.remove(symbol)
       }
 
       await this.handlePosition(position, strategy.price)
@@ -53,6 +53,7 @@ export class TradingManager implements ManagerInterface {
       isSL('long', price, trailing.sl)
     ) {
       await this.positionService.closePosition(position.symbol)
+      await this.trailingService.remove(position.symbol)
       return
     }
   }

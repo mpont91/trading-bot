@@ -1,6 +1,6 @@
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
-import { Position } from '../../domain/types/position'
+import { Position } from '../../domain/models/position'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args

@@ -1,4 +1,4 @@
-import { Position } from '../../../domain/types/position'
+import { Position } from '../../../domain/models/position'
 import { RestTradeTypes } from '@binance/connector-typescript'
 
 export function mapBinanceToDomainPosition(
