@@ -69,6 +69,9 @@ const scripts: Record<string, Fn> = {
   'investment-get-quantity': async (args: string[]) => {
     await (await import('./investment/investment-get-quantity')).default(args)
   },
+  'order-get': async (args: string[]) => {
+    await (await import('./order/order-get')).default(args)
+  },
   'order-last': async (args: string[]) => {
     await (await import('./order/order-last')).default(args)
   },

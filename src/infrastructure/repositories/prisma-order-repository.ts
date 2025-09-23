@@ -15,6 +15,20 @@ export class PrismaOrderRepository implements OrderRepository {
     )
   }
 
+  async get(id: number): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!order) {
+      return null
+    }
+
+    return this.toDomain(order)
+  }
+
   async list(): Promise<Order[]> {
     const limit: number = 10
     const orders = await this.prisma.order.findMany({

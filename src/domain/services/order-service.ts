@@ -25,6 +25,10 @@ export class OrderService {
     return this.orderRepository.list()
   }
 
+  async get(id: number): Promise<Order | null> {
+    return this.orderRepository.get(id)
+  }
+
   async last(symbol: string): Promise<Order | null> {
     return this.orderRepository.last(symbol)
   }
