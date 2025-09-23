@@ -88,8 +88,7 @@ export class PositionService {
       )
     }
 
-    const entryOrder: Order | null =
-      await this.orderService.getLastOrderForSymbol(symbol)
+    const entryOrder: Order | null = await this.orderService.last(symbol)
 
     if (!entryOrder) {
       throw new Error(

@@ -37,10 +37,8 @@ export class PrismaStrategyRepository implements StrategyRepository {
     return this.toDomain(strategy as PrismaStrategy)
   }
 
-  async getLastManyForSymbol(
-    symbol: string,
-    limit: number = 10,
-  ): Promise<Strategy[]> {
+  async getLastManyForSymbol(symbol: string): Promise<Strategy[]> {
+    const limit: number = 10
     const strategies = await this.prisma.strategy.findMany({
       take: limit,
       where: {
@@ -54,10 +52,8 @@ export class PrismaStrategyRepository implements StrategyRepository {
     return this.toDomainList(strategies)
   }
 
-  async getLastManyOpportunitiesForSymbol(
-    symbol: string,
-    limit: number = 10,
-  ): Promise<Strategy[]> {
+  async getLastManyOpportunitiesForSymbol(symbol: string): Promise<Strategy[]> {
+    const limit: number = 10
     const strategies = await this.prisma.strategy.findMany({
       take: limit,
       where: {

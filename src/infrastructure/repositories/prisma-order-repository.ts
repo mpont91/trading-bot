@@ -13,7 +13,8 @@ export class PrismaOrderRepository implements OrderRepository {
     })
   }
 
-  async getLastMany(limit: number = 10): Promise<Order[]> {
+  async list(): Promise<Order[]> {
+    const limit: number = 10
     const orders = await this.prisma.order.findMany({
       take: limit,
       orderBy: {
@@ -24,7 +25,7 @@ export class PrismaOrderRepository implements OrderRepository {
     return this.toDomainList(orders)
   }
 
-  async getLastOrderForSymbol(symbol: string): Promise<Order | null> {
+  async last(symbol: string): Promise<Order | null> {
     const order = await this.prisma.order.findFirst({
       where: { symbol },
       orderBy: { created_at: Prisma.SortOrder.desc },

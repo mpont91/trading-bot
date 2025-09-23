@@ -13,30 +13,23 @@ export class PrismaTradeRepository implements TradeRepository {
     })
   }
 
-  async getLastMany(limit: number = 10): Promise<Trade[]> {
-    const trades = await this.prisma.trade.findMany({
+  async list(symbol?: string): Promise<Trade[]> {
+    const limit: number = 10
+    const queryOptions = {
       take: limit,
+      where: {},
       orderBy: {
         exit_at: Prisma.SortOrder.desc,
       },
-    })
+    }
 
-    return this.toDomainList(trades)
-  }
-
-  async getLastManyForSymbol(
-    symbol: string,
-    limit: number = 10,
-  ): Promise<Trade[]> {
-    const trades = await this.prisma.trade.findMany({
-      take: limit,
-      where: {
+    if (symbol) {
+      queryOptions.where = {
         symbol: symbol,
-      },
-      orderBy: {
-        exit_at: Prisma.SortOrder.desc,
-      },
-    })
+      }
+    }
+
+    const trades = await this.prisma.trade.findMany(queryOptions)
 
     return this.toDomainList(trades)
   }

@@ -9,12 +9,8 @@ export class TradeService {
     await this.tradeRepository.create(tradeCreate)
   }
 
-  async getLastMany(): Promise<Trade[]> {
-    return this.tradeRepository.getLastMany()
-  }
-
-  async getLastManyForSymbol(symbol: string): Promise<Trade[]> {
-    return this.tradeRepository.getLastManyForSymbol(symbol)
+  async list(symbol?: string): Promise<Trade[]> {
+    return this.tradeRepository.list(symbol)
   }
 
   async storeTradeFromOrders(

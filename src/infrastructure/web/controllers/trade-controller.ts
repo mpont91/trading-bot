@@ -13,9 +13,7 @@ export async function getLastTrades(
   try {
     const symbol: string | undefined = request.params.symbol
 
-    const trades: Trade[] = symbol
-      ? await tradeService.getLastManyForSymbol(symbol.toUpperCase())
-      : await tradeService.getLastMany()
+    const trades: Trade[] = await tradeService.list(symbol?.toUpperCase())
 
     response.json({ data: trades })
   } catch (error: unknown) {

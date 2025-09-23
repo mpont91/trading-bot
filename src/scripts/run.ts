@@ -72,11 +72,11 @@ const scripts: Record<string, Fn> = {
   'investment-get-quantity': async (args: string[]) => {
     await (await import('./investment/investment-get-quantity')).default(args)
   },
-  'order-get-last': async () => {
-    await (await import('./order/order-get-last')).default()
+  'order-last': async (args: string[]) => {
+    await (await import('./order/order-last')).default(args)
   },
-  'order-get-last-symbol': async (args: string[]) => {
-    await (await import('./order/order-get-last-symbol')).default(args)
+  'order-list': async () => {
+    await (await import('./order/order-list')).default()
   },
   'performance-get': async () => {
     await (await import('./performance/performance-get')).default()

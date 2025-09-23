@@ -23,11 +23,11 @@ export class OrderService {
     await this.orderRepository.create(orderCreate)
   }
 
-  async getLastMany(): Promise<Order[]> {
-    return this.orderRepository.getLastMany()
+  async list(): Promise<Order[]> {
+    return this.orderRepository.list()
   }
 
-  async getLastOrderForSymbol(symbol: string): Promise<Order | null> {
-    return this.orderRepository.getLastOrderForSymbol(symbol)
+  async last(symbol: string): Promise<Order | null> {
+    return this.orderRepository.last(symbol)
   }
 }
