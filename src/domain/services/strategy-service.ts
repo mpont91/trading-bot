@@ -71,24 +71,16 @@ export class StrategyService {
     await this.strategyRepository.create(strategy)
   }
 
-  async getLastForSymbol(symbol: string): Promise<Strategy> {
-    return await this.strategyRepository.getLastForSymbol(symbol)
+  async last(symbol: string): Promise<Strategy> {
+    return await this.strategyRepository.last(symbol)
   }
 
-  async getLastManyForSymbol(symbol: string): Promise<Strategy[]> {
-    return this.strategyRepository.getLastManyForSymbol(symbol)
+  async list(symbol?: string): Promise<Strategy[]> {
+    return this.strategyRepository.list(symbol)
   }
 
-  async getLastManyOpportunitiesForSymbol(symbol: string): Promise<Strategy[]> {
-    return this.strategyRepository.getLastManyOpportunitiesForSymbol(symbol)
-  }
-
-  async getLastManyForEachSymbol(): Promise<Strategy[]> {
-    return this.strategyRepository.getLastManyForEachSymbol()
-  }
-
-  async getLastManyOpportunitiesForEachSymbol(): Promise<Strategy[]> {
-    return this.strategyRepository.getLastManyOpportunitiesForEachSymbol()
+  async listOpportunities(symbol?: string): Promise<Strategy[]> {
+    return this.strategyRepository.listOpportunities(symbol)
   }
 
   async signalsGraph(symbol: string, interval: TimeInterval): Promise<Signals> {

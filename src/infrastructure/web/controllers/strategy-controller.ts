@@ -15,9 +15,9 @@ export async function getLastStrategies(
   try {
     const symbol: string | undefined = request.params.symbol
 
-    const strategies: Strategy[] = symbol
-      ? await strategyService.getLastManyForSymbol(symbol.toUpperCase())
-      : await strategyService.getLastManyForEachSymbol()
+    const strategies: Strategy[] = await strategyService.list(
+      symbol?.toUpperCase(),
+    )
 
     response.json({
       data: strategies,
@@ -34,11 +34,9 @@ export async function getLastOpportunities(
   try {
     const symbol: string | undefined = request.params.symbol
 
-    const opportunities: Strategy[] = symbol
-      ? await strategyService.getLastManyOpportunitiesForSymbol(
-          symbol.toUpperCase(),
-        )
-      : await strategyService.getLastManyOpportunitiesForEachSymbol()
+    const opportunities: Strategy[] = await strategyService.listOpportunities(
+      symbol?.toUpperCase(),
+    )
 
     response.json({
       data: opportunities,

@@ -17,8 +17,7 @@ export class TradingManager implements ManagerInterface {
 
   async start(): Promise<void> {
     for (const symbol of this.symbols) {
-      const strategy: Strategy =
-        await this.strategyService.getLastForSymbol(symbol)
+      const strategy: Strategy = await this.strategyService.last(symbol)
 
       if (strategy.side === 'hold') {
         continue

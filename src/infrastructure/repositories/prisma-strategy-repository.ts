@@ -20,7 +20,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     })
   }
 
-  async getLastForSymbol(symbol: string): Promise<Strategy> {
+  async last(symbol: string): Promise<Strategy> {
     const strategy = await this.prisma.strategy.findFirst({
       where: {
         symbol: symbol,
@@ -37,58 +37,62 @@ export class PrismaStrategyRepository implements StrategyRepository {
     return this.toDomain(strategy as PrismaStrategy)
   }
 
-  async getLastManyForSymbol(symbol: string): Promise<Strategy[]> {
-    const limit: number = 10
-    const strategies = await this.prisma.strategy.findMany({
-      take: limit,
-      where: {
-        symbol: symbol,
-      },
-      orderBy: {
-        created_at: Prisma.SortOrder.desc,
-      },
-    })
+  async list(symbol?: string): Promise<Strategy[]> {
+    let queryOptions = {}
+
+    if (symbol) {
+      const limit: number = 10
+      queryOptions = {
+        take: limit,
+        where: {
+          symbol: symbol,
+        },
+        orderBy: {
+          created_at: Prisma.SortOrder.desc,
+        },
+      }
+    } else {
+      queryOptions = {
+        distinct: ['symbol'],
+        orderBy: [
+          { symbol: Prisma.SortOrder.asc },
+          { created_at: Prisma.SortOrder.desc },
+        ],
+      }
+    }
+
+    const strategies = await this.prisma.strategy.findMany(queryOptions)
 
     return this.toDomainList(strategies)
   }
 
-  async getLastManyOpportunitiesForSymbol(symbol: string): Promise<Strategy[]> {
-    const limit: number = 10
-    const strategies = await this.prisma.strategy.findMany({
-      take: limit,
-      where: {
-        symbol: symbol,
-        side: { not: 'hold' },
-      },
-      orderBy: {
-        created_at: Prisma.SortOrder.desc,
-      },
-    })
+  async listOpportunities(symbol?: string): Promise<Strategy[]> {
+    let queryOptions = {}
 
-    return this.toDomainList(strategies)
-  }
+    if (symbol) {
+      const limit: number = 10
+      queryOptions = {
+        take: limit,
+        where: {
+          symbol: symbol,
+          side: { not: 'hold' },
+        },
+        orderBy: {
+          created_at: Prisma.SortOrder.desc,
+        },
+      }
+    } else {
+      queryOptions = {
+        where: { side: { not: 'hold' } },
+        distinct: ['symbol'],
+        orderBy: [
+          { symbol: Prisma.SortOrder.asc },
+          { created_at: Prisma.SortOrder.desc },
+        ],
+      }
+    }
 
-  async getLastManyForEachSymbol(): Promise<Strategy[]> {
-    const strategies = await this.prisma.strategy.findMany({
-      distinct: ['symbol'],
-      orderBy: [
-        { symbol: Prisma.SortOrder.asc },
-        { created_at: Prisma.SortOrder.desc },
-      ],
-    })
-
-    return this.toDomainList(strategies)
-  }
-
-  async getLastManyOpportunitiesForEachSymbol(): Promise<Strategy[]> {
-    const strategies = await this.prisma.strategy.findMany({
-      where: { side: { not: 'hold' } },
-      distinct: ['symbol'],
-      orderBy: [
-        { symbol: Prisma.SortOrder.asc },
-        { created_at: Prisma.SortOrder.desc },
-      ],
-    })
+    const strategies = await this.prisma.strategy.findMany(queryOptions)
 
     return this.toDomainList(strategies)
   }
