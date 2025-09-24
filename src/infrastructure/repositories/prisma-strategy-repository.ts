@@ -36,7 +36,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
       return getEmptyStrategy(symbol)
     }
 
-    return this.toDomain(strategy as PrismaStrategy)
+    return this.toDomain(strategy)
   }
 
   async list(symbol?: string): Promise<Strategy[]> {

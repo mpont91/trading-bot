@@ -19,7 +19,7 @@ export class PrismaTrailingRepository implements TrailingRepository {
   }
 
   async get(symbol: string): Promise<Trailing | null> {
-    const trailing = await this.prisma.trailing.findFirst({
+    const trailing = await this.prisma.trailing.findUnique({
       where: {
         symbol: symbol,
       },
@@ -29,7 +29,7 @@ export class PrismaTrailingRepository implements TrailingRepository {
       return null
     }
 
-    return this.toDomain(trailing as PrismaTrailing)
+    return this.toDomain(trailing)
   }
 
   async list(): Promise<Trailing[]> {

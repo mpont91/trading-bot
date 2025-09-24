@@ -19,7 +19,7 @@ export class PrismaPositionRepository implements PositionRepository {
   }
 
   async get(symbol: string): Promise<Position | null> {
-    const position = await this.prisma.position.findFirst({
+    const position = await this.prisma.position.findUnique({
       where: {
         symbol: symbol,
       },
@@ -29,7 +29,7 @@ export class PrismaPositionRepository implements PositionRepository {
       return null
     }
 
-    return this.toDomain(position as PrismaPosition)
+    return this.toDomain(position)
   }
 
   async list(): Promise<Position[]> {

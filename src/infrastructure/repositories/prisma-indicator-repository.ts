@@ -45,7 +45,7 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       return null
     }
 
-    return this.toDomainSMA(indicator as PrismaIndicatorSMA)
+    return this.toDomainSMA(indicator)
   }
 
   async createRSI(indicator: IndicatorRSICreate): Promise<void> {
@@ -64,7 +64,7 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       return null
     }
 
-    return this.toDomainRSI(indicator as PrismaIndicatorRSI)
+    return this.toDomainRSI(indicator)
   }
 
   async createATR(indicator: IndicatorATRCreate): Promise<void> {
@@ -83,7 +83,7 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       return null
     }
 
-    return this.toDomainATR(indicator as PrismaIndicatorATR)
+    return this.toDomainATR(indicator)
   }
 
   async createADX(indicator: IndicatorADXCreate): Promise<void> {
@@ -102,7 +102,7 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       return null
     }
 
-    return this.toDomainADX(indicator as PrismaIndicatorADX)
+    return this.toDomainADX(indicator)
   }
 
   async createBB(indicator: IndicatorBBCreate): Promise<void> {
@@ -121,7 +121,7 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       return null
     }
 
-    return this.toDomainBB(indicator as PrismaIndicatorBB)
+    return this.toDomainBB(indicator)
   }
 
   async createSMACross(indicator: IndicatorSMACrossCreate): Promise<void> {
@@ -140,7 +140,7 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       return null
     }
 
-    return this.toDomainSMACross(indicator as PrismaIndicatorSMACross)
+    return this.toDomainSMACross(indicator)
   }
 
   private toPrismaSMA(
