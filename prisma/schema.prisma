@@ -2,14 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 enum Side {
-  LONG  @map("long")
-  SHORT @map("short")
+  LONG
+  SHORT
 }
 
 enum Signal {
-  BUY  @map("buy")
-  SELL @map("sell")
-  HOLD @map("hold")
+  BUY
+  SELL
+  HOLD
 }
 
 generator client {
