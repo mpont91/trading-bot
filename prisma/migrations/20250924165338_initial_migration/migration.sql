@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "public"."Side" AS ENUM ('long', 'short');
+CREATE TYPE "public"."Side" AS ENUM ('LONG', 'SHORT');
 
 -- CreateEnum
-CREATE TYPE "public"."Signal" AS ENUM ('buy', 'sell', 'hold');
+CREATE TYPE "public"."Signal" AS ENUM ('BUY', 'SELL', 'HOLD');
 
 -- CreateTable
 CREATE TABLE "public"."Equity" (
