@@ -20,7 +20,11 @@ export class ExecutionService {
 
     const position: Position | null = await this.positionService.get(symbol)
 
-    if (!position && strategy.signal === Signal.BUY) {
+    if (
+      !position &&
+      strategy.signal === Signal.BUY &&
+      (await this.tradeService.canOpenNewTrade())
+    ) {
       await this.tradeService.openTrade(strategy)
       return
     }

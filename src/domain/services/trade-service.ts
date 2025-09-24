@@ -9,6 +9,7 @@ import { OrderService } from './order-service'
 
 export class TradeService {
   constructor(
+    private readonly maxOpenPosition: number,
     private readonly tradeRepository: TradeRepository,
     private readonly positionService: PositionService,
     private readonly orderService: OrderService,
@@ -21,6 +22,10 @@ export class TradeService {
 
   async list(symbol?: string): Promise<Trade[]> {
     return this.tradeRepository.list(symbol)
+  }
+
+  async canOpenNewTrade(): Promise<boolean> {
+    return (await this.positionService.list()).length < this.maxOpenPosition
   }
 
   async openTrade(strategy: Strategy): Promise<void> {

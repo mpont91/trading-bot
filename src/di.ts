@@ -25,13 +25,6 @@ import { ManagerInterface } from './domain/managers/manager-interface'
 import { StrategyService } from './domain/services/strategy-service'
 import { StrategyRepository } from './domain/repositories/strategy-repository'
 import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-strategy-repository'
-import {
-  ApiSettings,
-  BinanceSettings,
-  IndicatorsSettings,
-  StopsSettings,
-  TradingSettings,
-} from './domain/types/settings'
 import { TrailingService } from './domain/services/trailing-service'
 import { TrailingRepository } from './domain/repositories/trailing-repository'
 import { PrismaTrailingRepository } from './infrastructure/repositories/prisma-trailing-repository'
@@ -72,14 +65,8 @@ class Container {
   private static executionService: ExecutionService
 
   static initialize(): void {
-    const binanceSettings: BinanceSettings = settings.binance
-    const apiSettings: ApiSettings = settings.api
-    const tradingSettings: TradingSettings = settings.trading
-    const indicatorsSettings: IndicatorsSettings = settings.indicators
-    const stopsSettings: StopsSettings = settings.stops
-
-    const spot: BinanceSpotApi = new BinanceSpotApi(binanceSettings)
-    const api: Api = new BinanceClientApi(spot, binanceSettings)
+    const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
+    const api: Api = new BinanceClientApi(spot, settings.binance)
     const prisma: PrismaClient = new PrismaClient()
 
     const equityRepository: EquityRepository = new PrismaEquityRepository(
@@ -101,32 +88,33 @@ class Container {
       prisma,
     )
 
-    const adxIndicator: AdxIndicator = new AdxIndicator(indicatorsSettings.adx)
-    const atrIndicator: AtrIndicator = new AtrIndicator(indicatorsSettings.atr)
-    const rsiIndicator: RsiIndicator = new RsiIndicator(indicatorsSettings.rsi)
-    const smaIndicator: SmaIndicator = new SmaIndicator(indicatorsSettings.sma)
+    const adxIndicator: AdxIndicator = new AdxIndicator(settings.indicators.adx)
+    const atrIndicator: AtrIndicator = new AtrIndicator(settings.indicators.atr)
+    const rsiIndicator: RsiIndicator = new RsiIndicator(settings.indicators.rsi)
+    const smaIndicator: SmaIndicator = new SmaIndicator(settings.indicators.sma)
     const bbIndicator: BbIndicator = new BbIndicator(
-      indicatorsSettings.bb.period,
-      indicatorsSettings.bb.multiplier,
+      settings.indicators.bb.period,
+      settings.indicators.bb.multiplier,
     )
     const smaCrossIndicator: SmaCrossIndicator = new SmaCrossIndicator(
-      indicatorsSettings.smaCross.periodLong,
-      indicatorsSettings.smaCross.periodShort,
+      settings.indicators.smaCross.periodLong,
+      settings.indicators.smaCross.periodShort,
     )
 
-    this.apiService = new ApiService(apiSettings, api)
+    this.apiService = new ApiService(settings.api, api)
     this.equityService = new EquityService(equityRepository, this.apiService)
     this.commissionEquityService = new CommissionEquityService(
       commissionEquityRepository,
       this.apiService,
     )
-    this.stopsService = new StopsService(stopsSettings)
+    this.stopsService = new StopsService(settings.stops)
     this.trailingService = new TrailingService(
       trailingRepository,
       this.apiService,
     )
     this.orderService = new OrderService(this.apiService, orderRepository)
     this.tradeService = new TradeService(
+      settings.trading.maxPositionsOpened,
       tradeRepository,
       this.positionService,
       this.orderService,
@@ -134,7 +122,7 @@ class Container {
     )
     this.performanceService = new PerformanceService(tradeRepository)
     this.investmentService = new InvestmentService(
-      tradingSettings,
+      settings.trading,
       this.apiService,
     )
     this.positionService = new PositionService(
@@ -171,12 +159,12 @@ class Container {
       this.commissionEquityService,
     )
     const marketManager: ManagerInterface = new MarketManager(
-      tradingSettings.symbols,
+      settings.trading.symbols,
       this.indicatorService,
       this.strategyService,
     )
     const tradingManager: TradingManager = new TradingManager(
-      tradingSettings.symbols,
+      settings.trading.symbols,
       this.executionService,
     )
     this.launcherMarket = new Launcher(settings.intervalMarketTime, [
