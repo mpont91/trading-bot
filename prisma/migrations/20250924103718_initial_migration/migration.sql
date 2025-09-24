@@ -1,5 +1,8 @@
 -- CreateEnum
-CREATE TYPE "public"."Side" AS ENUM ('long', 'short', 'hold');
+CREATE TYPE "public"."Side" AS ENUM ('long', 'short');
+
+-- CreateEnum
+CREATE TYPE "public"."Signal" AS ENUM ('buy', 'sell', 'hold');
 
 -- CreateTable
 CREATE TABLE "public"."Equity" (
@@ -137,7 +140,7 @@ CREATE TABLE "public"."Strategy" (
     "id" SERIAL NOT NULL,
     "symbol" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
-    "side" "public"."Side" NOT NULL,
+    "signal" "public"."Signal" NOT NULL,
     "sl" DECIMAL(65,30),
     "tp" DECIMAL(65,30),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -180,10 +183,10 @@ CREATE INDEX "Order_side_idx" ON "public"."Order"("side");
 CREATE INDEX "Trade_symbol_idx" ON "public"."Trade"("symbol");
 
 -- CreateIndex
-CREATE INDEX "Strategy_symbol_side_idx" ON "public"."Strategy"("symbol", "side");
+CREATE INDEX "Strategy_symbol_signal_idx" ON "public"."Strategy"("symbol", "signal");
 
 -- CreateIndex
 CREATE INDEX "Strategy_symbol_idx" ON "public"."Strategy"("symbol");
 
 -- CreateIndex
-CREATE INDEX "Strategy_side_idx" ON "public"."Strategy"("side");
+CREATE INDEX "Strategy_signal_idx" ON "public"."Strategy"("signal");
