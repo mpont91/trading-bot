@@ -9,12 +9,12 @@ export class OrderService {
   ) {}
 
   async submitOrder(orderRequest: OrderRequest): Promise<Order> {
+    //TODO: Is possible to store the order without having to call getOrder again?
     const orderId: string = await this.apiService.submitOrder(orderRequest)
-    const order: OrderCreate = await this.apiService.getOrder(
-      orderRequest.symbol,
-      orderId,
+
+    return this.store(
+      await this.apiService.getOrder(orderRequest.symbol, orderId),
     )
-    return this.store(order)
   }
 
   async store(orderCreate: OrderCreate): Promise<Order> {

@@ -12,12 +12,6 @@ import {
   IndicatorRSI,
   IndicatorSMA,
   IndicatorSMACross,
-  IndicatorADXCreate,
-  IndicatorATRCreate,
-  IndicatorBBCreate,
-  IndicatorRSICreate,
-  IndicatorSMACreate,
-  IndicatorSMACrossCreate,
   IndicatorList,
 } from '../models/indicator'
 import { SmaCrossIndicator } from '../indicators/sma-cross-indicator'
@@ -37,11 +31,9 @@ export class IndicatorService {
 
   async storeSMA(symbol: string): Promise<void> {
     const klines: Kline[] = await this.apiService.getKline(symbol)
-    const indicator: IndicatorSMACreate = this.smaIndicator.calculate(
-      symbol,
-      klines,
+    await this.indicatorRepository.createSMA(
+      this.smaIndicator.calculate(symbol, klines),
     )
-    await this.indicatorRepository.createSMA(indicator)
   }
 
   async getSMA(symbol: string): Promise<IndicatorSMA | null> {
@@ -50,11 +42,9 @@ export class IndicatorService {
 
   async storeRSI(symbol: string): Promise<void> {
     const klines: Kline[] = await this.apiService.getKline(symbol)
-    const indicator: IndicatorRSICreate = this.rsiIndicator.calculate(
-      symbol,
-      klines,
+    await this.indicatorRepository.createRSI(
+      this.rsiIndicator.calculate(symbol, klines),
     )
-    await this.indicatorRepository.createRSI(indicator)
   }
 
   async getRSI(symbol: string): Promise<IndicatorRSI | null> {
@@ -63,11 +53,9 @@ export class IndicatorService {
 
   async storeATR(symbol: string): Promise<void> {
     const klines: Kline[] = await this.apiService.getKline(symbol)
-    const indicator: IndicatorATRCreate = this.atrIndicator.calculate(
-      symbol,
-      klines,
+    await this.indicatorRepository.createATR(
+      this.atrIndicator.calculate(symbol, klines),
     )
-    await this.indicatorRepository.createATR(indicator)
   }
 
   async getATR(symbol: string): Promise<IndicatorATR | null> {
@@ -76,11 +64,9 @@ export class IndicatorService {
 
   async storeADX(symbol: string): Promise<void> {
     const klines: Kline[] = await this.apiService.getKline(symbol)
-    const indicator: IndicatorADXCreate = this.adxIndicator.calculate(
-      symbol,
-      klines,
+    await this.indicatorRepository.createADX(
+      this.adxIndicator.calculate(symbol, klines),
     )
-    await this.indicatorRepository.createADX(indicator)
   }
 
   async getADX(symbol: string): Promise<IndicatorADX | null> {
@@ -89,11 +75,9 @@ export class IndicatorService {
 
   async storeBB(symbol: string): Promise<void> {
     const klines: Kline[] = await this.apiService.getKline(symbol)
-    const indicator: IndicatorBBCreate = this.bbIndicator.calculate(
-      symbol,
-      klines,
+    await this.indicatorRepository.createBB(
+      this.bbIndicator.calculate(symbol, klines),
     )
-    await this.indicatorRepository.createBB(indicator)
   }
   async getBB(symbol: string): Promise<IndicatorBB | null> {
     return this.indicatorRepository.getBB(symbol)
@@ -101,11 +85,9 @@ export class IndicatorService {
 
   async storeSMACross(symbol: string): Promise<void> {
     const klines: Kline[] = await this.apiService.getKline(symbol)
-    const indicator: IndicatorSMACrossCreate = this.smaCrossIndicator.calculate(
-      symbol,
-      klines,
+    await this.indicatorRepository.createSMACross(
+      this.smaCrossIndicator.calculate(symbol, klines),
     )
-    await this.indicatorRepository.createSMACross(indicator)
   }
   async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
     return this.indicatorRepository.getSMACross(symbol)
@@ -121,20 +103,13 @@ export class IndicatorService {
   }
 
   async getAll(symbol: string): Promise<IndicatorList> {
-    const atr: IndicatorATR | null = await this.getATR(symbol)
-    const adx: IndicatorADX | null = await this.getADX(symbol)
-    const sma: IndicatorSMA | null = await this.getSMA(symbol)
-    const rsi: IndicatorRSI | null = await this.getRSI(symbol)
-    const bb: IndicatorBB | null = await this.getBB(symbol)
-    const smaCross: IndicatorSMACross | null = await this.getSMACross(symbol)
-
     return {
-      atr,
-      adx,
-      sma,
-      rsi,
-      bb,
-      smaCross,
+      atr: await this.getATR(symbol),
+      adx: await this.getADX(symbol),
+      sma: await this.getSMA(symbol),
+      rsi: await this.getRSI(symbol),
+      bb: await this.getBB(symbol),
+      smaCross: await this.getSMACross(symbol),
     }
   }
 }

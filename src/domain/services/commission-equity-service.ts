@@ -1,8 +1,5 @@
 import { CommissionEquityRepository } from '../repositories/commission-equity-repository'
-import {
-  CommissionEquity,
-  CommissionEquityCreate,
-} from '../models/commission-equity'
+import { CommissionEquity } from '../models/commission-equity'
 import { ApiService } from './api-service'
 
 export class CommissionEquityService {
@@ -12,9 +9,9 @@ export class CommissionEquityService {
   ) {}
 
   async store(): Promise<CommissionEquity> {
-    const commissionEquity: CommissionEquityCreate =
-      await this.apiService.getCommissionEquity()
-    return this.commissionEquityRepository.create(commissionEquity)
+    return this.commissionEquityRepository.create(
+      await this.apiService.getCommissionEquity(),
+    )
   }
 
   async get(): Promise<CommissionEquity | null> {
