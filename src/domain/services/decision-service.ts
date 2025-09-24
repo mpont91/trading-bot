@@ -50,8 +50,8 @@ export class DecisionService {
     }
 
     if (signal !== Signal.HOLD) {
-      tp = calculateTP(signal, price, this.stopsService.getTakeProfit())
-      sl = calculateSL(signal, price, this.stopsService.getStopLoss())
+      tp = calculateTP(price, this.stopsService.getTakeProfit())
+      sl = calculateSL(price, this.stopsService.getStopLoss())
     }
 
     return {

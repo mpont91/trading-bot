@@ -1,23 +1,25 @@
 import { StopsSettings } from '../types/settings'
 
 export class StopsService {
-  private defaultTakeProfit: number | undefined = undefined
-  private defaultStopLoss: number | undefined = 0.03
   constructor(private readonly stopsSettings: StopsSettings) {}
 
-  getTakeProfit(): number | undefined {
+  getTakeProfit(): number {
+    const defaultTakeProfit = 0.05
+
     if (this.stopsSettings.tp) {
       return this.stopsSettings.tp
     }
 
-    return this.defaultTakeProfit
+    return defaultTakeProfit
   }
 
-  getStopLoss(): number | undefined {
+  getStopLoss(): number {
+    const defaultStopLoss = 0.03
+
     if (this.stopsSettings.sl) {
       return this.stopsSettings.sl
     }
 
-    return this.defaultStopLoss
+    return defaultStopLoss
   }
 }

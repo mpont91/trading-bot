@@ -63,11 +63,7 @@ export class TradingManager implements ManagerInterface {
       position.symbol,
     )
 
-    if (
-      !trailing ||
-      isTP(Signal.BUY, price, trailing.tp) ||
-      isSL(Signal.BUY, price, trailing.sl)
-    ) {
+    if (!trailing || isTP(price, trailing.tp) || isSL(price, trailing.sl)) {
       await this.positionService.closePosition(position.symbol)
       await this.trailingService.remove(position.symbol)
       return
