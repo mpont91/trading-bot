@@ -1,6 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+enum Side {
+  LONG  @map("long")
+  SHORT @map("short")
+  HOLD  @map("hold")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,7 +34,7 @@ model Order {
   id         Int      @id @default(autoincrement())
   order_id   String
   symbol     String
-  side       String
+  side       Side
   quantity   Decimal
   price      Decimal
   amount     Decimal
@@ -121,7 +127,7 @@ model Strategy {
   id         Int      @id @default(autoincrement())
   symbol     String
   price      Decimal
-  side       String
+  side       Side
   sl         Decimal?
   tp         Decimal?
   created_at DateTime @default(now())

@@ -2,7 +2,6 @@ import { Order as PrismaOrder, Prisma, PrismaClient } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { OrderRepository } from '../../domain/repositories/order-repository'
 import { Order, OrderCreate } from '../../domain/models/order'
-import { Side } from '../../domain/types/side'
 
 export class PrismaOrderRepository implements OrderRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -46,7 +45,7 @@ export class PrismaOrderRepository implements OrderRepository {
       id: prismaOrder.id,
       orderId: prismaOrder.order_id,
       symbol: prismaOrder.symbol,
-      side: prismaOrder.side as Side,
+      side: prismaOrder.side,
       quantity: prismaOrder.quantity.toNumber(),
       price: prismaOrder.price.toNumber(),
       amount: prismaOrder.amount.toNumber(),

@@ -1,3 +1,10 @@
-export const sideOptions = ['long', 'short', 'hold'] as const
+import { Side } from '@prisma/client'
+export { Side } from '@prisma/client'
 
-export type Side = (typeof sideOptions)[number]
+export function sideRule(value: string): asserts value is Side {
+  if (!Object.values(Side).includes(value as Side)) {
+    throw new Error(
+      `Side parameter must be one of the following: [${Object.values(Side).join(', ')}]`,
+    )
+  }
+}

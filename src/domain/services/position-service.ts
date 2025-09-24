@@ -3,6 +3,7 @@ import { InvestmentService } from './investment-service'
 import { Order } from '../models/order'
 import { OrderService } from './order-service'
 import { PositionRepository } from '../repositories/position-repository'
+import { Side } from '../types/side'
 
 export class PositionService {
   constructor(
@@ -34,7 +35,7 @@ export class PositionService {
     const entryOrder: Order = await this.orderService.submitOrder({
       symbol,
       quantity,
-      side: 'long',
+      side: Side.LONG,
     })
 
     await this.store({
@@ -60,7 +61,7 @@ export class PositionService {
 
     const exitOrder: Order = await this.orderService.submitOrder({
       symbol: position.symbol,
-      side: 'short',
+      side: Side.SHORT,
       quantity: position.quantity,
     })
 

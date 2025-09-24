@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "public"."Side" AS ENUM ('long', 'short', 'hold');
+
 -- CreateTable
 CREATE TABLE "public"."Equity" (
     "id" SERIAL NOT NULL,
@@ -23,7 +26,7 @@ CREATE TABLE "public"."Order" (
     "id" SERIAL NOT NULL,
     "order_id" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
-    "side" TEXT NOT NULL,
+    "side" "public"."Side" NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,
@@ -134,7 +137,7 @@ CREATE TABLE "public"."Strategy" (
     "id" SERIAL NOT NULL,
     "symbol" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
-    "side" TEXT NOT NULL,
+    "side" "public"."Side" NOT NULL,
     "sl" DECIMAL(65,30),
     "tp" DECIMAL(65,30),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

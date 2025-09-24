@@ -1,7 +1,6 @@
 import { OrderCreate } from '../../../domain/models/order'
 import { RestTradeTypes } from '@binance/connector-typescript'
 import { mapBinanceToDomainSide } from './side-mapper'
-import { Side } from '@binance/connector-typescript'
 import { settings } from '../../../application/settings'
 
 export function mapBinanceToDomainOrder(
@@ -35,7 +34,7 @@ export function mapBinanceToDomainOrder(
   return {
     orderId: binanceOrder.orderId.toString(),
     symbol: binanceOrder.symbol,
-    side: mapBinanceToDomainSide(binanceOrder.side as Side),
+    side: mapBinanceToDomainSide(binanceOrder.side),
     quantity: quantity,
     price: price,
     amount: quantity * price,

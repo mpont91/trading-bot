@@ -29,7 +29,7 @@ export class DecisionService {
       smaCross.price,
     ])
 
-    let side: Side = 'hold'
+    let side: Side = Side.HOLD
     let tp: number | undefined = undefined
     let sl: number | undefined = undefined
 
@@ -39,17 +39,17 @@ export class DecisionService {
       rsi.rsi < 30 &&
       smaCross.smaShort > smaCross.smaLong
     ) {
-      side = 'long'
+      side = Side.LONG
     } else if (
       bb.price >= bb.upper &&
       sma.price > sma.sma &&
       rsi.rsi > 70 &&
       smaCross.smaShort < smaCross.smaLong
     ) {
-      side = 'short'
+      side = Side.SHORT
     }
 
-    if (side !== 'hold') {
+    if (side !== Side.HOLD) {
       tp = calculateTP(side, price, this.stopsService.getTakeProfit())
       sl = calculateSL(side, price, this.stopsService.getStopLoss())
     }

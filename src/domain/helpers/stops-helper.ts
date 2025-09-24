@@ -9,7 +9,9 @@ export function calculateTP(
     return undefined
   }
 
-  return side === 'long' ? price * (1 + percentage) : price * (1 - percentage)
+  return side === Side.LONG
+    ? price * (1 + percentage)
+    : price * (1 - percentage)
 }
 
 export function calculateSL(
@@ -21,7 +23,9 @@ export function calculateSL(
     return undefined
   }
 
-  return side === 'long' ? price * (1 - percentage) : price * (1 + percentage)
+  return side === Side.LONG
+    ? price * (1 - percentage)
+    : price * (1 + percentage)
 }
 
 export function isTP(
@@ -33,7 +37,9 @@ export function isTP(
     return false
   }
 
-  return (side === 'long' && tp <= price) || (side === 'short' && tp >= price)
+  return (
+    (side === Side.LONG && tp <= price) || (side === Side.SHORT && tp >= price)
+  )
 }
 
 export function isSL(
@@ -45,5 +51,7 @@ export function isSL(
     return false
   }
 
-  return (side === 'long' && sl >= price) || (side === 'short' && sl <= price)
+  return (
+    (side === Side.LONG && sl >= price) || (side === Side.SHORT && sl <= price)
+  )
 }

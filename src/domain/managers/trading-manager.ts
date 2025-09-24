@@ -9,6 +9,7 @@ import { isSL, isTP } from '../helpers/stops-helper'
 import { Order } from '../models/order'
 import { OrderService } from '../services/order-service'
 import { TradeService } from '../services/trade-service'
+import { Side } from '../types/side'
 
 export class TradingManager implements ManagerInterface {
   constructor(
@@ -23,20 +24,20 @@ export class TradingManager implements ManagerInterface {
   async start(): Promise<void> {
     for (const symbol of this.symbols) {
       const strategy: Strategy | null = await this.strategyService.last(symbol)
-      if (!strategy || strategy.side === 'hold') {
+      if (!strategy || strategy.side === Side.HOLD) {
         continue
       }
 
       const position: Position | null = await this.positionService.get(symbol)
 
       if (!position) {
-        if (strategy.side === 'long') {
+        if (strategy.side === Side.LONG) {
           await this.handleOpportunity(strategy)
         }
         continue
       }
 
-      if (strategy.side === 'short') {
+      if (strategy.side === Side.SHORT) {
         const entryOrder: Order | null = await this.orderService.get(
           position.entryOrderId,
         )
@@ -64,8 +65,8 @@ export class TradingManager implements ManagerInterface {
 
     if (
       !trailing ||
-      isTP('long', price, trailing.tp) ||
-      isSL('long', price, trailing.sl)
+      isTP(Side.LONG, price, trailing.tp) ||
+      isSL(Side.LONG, price, trailing.sl)
     ) {
       await this.positionService.closePosition(position.symbol)
       await this.trailingService.remove(position.symbol)

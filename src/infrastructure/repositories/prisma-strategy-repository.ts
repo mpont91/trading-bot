@@ -128,7 +128,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     const strategies = await this.prisma.strategy.findMany({
       where: {
         symbol: symbol,
-        side: { not: 'hold' },
+        side: { not: Side.HOLD },
         created_at: {
           gte: startTime,
         },
@@ -146,7 +146,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
       id: prismaStrategy.id,
       symbol: prismaStrategy.symbol,
       price: prismaStrategy.price.toNumber(),
-      side: prismaStrategy.side as Side,
+      side: prismaStrategy.side,
       tp: prismaStrategy.tp ? prismaStrategy.tp.toNumber() : undefined,
       sl: prismaStrategy.sl ? prismaStrategy.sl.toNumber() : undefined,
       createdAt: prismaStrategy.created_at,
