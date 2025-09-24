@@ -1,6 +1,6 @@
 import { TrailingRepository } from '../repositories/trailing-repository'
 import { Trailing, TrailingCreate } from '../models/trailing'
-import { isSL, isTP } from '../helpers/stops-helper'
+import { calculateSL, isSL, isTP } from '../helpers/stops-helper'
 import { ApiService } from './api-service'
 
 export class TrailingService {
@@ -21,6 +21,10 @@ export class TrailingService {
     await this.trailingRepository.remove(symbol)
   }
 
+  updateTsPrice(symbol: string, tsPrice: number): Promise<Trailing> {
+    return this.trailingRepository.updateTsPrice(symbol, tsPrice)
+  }
+
   async list(): Promise<Trailing[]> {
     return this.trailingRepository.list()
   }
@@ -36,6 +40,30 @@ export class TrailingService {
 
     const price: number = await this.apiService.getPrice(symbol)
 
-    return isTP(price, trailing.tpPrice) || isSL(price, trailing.slPrice)
+    if (isSL(price, trailing.slPrice)) {
+      return true
+    }
+
+    if (trailing.tsPrice && isSL(price, trailing.tsPrice)) {
+      return true
+    }
+
+    if (!trailing.tsPrice && isTP(price, trailing.tpPrice)) {
+      await this.updateTsPrice(trailing.symbol, calculateSL(price, trailing.ts))
+      return false
+    }
+
+    if (
+      trailing.tsPrice &&
+      trailing.tsPrice <= calculateSL(price, trailing.ts)
+    ) {
+      await this.trailingRepository.updateTsPrice(
+        symbol,
+        calculateSL(price, trailing.ts),
+      )
+      return false
+    }
+
+    return false
   }
 }

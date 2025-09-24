@@ -32,6 +32,19 @@ export class PrismaTrailingRepository implements TrailingRepository {
     return this.toDomain(trailing)
   }
 
+  async updateTsPrice(symbol: string, tsPrice: number): Promise<Trailing> {
+    return this.toDomain(
+      await this.prisma.trailing.update({
+        where: {
+          symbol: symbol,
+        },
+        data: {
+          ts_price: new Decimal(tsPrice),
+        },
+      }),
+    )
+  }
+
   async list(): Promise<Trailing[]> {
     const trailingList = await this.prisma.trailing.findMany()
 
