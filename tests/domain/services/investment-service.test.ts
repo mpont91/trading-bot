@@ -27,13 +27,12 @@ describe('InvestmentService - getInvestmentAmount', (): void => {
     initialize()
   })
 
-  test('Should return 30 when having 100 available with 30% margin and 1 symbol to invest', async (): Promise<void> => {
+  test('Should return 30 when having 100 available with 30% margin and 1 maxOpenPosition setting', async (): Promise<void> => {
     const result: number = await investmentService.getInvestmentAmount()
     expect(result).toBe(70)
   })
 
-  test('Should return 35 when having 100 equity with 30% margin and 2 symbols to invest', async (): Promise<void> => {
-    mockTradingSettings.symbols = ['BTCUSDT', 'ETHUSDT']
+  test('Should return 35 when having 100 equity with 30% margin and 2 maxOpenPosition setting', async (): Promise<void> => {
     mockTradingSettings.maxPositionsOpened = 2
 
     const result: number = await investmentService.getInvestmentAmount()
