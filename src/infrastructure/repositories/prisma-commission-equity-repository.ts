@@ -8,7 +8,6 @@ import {
   CommissionEquityCreate,
 } from '../../domain/models/commission-equity'
 import { CommissionEquityRepository } from '../../domain/repositories/commission-equity-repository'
-import { getEmptyCommissionEquity } from '../../domain/helpers/commission-helper'
 import Decimal from 'decimal.js'
 
 export class PrismaCommissionEquityRepository
@@ -26,7 +25,7 @@ export class PrismaCommissionEquityRepository
     )
   }
 
-  async get(): Promise<CommissionEquity> {
+  async get(): Promise<CommissionEquity | null> {
     const commissionEquity = await this.prisma.commissionEquity.findFirst({
       orderBy: {
         created_at: Prisma.SortOrder.desc,
@@ -34,10 +33,10 @@ export class PrismaCommissionEquityRepository
     })
 
     if (!commissionEquity) {
-      return getEmptyCommissionEquity()
+      return null
     }
 
-    return this.toDomain(commissionEquity as PrismaCommissionEquity)
+    return this.toDomain(commissionEquity)
   }
 
   private toDomain(

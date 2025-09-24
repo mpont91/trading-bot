@@ -17,7 +17,7 @@ export class CommissionEquityService {
     return this.commissionEquityRepository.create(commissionEquity)
   }
 
-  async get(): Promise<CommissionEquity> {
+  async get(): Promise<CommissionEquity | null> {
     return this.commissionEquityRepository.get()
   }
 }

@@ -12,7 +12,7 @@ export async function getCommissionEquity(
   response: Response,
 ): Promise<void> {
   try {
-    const commissionEquity: CommissionEquity =
+    const commissionEquity: CommissionEquity | null =
       await commissionEquityService.get()
 
     response.json({

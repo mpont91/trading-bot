@@ -14,7 +14,6 @@ import { Balance } from '../../domain/types/balance'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
 import { CommissionEquityCreate } from '../../domain/models/commission-equity'
-import { getEmptyCommissionEquityCreate } from '../../domain/helpers/commission-helper'
 import { mapDomainToBinanceSide } from './mappers/side-mapper'
 import { OrderCreate, OrderRequest } from '../../domain/models/order'
 import { mapBinanceToDomainOrder } from './mappers/order-mapper'
@@ -109,7 +108,11 @@ export class BinanceClientApi implements Api {
     )
 
     if (!coin) {
-      return getEmptyCommissionEquityCreate()
+      return {
+        currency: this.settings.feeCurrency,
+        quantity: 0,
+        amount: 0,
+      }
     }
 
     const price: number = await this.getPrice(

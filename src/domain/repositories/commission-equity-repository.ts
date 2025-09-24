@@ -5,5 +5,5 @@ import {
 
 export interface CommissionEquityRepository {
   create(commissionEquity: CommissionEquityCreate): Promise<CommissionEquity>
-  get(): Promise<CommissionEquity>
+  get(): Promise<CommissionEquity | null>
 }
