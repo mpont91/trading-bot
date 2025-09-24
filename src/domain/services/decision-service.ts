@@ -4,6 +4,7 @@ import { StrategyCreate } from '../models/strategy'
 import { IndicatorList } from '../models/indicator'
 import { StopsService } from './stops-service'
 import { IndicatorService } from './indicator-service'
+import { median } from '../helpers/math-helper'
 
 export class DecisionService {
   constructor(
@@ -21,7 +22,7 @@ export class DecisionService {
       )
     }
 
-    const price: number = this.median([
+    const price: number = median([
       bb.price,
       sma.price,
       rsi.price,
@@ -60,15 +61,5 @@ export class DecisionService {
       tp,
       sl,
     }
-  }
-
-  private median(numbers: number[]): number {
-    const sorted = [...numbers].sort((a, b) => a - b)
-
-    const mid = Math.floor(sorted.length / 2)
-
-    return sorted.length % 2 !== 0
-      ? sorted[mid]
-      : (sorted[mid - 1] + sorted[mid]) / 2
   }
 }
