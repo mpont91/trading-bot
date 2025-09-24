@@ -1,6 +1,6 @@
 import { StrategyRepository } from '../repositories/strategy-repository'
 import { Strategy, StrategyCreate } from '../models/strategy'
-import { Signals } from '../types/signals'
+import { StrategyAnalysis } from '../types/strategy-analysis'
 import { TimeInterval } from '../types/time-interval'
 import { reduceRecordsData } from '../helpers/graph-helper'
 import { DecisionService } from './decision-service'
@@ -28,7 +28,10 @@ export class StrategyService {
     return this.strategyRepository.listOpportunities(symbol)
   }
 
-  async signalsGraph(symbol: string, interval: TimeInterval): Promise<Signals> {
+  async getStrategyAnalysis(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<StrategyAnalysis> {
     const prices: Strategy[] = await this.strategyRepository.getPriceGraph(
       symbol,
       interval,

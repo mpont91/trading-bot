@@ -1,6 +1,6 @@
 import type { Side } from './side'
 
-export interface Signals {
+export interface StrategyAnalysis {
   symbol: string
   prices: {
     amount: number

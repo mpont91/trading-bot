@@ -28,6 +28,6 @@ router.get('/market/last-strategies', getLastStrategies)
 router.get('/market/last-strategies/:symbol', getLastStrategies)
 router.get('/market/last-opportunities', getLastOpportunities)
 router.get('/market/last-opportunities/:symbol', getLastOpportunities)
-router.get('/market/graph/signals/:symbol', getSignalsGraph)
+router.get('/market/graph/strategy-analysis/:symbol', getSignalsGraph)
 
 export default router

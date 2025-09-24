@@ -3,7 +3,7 @@ import { createErrorResponse } from '../helpers/response-helper'
 import { Container } from '../../../di'
 import { Strategy } from '../../../domain/models/strategy'
 import { StrategyService } from '../../../domain/services/strategy-service'
-import { Signals } from '../../../domain/types/signals'
+import { StrategyAnalysis } from '../../../domain/types/strategy-analysis'
 import { timeIntervalRule } from '../../../domain/types/time-interval'
 
 const strategyService: StrategyService = Container.getStrategyService()
@@ -61,13 +61,11 @@ export async function getSignalsGraph(
 
     const symbol: string = request.params.symbol.toUpperCase()
 
-    const signals: Signals = await strategyService.signalsGraph(
-      symbol,
-      interval,
-    )
+    const strategyAnalysis: StrategyAnalysis =
+      await strategyService.getStrategyAnalysis(symbol, interval)
 
     response.json({
-      data: signals,
+      data: strategyAnalysis,
     })
   } catch (error: unknown) {
     createErrorResponse(response, error)

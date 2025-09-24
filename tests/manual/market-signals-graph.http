@@ -1,2 +1,2 @@
-GET http://localhost:3000/market/graph/signals/btcusdc?interval=all
+GET http://localhost:3000/market/graph/strategy-analysis/btcusdc?interval=all
 Accept: application/json
