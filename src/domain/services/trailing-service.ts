@@ -36,6 +36,6 @@ export class TrailingService {
 
     const price: number = await this.apiService.getPrice(symbol)
 
-    return isTP(price, trailing.tp) || isSL(price, trailing.sl)
+    return isTP(price, trailing.tpPrice) || isSL(price, trailing.slPrice)
   }
 }

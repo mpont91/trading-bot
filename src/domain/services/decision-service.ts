@@ -32,6 +32,9 @@ export class DecisionService {
     let signal: Signal = Signal.HOLD
     let tp: number | undefined = undefined
     let sl: number | undefined = undefined
+    let ts: number | undefined = undefined
+    let tpPrice: number | undefined = undefined
+    let slPrice: number | undefined = undefined
 
     if (
       bb.price <= bb.lower &&
@@ -50,8 +53,11 @@ export class DecisionService {
     }
 
     if (signal !== Signal.HOLD) {
-      tp = calculateTP(price, this.stopsService.getTakeProfit())
-      sl = calculateSL(price, this.stopsService.getStopLoss())
+      tp = this.stopsService.getTakeProfit()
+      sl = this.stopsService.getStopLoss()
+      ts = this.stopsService.getTrailingStop()
+      tpPrice = calculateTP(price, tp)
+      slPrice = calculateSL(price, tp)
     }
 
     return {
@@ -60,6 +66,9 @@ export class DecisionService {
       signal,
       tp,
       sl,
+      ts,
+      tpPrice,
+      slPrice,
     }
   }
 }

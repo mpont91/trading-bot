@@ -135,6 +135,9 @@ model Strategy {
   signal     Signal
   sl         Decimal?
   tp         Decimal?
+  ts         Decimal?
+  tp_price   Decimal?
+  sl_price   Decimal?
   created_at DateTime @default(now())
 
   @@index([symbol, signal])
@@ -155,5 +158,10 @@ model Trailing {
   symbol     String   @id
   tp         Decimal
   sl         Decimal
+  ts         Decimal
+  tp_price   Decimal
+  sl_price   Decimal
+  ts_price   Decimal?
   created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }

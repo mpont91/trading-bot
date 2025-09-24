@@ -143,6 +143,9 @@ CREATE TABLE "public"."Strategy" (
     "signal" "public"."Signal" NOT NULL,
     "sl" DECIMAL(65,30),
     "tp" DECIMAL(65,30),
+    "ts" DECIMAL(65,30),
+    "tp_price" DECIMAL(65,30),
+    "sl_price" DECIMAL(65,30),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Strategy_pkey" PRIMARY KEY ("id")
@@ -165,7 +168,12 @@ CREATE TABLE "public"."Trailing" (
     "symbol" TEXT NOT NULL,
     "tp" DECIMAL(65,30) NOT NULL,
     "sl" DECIMAL(65,30) NOT NULL,
+    "ts" DECIMAL(65,30) NOT NULL,
+    "tp_price" DECIMAL(65,30) NOT NULL,
+    "sl_price" DECIMAL(65,30) NOT NULL,
+    "ts_price" DECIMAL(65,30),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Trailing_pkey" PRIMARY KEY ("symbol")
 );

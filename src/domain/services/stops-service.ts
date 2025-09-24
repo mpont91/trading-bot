@@ -22,4 +22,14 @@ export class StopsService {
 
     return defaultStopLoss
   }
+
+  getTrailingStop(): number {
+    const defaultTrailingStop = 0.01
+
+    if (this.stopsSettings.ts) {
+      return this.stopsSettings.ts
+    }
+
+    return defaultTrailingStop
+  }
 }

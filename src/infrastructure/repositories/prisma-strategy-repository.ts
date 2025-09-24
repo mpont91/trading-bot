@@ -149,6 +149,13 @@ export class PrismaStrategyRepository implements StrategyRepository {
       signal: prismaStrategy.signal,
       tp: prismaStrategy.tp ? prismaStrategy.tp.toNumber() : undefined,
       sl: prismaStrategy.sl ? prismaStrategy.sl.toNumber() : undefined,
+      ts: prismaStrategy.ts ? prismaStrategy.ts.toNumber() : undefined,
+      tpPrice: prismaStrategy.tp_price
+        ? prismaStrategy.tp_price.toNumber()
+        : undefined,
+      slPrice: prismaStrategy.sl_price
+        ? prismaStrategy.sl_price.toNumber()
+        : undefined,
       createdAt: prismaStrategy.created_at,
     }
   }
@@ -160,6 +167,13 @@ export class PrismaStrategyRepository implements StrategyRepository {
       signal: strategyCreate.signal,
       tp: strategyCreate.tp ? new Decimal(strategyCreate.tp) : undefined,
       sl: strategyCreate.sl ? new Decimal(strategyCreate.sl) : undefined,
+      ts: strategyCreate.ts ? new Decimal(strategyCreate.ts) : undefined,
+      tp_price: strategyCreate.tpPrice
+        ? new Decimal(strategyCreate.tpPrice)
+        : undefined,
+      sl_price: strategyCreate.slPrice
+        ? new Decimal(strategyCreate.slPrice)
+        : undefined,
     }
   }
 

@@ -51,7 +51,14 @@ export class PrismaTrailingRepository implements TrailingRepository {
       symbol: prismaTrailing.symbol,
       tp: prismaTrailing.tp.toNumber(),
       sl: prismaTrailing.sl.toNumber(),
+      ts: prismaTrailing.ts.toNumber(),
+      tpPrice: prismaTrailing.tp_price.toNumber(),
+      slPrice: prismaTrailing.sl_price.toNumber(),
+      tsPrice: prismaTrailing.ts_price
+        ? prismaTrailing.ts_price.toNumber()
+        : undefined,
       createdAt: prismaTrailing.created_at,
+      updatedAt: prismaTrailing.updated_at,
     }
   }
 
@@ -60,6 +67,9 @@ export class PrismaTrailingRepository implements TrailingRepository {
       symbol: trailing.symbol,
       tp: new Decimal(trailing.tp),
       sl: new Decimal(trailing.sl),
+      ts: new Decimal(trailing.ts),
+      tp_price: new Decimal(trailing.tpPrice),
+      sl_price: new Decimal(trailing.slPrice),
     }
   }
 

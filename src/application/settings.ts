@@ -41,5 +41,6 @@ export const settings: Settings = {
   stops: {
     tp: 0.05,
     sl: 0.03,
+    ts: 0.01,
   },
 }

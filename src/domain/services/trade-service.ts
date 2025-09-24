@@ -26,10 +26,23 @@ export class TradeService {
   async openTrade(strategy: Strategy): Promise<void> {
     await this.positionService.openPosition(strategy.symbol)
 
+    if (
+      !strategy.tp ||
+      !strategy.sl ||
+      !strategy.ts ||
+      !strategy.tpPrice ||
+      !strategy.slPrice
+    ) {
+      throw new Error('Strategy is not created correctly! Something is broken!')
+    }
+
     await this.trailingService.store({
       symbol: strategy.symbol,
-      tp: strategy.tp!,
-      sl: strategy.sl!,
+      tp: strategy.tp,
+      sl: strategy.sl,
+      ts: strategy.ts,
+      tpPrice: strategy.tpPrice,
+      slPrice: strategy.slPrice,
     })
   }
 

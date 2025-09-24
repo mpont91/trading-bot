@@ -47,6 +47,7 @@ export interface IndicatorsSettings {
 }
 
 export interface StopsSettings {
-  tp: number | null
-  sl: number | null
+  tp: number
+  sl: number
+  ts: number
 }
