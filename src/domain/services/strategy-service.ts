@@ -11,16 +11,12 @@ export class StrategyService {
     private readonly decisionService: DecisionService,
   ) {}
 
-  public async create(symbol: string): Promise<StrategyCreate> {
-    return this.decisionService.evaluate(symbol)
-  }
-
   async store(symbol: string): Promise<Strategy> {
-    const strategy: StrategyCreate = await this.create(symbol)
+    const strategy: StrategyCreate = await this.decisionService.evaluate(symbol)
     return this.strategyRepository.create(strategy)
   }
 
-  async last(symbol: string): Promise<Strategy> {
+  async last(symbol: string): Promise<Strategy | null> {
     return await this.strategyRepository.last(symbol)
   }
 

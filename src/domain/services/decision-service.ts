@@ -3,7 +3,6 @@ import { calculateSL, calculateTP } from '../helpers/stops-helper'
 import { StrategyCreate } from '../models/strategy'
 import { IndicatorList } from '../models/indicator'
 import { StopsService } from './stops-service'
-import { getEmptyStrategy } from '../helpers/strategy-helper'
 import { IndicatorService } from './indicator-service'
 
 export class DecisionService {
@@ -17,8 +16,17 @@ export class DecisionService {
     const { bb, sma, rsi, smaCross } = indicators
 
     if (!bb || !sma || !rsi || !smaCross) {
-      return getEmptyStrategy(symbol)
+      throw new Error(
+        `There are no indicators for this symbol to evaluate a decision! Symbol: ${symbol}`,
+      )
     }
+
+    const price: number = this.median([
+      bb.price,
+      sma.price,
+      rsi.price,
+      smaCross.price,
+    ])
 
     let side: Side = 'hold'
     let tp: number | undefined = undefined
@@ -41,16 +49,26 @@ export class DecisionService {
     }
 
     if (side !== 'hold') {
-      tp = calculateTP(side, bb.price, this.stopsService.getTakeProfit())
-      sl = calculateSL(side, bb.price, this.stopsService.getStopLoss())
+      tp = calculateTP(side, price, this.stopsService.getTakeProfit())
+      sl = calculateSL(side, price, this.stopsService.getStopLoss())
     }
 
     return {
       symbol,
-      price: bb.price,
+      price,
       side,
       tp,
       sl,
     }
+  }
+
+  private median(numbers: number[]): number {
+    const sorted = [...numbers].sort((a, b) => a - b)
+
+    const mid = Math.floor(sorted.length / 2)
+
+    return sorted.length % 2 !== 0
+      ? sorted[mid]
+      : (sorted[mid - 1] + sorted[mid]) / 2
   }
 }

@@ -96,8 +96,8 @@ const scripts: Record<string, Fn> = {
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)
   },
-  'strategy-create': async (args: string[]) => {
-    await (await import('./strategy/strategy-create')).default(args)
+  'strategy-store': async (args: string[]) => {
+    await (await import('./strategy/strategy-store')).default(args)
   },
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()

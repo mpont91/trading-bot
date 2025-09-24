@@ -7,7 +7,6 @@ import Decimal from 'decimal.js'
 import { StrategyRepository } from '../../domain/repositories/strategy-repository'
 import { Strategy, StrategyCreate } from '../../domain/models/strategy'
 import { Side } from '../../domain/types/side'
-import { getEmptyStrategy } from '../../domain/helpers/strategy-helper'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 
@@ -22,7 +21,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     )
   }
 
-  async last(symbol: string): Promise<Strategy> {
+  async last(symbol: string): Promise<Strategy | null> {
     const strategy = await this.prisma.strategy.findFirst({
       where: {
         symbol: symbol,
@@ -33,7 +32,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     })
 
     if (!strategy) {
-      return getEmptyStrategy(symbol)
+      return null
     }
 
     return this.toDomain(strategy)

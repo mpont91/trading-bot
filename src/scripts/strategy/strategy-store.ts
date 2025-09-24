@@ -10,7 +10,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const strategyService: StrategyService = Container.getStrategyService()
-  const response: StrategyCreate = await strategyService.create(symbol)
+  const response: StrategyCreate = await strategyService.store(symbol)
 
   console.dir(response, { depth: null })
 }
