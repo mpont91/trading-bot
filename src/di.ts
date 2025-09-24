@@ -50,6 +50,7 @@ import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
 import { PositionRepository } from './domain/repositories/position-repository'
 import { PrismaPositionRepository } from './infrastructure/repositories/prisma-position-repository'
 import { DecisionService } from './domain/services/decision-service'
+import { ExecutionService } from './domain/services/execution-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -68,6 +69,7 @@ class Container {
   private static strategyService: StrategyService
   private static trailingService: TrailingService
   private static decisionService: DecisionService
+  private static executionService: ExecutionService
 
   static initialize(): void {
     const binanceSettings: BinanceSettings = settings.binance
@@ -119,9 +121,17 @@ class Container {
       this.apiService,
     )
     this.stopsService = new StopsService(stopsSettings)
-    this.trailingService = new TrailingService(trailingRepository)
+    this.trailingService = new TrailingService(
+      trailingRepository,
+      this.apiService,
+    )
     this.orderService = new OrderService(this.apiService, orderRepository)
-    this.tradeService = new TradeService(tradeRepository)
+    this.tradeService = new TradeService(
+      tradeRepository,
+      this.positionService,
+      this.orderService,
+      this.trailingService,
+    )
     this.performanceService = new PerformanceService(tradeRepository)
     this.investmentService = new InvestmentService(
       tradingSettings,
@@ -150,6 +160,11 @@ class Container {
       strategyRepository,
       this.decisionService,
     )
+    this.executionService = new ExecutionService(
+      this.positionService,
+      this.strategyService,
+      this.tradeService,
+    )
 
     const accountManager: ManagerInterface = new AccountManager(
       this.equityService,
@@ -162,11 +177,7 @@ class Container {
     )
     const tradingManager: TradingManager = new TradingManager(
       tradingSettings.symbols,
-      this.positionService,
-      this.strategyService,
-      this.trailingService,
-      this.orderService,
-      this.tradeService,
+      this.executionService,
     )
     this.launcherMarket = new Launcher(settings.intervalMarketTime, [
       marketManager,

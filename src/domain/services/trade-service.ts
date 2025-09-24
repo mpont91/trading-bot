@@ -1,9 +1,19 @@
 import { Trade, TradeCreate } from '../models/trade'
 import { TradeRepository } from '../repositories/trade-repository'
 import { Order } from '../models/order'
+import { Strategy } from '../models/strategy'
+import { Position } from '../models/position'
+import { TrailingService } from './trailing-service'
+import { PositionService } from './position-service'
+import { OrderService } from './order-service'
 
 export class TradeService {
-  constructor(private readonly tradeRepository: TradeRepository) {}
+  constructor(
+    private readonly tradeRepository: TradeRepository,
+    private readonly positionService: PositionService,
+    private readonly orderService: OrderService,
+    private readonly trailingService: TrailingService,
+  ) {}
 
   async store(tradeCreate: TradeCreate): Promise<Trade> {
     return this.tradeRepository.create(tradeCreate)
@@ -13,11 +23,34 @@ export class TradeService {
     return this.tradeRepository.list(symbol)
   }
 
-  async storeTradeFromOrders(
-    entryOrder: Order,
-    exitOrder: Order,
-  ): Promise<void> {
-    const trade: TradeCreate = {
+  async openTrade(strategy: Strategy): Promise<void> {
+    await this.positionService.openPosition(strategy.symbol)
+
+    await this.trailingService.store({
+      symbol: strategy.symbol,
+      tp: strategy.tp!,
+      sl: strategy.sl!,
+    })
+  }
+
+  async closeTrade(position: Position): Promise<void> {
+    const entryOrder: Order | null = await this.orderService.get(
+      position.entryOrderId,
+    )
+
+    if (!entryOrder) {
+      throw new Error(
+        'Closing a position when there is no entry order! Something is broken!',
+      )
+    }
+
+    const exitOrder: Order = await this.positionService.closePosition(
+      position.symbol,
+    )
+
+    await this.trailingService.remove(position.symbol)
+
+    await this.store({
       symbol: entryOrder.symbol,
       quantity: entryOrder.quantity,
       entryOrderId: entryOrder.id,
@@ -28,8 +61,12 @@ export class TradeService {
       exitAt: exitOrder.createdAt,
       fees: entryOrder.fees + exitOrder.fees,
       pnl: (exitOrder.price - entryOrder.price) * entryOrder.quantity,
-    }
+    })
+  }
 
-    await this.store(trade)
+  async handleTrade(position: Position): Promise<void> {
+    if (await this.trailingService.shouldSell(position.symbol)) {
+      await this.closeTrade(position)
+    }
   }
 }

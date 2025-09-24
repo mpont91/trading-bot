@@ -102,6 +102,9 @@ const scripts: Record<string, Fn> = {
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()
   },
+  'trailing-should-sell': async (args: string[]) => {
+    await (await import('./trailing/trailing-should-sell')).default(args)
+  },
 }
 
 async function main(): Promise<void> {
