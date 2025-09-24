@@ -43,6 +43,11 @@ export class DecisionService {
       smaCross.smaShort > smaCross.smaLong
     ) {
       signal = Signal.BUY
+      tp = this.stopsService.getTakeProfit()
+      sl = this.stopsService.getStopLoss()
+      ts = this.stopsService.getTrailingStop()
+      tpPrice = calculateTP(price, tp)
+      slPrice = calculateSL(price, tp)
     } else if (
       bb.price >= bb.upper &&
       sma.price > sma.sma &&
@@ -50,14 +55,6 @@ export class DecisionService {
       smaCross.smaShort < smaCross.smaLong
     ) {
       signal = Signal.SELL
-    }
-
-    if (signal !== Signal.HOLD) {
-      tp = this.stopsService.getTakeProfit()
-      sl = this.stopsService.getStopLoss()
-      ts = this.stopsService.getTrailingStop()
-      tpPrice = calculateTP(price, tp)
-      slPrice = calculateSL(price, tp)
     }
 
     return {
