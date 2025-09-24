@@ -36,6 +36,9 @@ const scripts: Record<string, Fn> = {
       await import('./commission-equity/commission-equity-store')
     ).default()
   },
+  'decision-evaluate': async (args: string[]) => {
+    await (await import('./decision/decision-evaluate')).default(args)
+  },
   'equity-graph': async (args: string[]) => {
     await (await import('./equity/equity-graph')).default(args)
   },
@@ -44,6 +47,9 @@ const scripts: Record<string, Fn> = {
   },
   'indicator-get-adx': async (args: string[]) => {
     await (await import('./indicator/indicator-get-adx')).default(args)
+  },
+  'indicator-get-all': async (args: string[]) => {
+    await (await import('./indicator/indicator-get-all')).default(args)
   },
   'indicator-get-atr': async (args: string[]) => {
     await (await import('./indicator/indicator-get-atr')).default(args)

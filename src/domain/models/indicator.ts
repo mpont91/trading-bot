@@ -56,3 +56,12 @@ export type IndicatorSMACrossCreate = Omit<
   IndicatorSMACross,
   'id' | 'createdAt'
 >
+
+export interface IndicatorList {
+  sma: IndicatorSMA | null
+  rsi: IndicatorRSI | null
+  atr: IndicatorATR | null
+  adx: IndicatorADX | null
+  bb: IndicatorBB | null
+  smaCross: IndicatorSMACross | null
+}

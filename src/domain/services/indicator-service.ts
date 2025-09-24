@@ -18,6 +18,7 @@ import {
   IndicatorRSICreate,
   IndicatorSMACreate,
   IndicatorSMACrossCreate,
+  IndicatorList,
 } from '../models/indicator'
 import { SmaCrossIndicator } from '../indicators/sma-cross-indicator'
 import { ApiService } from './api-service'
@@ -117,5 +118,23 @@ export class IndicatorService {
     await this.storeADX(symbol)
     await this.storeBB(symbol)
     await this.storeSMACross(symbol)
+  }
+
+  async getAll(symbol: string): Promise<IndicatorList> {
+    const atr: IndicatorATR | null = await this.getATR(symbol)
+    const adx: IndicatorADX | null = await this.getADX(symbol)
+    const sma: IndicatorSMA | null = await this.getSMA(symbol)
+    const rsi: IndicatorRSI | null = await this.getRSI(symbol)
+    const bb: IndicatorBB | null = await this.getBB(symbol)
+    const smaCross: IndicatorSMACross | null = await this.getSMACross(symbol)
+
+    return {
+      atr,
+      adx,
+      sma,
+      rsi,
+      bb,
+      smaCross,
+    }
   }
 }
