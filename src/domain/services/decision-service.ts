@@ -1,4 +1,4 @@
-import { Side } from '../types/side'
+import { Signal } from '../types/signal'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
 import { StrategyCreate } from '../models/strategy'
 import { IndicatorList } from '../models/indicator'
@@ -29,7 +29,7 @@ export class DecisionService {
       smaCross.price,
     ])
 
-    let side: Side = Side.HOLD
+    let signal: Signal = Signal.HOLD
     let tp: number | undefined = undefined
     let sl: number | undefined = undefined
 
@@ -39,25 +39,25 @@ export class DecisionService {
       rsi.rsi < 30 &&
       smaCross.smaShort > smaCross.smaLong
     ) {
-      side = Side.LONG
+      signal = Signal.BUY
     } else if (
       bb.price >= bb.upper &&
       sma.price > sma.sma &&
       rsi.rsi > 70 &&
       smaCross.smaShort < smaCross.smaLong
     ) {
-      side = Side.SHORT
+      signal = Signal.SELL
     }
 
-    if (side !== Side.HOLD) {
-      tp = calculateTP(side, price, this.stopsService.getTakeProfit())
-      sl = calculateSL(side, price, this.stopsService.getStopLoss())
+    if (signal !== Signal.HOLD) {
+      tp = calculateTP(signal, price, this.stopsService.getTakeProfit())
+      sl = calculateSL(signal, price, this.stopsService.getStopLoss())
     }
 
     return {
       symbol,
       price,
-      side,
+      signal,
       tp,
       sl,
     }

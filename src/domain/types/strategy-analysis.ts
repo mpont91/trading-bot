@@ -1,4 +1,4 @@
-import type { Side } from './side'
+import type { Signal } from './signal'
 
 export interface StrategyAnalysis {
   symbol: string
@@ -7,7 +7,7 @@ export interface StrategyAnalysis {
     date: Date
   }[]
   opportunities: {
-    side: Side
+    signal: Signal
     date: Date
   }[]
 }

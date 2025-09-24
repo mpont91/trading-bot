@@ -6,9 +6,9 @@ import {
 import Decimal from 'decimal.js'
 import { StrategyRepository } from '../../domain/repositories/strategy-repository'
 import { Strategy, StrategyCreate } from '../../domain/models/strategy'
-import { Side } from '../../domain/types/side'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
+import { Signal } from '../../domain/types/signal'
 
 export class PrismaStrategyRepository implements StrategyRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -76,7 +76,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
         take: limit,
         where: {
           symbol: symbol,
-          side: { not: 'hold' },
+          signal: { not: Signal.HOLD },
         },
         orderBy: {
           created_at: Prisma.SortOrder.desc,
@@ -84,7 +84,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
       }
     } else {
       queryOptions = {
-        where: { side: { not: 'hold' } },
+        where: { signal: { not: Signal.HOLD } },
         distinct: ['symbol'],
         orderBy: [
           { symbol: Prisma.SortOrder.asc },
@@ -128,7 +128,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     const strategies = await this.prisma.strategy.findMany({
       where: {
         symbol: symbol,
-        side: { not: Side.HOLD },
+        signal: { not: Signal.HOLD },
         created_at: {
           gte: startTime,
         },
@@ -146,7 +146,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
       id: prismaStrategy.id,
       symbol: prismaStrategy.symbol,
       price: prismaStrategy.price.toNumber(),
-      side: prismaStrategy.side,
+      signal: prismaStrategy.signal,
       tp: prismaStrategy.tp ? prismaStrategy.tp.toNumber() : undefined,
       sl: prismaStrategy.sl ? prismaStrategy.sl.toNumber() : undefined,
       createdAt: prismaStrategy.created_at,
@@ -157,7 +157,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     return {
       symbol: strategyCreate.symbol,
       price: new Decimal(strategyCreate.price),
-      side: strategyCreate.side,
+      signal: strategyCreate.signal,
       tp: strategyCreate.tp ? new Decimal(strategyCreate.tp) : undefined,
       sl: strategyCreate.sl ? new Decimal(strategyCreate.sl) : undefined,
     }

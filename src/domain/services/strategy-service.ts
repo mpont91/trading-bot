@@ -50,7 +50,7 @@ export class StrategyService {
         date: p.createdAt,
       })),
       opportunities: opportunitiesReducedData.map((o: Strategy) => ({
-        side: o.side,
+        signal: o.signal,
         date: o.createdAt,
       })),
     }

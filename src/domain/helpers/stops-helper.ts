@@ -1,7 +1,7 @@
-import { Side } from '../types/side'
+import { Signal } from '../types/signal'
 
 export function calculateTP(
-  side: Side,
+  signal: Signal,
   price: number,
   percentage: number | undefined,
 ): number | undefined {
@@ -9,13 +9,13 @@ export function calculateTP(
     return undefined
   }
 
-  return side === Side.LONG
+  return signal === Signal.BUY
     ? price * (1 + percentage)
     : price * (1 - percentage)
 }
 
 export function calculateSL(
-  side: Side,
+  signal: Signal,
   price: number,
   percentage: number | undefined,
 ): number | undefined {
@@ -23,13 +23,13 @@ export function calculateSL(
     return undefined
   }
 
-  return side === Side.LONG
+  return signal === Signal.BUY
     ? price * (1 - percentage)
     : price * (1 + percentage)
 }
 
 export function isTP(
-  side: Side,
+  signal: Signal,
   price: number,
   tp: number | undefined,
 ): boolean {
@@ -38,12 +38,13 @@ export function isTP(
   }
 
   return (
-    (side === Side.LONG && tp <= price) || (side === Side.SHORT && tp >= price)
+    (signal === Signal.BUY && tp <= price) ||
+    (signal === Signal.SELL && tp >= price)
   )
 }
 
 export function isSL(
-  side: Side,
+  signal: Signal,
   price: number,
   sl: number | undefined,
 ): boolean {
@@ -52,6 +53,7 @@ export function isSL(
   }
 
   return (
-    (side === Side.LONG && sl >= price) || (side === Side.SHORT && sl <= price)
+    (signal === Signal.BUY && sl >= price) ||
+    (signal === Signal.SELL && sl <= price)
   )
 }

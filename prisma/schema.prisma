@@ -4,7 +4,12 @@
 enum Side {
   LONG  @map("long")
   SHORT @map("short")
-  HOLD  @map("hold")
+}
+
+enum Signal {
+  BUY  @map("buy")
+  SELL @map("sell")
+  HOLD @map("hold")
 }
 
 generator client {
@@ -127,14 +132,14 @@ model Strategy {
   id         Int      @id @default(autoincrement())
   symbol     String
   price      Decimal
-  side       Side
+  signal     Signal
   sl         Decimal?
   tp         Decimal?
   created_at DateTime @default(now())
 
-  @@index([symbol, side])
+  @@index([symbol, signal])
   @@index([symbol])
-  @@index([side])
+  @@index([signal])
 }
 
 model Position {
