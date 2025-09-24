@@ -14,9 +14,9 @@ export class DecisionService {
 
   async evaluate(symbol: string): Promise<StrategyCreate> {
     const indicators: IndicatorList = await this.indicatorService.getAll(symbol)
-    const { bb, sma, rsi, smaCross } = indicators
+    const { bb, sma, rsi, atr, adx, smaCross } = indicators
 
-    if (!bb || !sma || !rsi || !smaCross) {
+    if (!bb || !sma || !rsi || !atr || !adx || !smaCross) {
       throw new Error(
         `There are no indicators for this symbol to evaluate a decision! Symbol: ${symbol}`,
       )
@@ -26,6 +26,8 @@ export class DecisionService {
       bb.price,
       sma.price,
       rsi.price,
+      atr.price,
+      adx.price,
       smaCross.price,
     ])
 
