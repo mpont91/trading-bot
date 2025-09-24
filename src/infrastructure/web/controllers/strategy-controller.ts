@@ -4,7 +4,7 @@ import { Container } from '../../../di'
 import { Strategy } from '../../../domain/models/strategy'
 import { StrategyService } from '../../../domain/services/strategy-service'
 import { Signals } from '../../../domain/types/signals'
-import { TimeInterval } from '../../../domain/types/time-interval'
+import { timeIntervalRule } from '../../../domain/types/time-interval'
 
 const strategyService: StrategyService = Container.getStrategyService()
 
@@ -51,8 +51,15 @@ export async function getSignalsGraph(
   response: Response,
 ): Promise<void> {
   try {
+    const interval = request.query.interval
+
+    if (typeof interval !== 'string') {
+      throw new Error('The "interval" parameter must be a single string.')
+    }
+
+    timeIntervalRule(interval)
+
     const symbol: string = request.params.symbol.toUpperCase()
-    const interval: TimeInterval = request.query.interval as TimeInterval
 
     const signals: Signals = await strategyService.signalsGraph(
       symbol,

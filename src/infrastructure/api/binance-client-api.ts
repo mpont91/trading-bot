@@ -171,7 +171,7 @@ export class BinanceClientApi implements Api {
     const response: RestTradeTypes.newOrderResponse = await this.api.newOrder(
       orderRequest.symbol,
       mapDomainToBinanceSide(orderRequest.side),
-      'MARKET' as OrderType,
+      OrderType.MARKET,
       options,
     )
 

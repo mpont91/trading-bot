@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
-import type { TimeInterval } from '../../../domain/types/time-interval'
+import { timeIntervalRule } from '../../../domain/types/time-interval'
 import { Container } from '../../../di'
 import { createErrorResponse } from '../helpers/response-helper'
-import { timeIntervalRule } from '../../../application/rules/time-interval-rule'
 import { EquityService } from '../../../domain/services/equity-service'
 import { Equity } from '../../../domain/models/equity'
 
@@ -13,9 +12,13 @@ export async function getEquityGraph(
   response: Response,
 ): Promise<void> {
   try {
-    timeIntervalRule(request.query.interval as string)
+    const interval = request.query.interval
 
-    const interval: TimeInterval = request.query.interval as TimeInterval
+    if (typeof interval !== 'string') {
+      throw new Error('The "interval" parameter must be a single string.')
+    }
+
+    timeIntervalRule(interval)
     const equities: Equity[] = await equityService.graph(interval)
 
     response.json({ data: equities })

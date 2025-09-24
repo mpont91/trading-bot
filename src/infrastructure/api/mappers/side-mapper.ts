@@ -14,9 +14,9 @@ export function mapDomainToBinanceSide(side: Side): BinanceSide {
 
 export function mapBinanceToDomainSide(binanceSide: BinanceSide | ''): Side {
   switch (binanceSide) {
-    case 'BUY' as BinanceSide:
+    case BinanceSide.BUY:
       return Side.LONG
-    case 'SELL' as BinanceSide:
+    case BinanceSide.SELL:
       return Side.SHORT
     default:
       throw new Error('Invalid side: ' + binanceSide)

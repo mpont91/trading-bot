@@ -1,7 +1,9 @@
 import { Kline, KlineInterval } from '../../../domain/types/kline'
-import { Interval } from '@binance/connector-typescript'
+import { Interval, RestMarketTypes } from '@binance/connector-typescript'
 
-export function mapBinanceToDomainKline(kline: (string | number)[]): Kline {
+export function mapBinanceToDomainKline(
+  kline: RestMarketTypes.klineCandlestickDataResponse,
+): Kline {
   return {
     time: new Date(kline[0]),
     openPrice: parseFloat(kline[1] as string),
