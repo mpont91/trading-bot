@@ -15,14 +15,12 @@ export const settings: Settings = {
     baseCurrency: 'USDC',
     feeCurrency: 'BNB',
   },
+  maxPositionsOpened: 5,
+  symbols: ['BTCUSDC', 'ETHUSDC', 'XRPUSDC', 'SOLUSDC', 'ADAUSDC'],
+  safetyCapitalMargin: 0.3,
   api: {
     klineHistoryInterval: 5, // 5 minutes
     klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
-  },
-  trading: {
-    maxPositionsOpened: 5,
-    symbols: ['BTCUSDC', 'ETHUSDC', 'XRPUSDC', 'SOLUSDC', 'ADAUSDC'],
-    safetyCapitalMargin: 0.3,
   },
   indicators: {
     sma: 20,

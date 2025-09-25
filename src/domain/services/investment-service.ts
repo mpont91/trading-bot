@@ -1,12 +1,12 @@
 import { ApiService } from './api-service'
 import { Balance } from '../types/balance'
 import { Symbol } from '../types/symbol'
-import { TradingSettings } from '../types/settings'
 import { adjustQuantity, roundQuantity } from '../helpers/math-helper'
 
 export class InvestmentService {
   constructor(
-    private readonly settings: TradingSettings,
+    private readonly safetyCapitalMargin: number,
+    private readonly maxPositionsOpened: number,
     private readonly apiService: ApiService,
   ) {}
 
@@ -17,10 +17,10 @@ export class InvestmentService {
 
   async getInvestmentAmount(): Promise<number> {
     const balance: Balance = await this.apiService.getBalance()
-    const margin: number = balance.equity * this.settings.safetyCapitalMargin
+    const margin: number = balance.equity * this.safetyCapitalMargin
     const total: number = balance.equity - margin
 
-    const investment: number = total / this.settings.maxPositionsOpened
+    const investment: number = total / this.maxPositionsOpened
 
     if (investment > balance.available) {
       throw new Error(

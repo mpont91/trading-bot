@@ -6,7 +6,9 @@ export interface Settings {
   intervalAccountTime: number
   binance: BinanceSettings
   api: ApiSettings
-  trading: TradingSettings
+  maxPositionsOpened: number
+  symbols: string[]
+  safetyCapitalMargin: number
   indicators: IndicatorsSettings
   stops: StopsSettings
 }
@@ -23,12 +25,6 @@ export interface BinanceSettings {
 export interface ApiSettings {
   klineHistoryInterval: KlineInterval
   klineHistoryLimit: number
-}
-
-export interface TradingSettings {
-  maxPositionsOpened: number
-  symbols: string[]
-  safetyCapitalMargin: number
 }
 
 export interface IndicatorsSettings {

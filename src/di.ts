@@ -114,7 +114,7 @@ class Container {
     )
     this.orderService = new OrderService(this.apiService, orderRepository)
     this.tradeService = new TradeService(
-      settings.trading.maxPositionsOpened,
+      settings.maxPositionsOpened,
       tradeRepository,
       this.positionService,
       this.orderService,
@@ -122,7 +122,8 @@ class Container {
     )
     this.performanceService = new PerformanceService(tradeRepository)
     this.investmentService = new InvestmentService(
-      settings.trading,
+      settings.safetyCapitalMargin,
+      settings.maxPositionsOpened,
       this.apiService,
     )
     this.positionService = new PositionService(
@@ -159,12 +160,12 @@ class Container {
       this.commissionEquityService,
     )
     const marketManager: ManagerInterface = new MarketManager(
-      settings.trading.symbols,
+      settings.symbols,
       this.indicatorService,
       this.strategyService,
     )
     const tradingManager: TradingManager = new TradingManager(
-      settings.trading.symbols,
+      settings.symbols,
       this.executionService,
     )
     this.launcherMarket = new Launcher(settings.intervalMarketTime, [
