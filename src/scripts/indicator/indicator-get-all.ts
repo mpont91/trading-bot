@@ -10,7 +10,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const indicatorService: IndicatorService = Container.getIndicatorService()
-  const response: IndicatorList = await indicatorService.getAll(symbol)
+  const response: IndicatorList | null = await indicatorService.getAll(symbol)
 
   console.dir(response, { depth: null })
 }

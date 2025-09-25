@@ -36,7 +36,6 @@ import { BbIndicator } from './domain/indicators/bb-indicator'
 import { IndicatorService } from './domain/services/indicator-service'
 import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
-import { StopsService } from './domain/services/stops-service'
 import { TradingManager } from './domain/managers/trading-manager'
 import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
@@ -44,6 +43,7 @@ import { PositionRepository } from './domain/repositories/position-repository'
 import { PrismaPositionRepository } from './infrastructure/repositories/prisma-position-repository'
 import { DecisionService } from './domain/services/decision-service'
 import { ExecutionService } from './domain/services/execution-service'
+import { RiskService } from './domain/services/risk-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -57,12 +57,12 @@ class Container {
   private static tradeService: TradeService
   private static positionService: PositionService
   private static performanceService: PerformanceService
-  private static stopsService: StopsService
   private static indicatorService: IndicatorService
   private static strategyService: StrategyService
   private static trailingService: TrailingService
   private static decisionService: DecisionService
   private static executionService: ExecutionService
+  private static riskService: RiskService
 
   static initialize(): void {
     const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
@@ -107,7 +107,6 @@ class Container {
       commissionEquityRepository,
       this.apiService,
     )
-    this.stopsService = new StopsService(settings.stops)
     this.trailingService = new TrailingService(
       trailingRepository,
       this.apiService,
@@ -141,9 +140,10 @@ class Container {
       bbIndicator,
       smaCrossIndicator,
     )
+    this.riskService = new RiskService()
     this.decisionService = new DecisionService(
-      this.stopsService,
       this.indicatorService,
+      this.riskService,
     )
     this.strategyService = new StrategyService(
       strategyRepository,
@@ -212,8 +212,8 @@ class Container {
   static getPerformanceService(): PerformanceService {
     return this.performanceService
   }
-  static getStopsService(): StopsService {
-    return this.stopsService
+  static getRiskService(): RiskService {
+    return this.riskService
   }
   static getIndicatorService(): IndicatorService {
     return this.indicatorService

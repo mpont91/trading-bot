@@ -10,7 +10,6 @@ export interface Settings {
   symbols: string[]
   safetyCapitalMargin: number
   indicators: IndicatorsSettings
-  stops: StopsSettings
 }
 
 export interface BinanceSettings {
@@ -40,10 +39,4 @@ export interface IndicatorsSettings {
     periodLong: number
     periodShort: number
   }
-}
-
-export interface StopsSettings {
-  tp: number
-  sl: number
-  ts: number
 }

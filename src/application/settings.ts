@@ -36,9 +36,4 @@ export const settings: Settings = {
       periodShort: 20,
     },
   },
-  stops: {
-    tp: 0.05,
-    sl: 0.03,
-    ts: 0.01,
-  },
 }

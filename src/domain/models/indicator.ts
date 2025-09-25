@@ -58,10 +58,10 @@ export type IndicatorSMACrossCreate = Omit<
 >
 
 export interface IndicatorList {
-  sma: IndicatorSMA | null
-  rsi: IndicatorRSI | null
-  atr: IndicatorATR | null
-  adx: IndicatorADX | null
-  bb: IndicatorBB | null
-  smaCross: IndicatorSMACross | null
+  sma: IndicatorSMA
+  rsi: IndicatorRSI
+  atr: IndicatorATR
+  adx: IndicatorADX
+  bb: IndicatorBB
+  smaCross: IndicatorSMACross
 }

@@ -102,14 +102,25 @@ export class IndicatorService {
     await this.storeSMACross(symbol)
   }
 
-  async getAll(symbol: string): Promise<IndicatorList> {
+  async getAll(symbol: string): Promise<IndicatorList | null> {
+    const atr: IndicatorATR | null = await this.getATR(symbol)
+    const adx: IndicatorADX | null = await this.getADX(symbol)
+    const sma: IndicatorSMA | null = await this.getSMA(symbol)
+    const rsi: IndicatorRSI | null = await this.getRSI(symbol)
+    const bb: IndicatorBB | null = await this.getBB(symbol)
+    const smaCross: IndicatorSMACross | null = await this.getSMACross(symbol)
+
+    if (!bb || !sma || !rsi || !atr || !adx || !smaCross) {
+      return null
+    }
+
     return {
-      atr: await this.getATR(symbol),
-      adx: await this.getADX(symbol),
-      sma: await this.getSMA(symbol),
-      rsi: await this.getRSI(symbol),
-      bb: await this.getBB(symbol),
-      smaCross: await this.getSMACross(symbol),
+      atr,
+      adx,
+      sma,
+      rsi,
+      bb,
+      smaCross,
     }
   }
 }

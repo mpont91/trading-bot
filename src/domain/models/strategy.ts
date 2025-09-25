@@ -1,15 +1,18 @@
 import { Signal } from '../types/signal'
 
-export interface Strategy {
-  id: number
-  symbol: string
-  price: number
-  signal: Signal
+export interface Stops {
   sl?: number
   tp?: number
   ts?: number
   tpPrice?: number
   slPrice?: number
+}
+
+export interface Strategy extends Stops {
+  id: number
+  symbol: string
+  price: number
+  signal: Signal
   createdAt: Date
 }
 
