@@ -5,11 +5,12 @@ export interface Settings {
   intervalMarketTime: number
   intervalAccountTime: number
   binance: BinanceSettings
-  api: ApiSettings
   maxPositionsOpened: number
   symbols: string[]
   safetyCapitalMargin: number
+  history: HistorySettings
   indicators: IndicatorsSettings
+  risk: RiskSettings
 }
 
 export interface BinanceSettings {
@@ -21,7 +22,7 @@ export interface BinanceSettings {
   feeCurrency: string
 }
 
-export interface ApiSettings {
+export interface HistorySettings {
   klineHistoryInterval: KlineInterval
   klineHistoryLimit: number
 }
@@ -39,4 +40,14 @@ export interface IndicatorsSettings {
     periodLong: number
     periodShort: number
   }
+}
+
+export interface RiskSettings {
+  strongTrendMin: number
+  bullishMomentumMin: number
+  bullishMomentumMax: number
+  bearishMomentumMax: number
+  minRiskRewardRatio: number
+  slPaddingPercentage: number
+  trailingStopMultiplier: number
 }

@@ -1,15 +1,19 @@
 import { IndicatorList } from '../models/indicator'
 import { Stops } from '../models/strategy'
-
+import { RiskSettings } from '../types/settings'
 export class RiskService {
+  constructor(private readonly settings: RiskSettings) {}
+
   shouldBuy(indicators: IndicatorList): boolean {
     const { bb, sma, rsi, adx, smaCross } = indicators
 
-    const isTrendingUp = sma.price > sma.sma
-    const isGoldenCross = smaCross.smaShort > smaCross.smaLong
-    const hasStrongTrend = adx.adx > 25
-    const hasBullishMomentum = rsi.rsi > 50 && rsi.rsi < 70
-    const notOverextended = bb.price < bb.upper
+    const isTrendingUp: boolean = sma.price > sma.sma
+    const isGoldenCross: boolean = smaCross.smaShort > smaCross.smaLong
+    const hasStrongTrend: boolean = adx.adx > this.settings.strongTrendMin
+    const hasBullishMomentum: boolean =
+      rsi.rsi > this.settings.bullishMomentumMin &&
+      rsi.rsi < this.settings.bullishMomentumMax
+    const notOverextended: boolean = bb.price < bb.upper
 
     return (
       isTrendingUp &&
@@ -23,9 +27,10 @@ export class RiskService {
   shouldSell(indicators: IndicatorList): boolean {
     const { bb, rsi, smaCross } = indicators
 
-    const isDeathCross = smaCross.smaShort < smaCross.smaLong
-    const hasBearishMomentum = rsi.rsi < 45
-    const trendIsWeakening = bb.price < bb.middle
+    const isDeathCross: boolean = smaCross.smaShort < smaCross.smaLong
+    const hasBearishMomentum: boolean =
+      rsi.rsi < this.settings.bearishMomentumMax
+    const trendIsWeakening: boolean = bb.price < bb.middle
 
     return isDeathCross || hasBearishMomentum || trendIsWeakening
   }
@@ -33,30 +38,31 @@ export class RiskService {
   stops(indicators: IndicatorList): Stops | null {
     const { bb, atr } = indicators
 
-    const price = bb.price
-    const minRiskRewardRatio = 1.5
+    const price: number = bb.price
+    const minRiskRewardRatio: number = this.settings.minRiskRewardRatio
 
-    const slPadding = (price - bb.lower) * 0.1
-    const slPrice = bb.lower - slPadding
-    const tpPrice = bb.upper
+    const slPadding: number =
+      (price - bb.lower) * this.settings.slPaddingPercentage
+    const slPrice: number = bb.lower - slPadding
+    const tpPrice: number = bb.upper
 
     if (slPrice >= price || tpPrice <= price) {
       return null
     }
 
-    const riskAmount = price - slPrice
-    const rewardAmount = tpPrice - price
-    const riskRewardRatio = rewardAmount / riskAmount
+    const riskAmount: number = price - slPrice
+    const rewardAmount: number = tpPrice - price
+    const riskRewardRatio: number = rewardAmount / riskAmount
 
     if (riskRewardRatio < minRiskRewardRatio) {
       return null
     }
 
-    const slPercent = (riskAmount / price) * 100
-    const tpPercent = (rewardAmount / price) * 100
+    const slPercent: number = (riskAmount / price) * 100
+    const tpPercent: number = (rewardAmount / price) * 100
 
-    const trailingStopMultiplier = 1.5
-    const tsPercent = ((atr.atr * trailingStopMultiplier) / price) * 100
+    const trailingStopMultiplier: number = this.settings.trailingStopMultiplier
+    const tsPercent: number = ((atr.atr * trailingStopMultiplier) / price) * 100
 
     return {
       sl: slPercent,

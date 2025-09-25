@@ -4,14 +4,14 @@ import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
 import { Kline, KlineInterval } from '../types/kline'
-import { ApiSettings } from '../types/settings'
+import { HistorySettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
 import { EquityCreate } from '../models/equity'
 import { Coin } from '../types/coin'
 
 export class ApiService {
   constructor(
-    private readonly settings: ApiSettings,
+    private readonly settings: HistorySettings,
     private readonly api: Api,
   ) {}
 

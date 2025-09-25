@@ -1,7 +1,7 @@
 import { Api } from '../../src/application/api'
 import { ApiService } from '../../src/domain/services/api-service'
 import { settings } from '../../src/application/settings'
-import { ApiSettings } from '../../src/domain/types/settings'
+import { HistorySettings } from '../../src/domain/types/settings'
 
 export function createMockApi(): jest.Mocked<Api> {
   return {
@@ -19,6 +19,6 @@ export function createMockApi(): jest.Mocked<Api> {
 
 export function createMockApiService(): ApiService {
   const mockApi: jest.Mocked<Api> = createMockApi()
-  const mockApiSettings: ApiSettings = settings.api
+  const mockApiSettings: HistorySettings = settings.history
   return new ApiService(mockApiSettings, mockApi)
 }

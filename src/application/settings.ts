@@ -18,7 +18,7 @@ export const settings: Settings = {
   maxPositionsOpened: 5,
   symbols: ['BTCUSDC', 'ETHUSDC', 'XRPUSDC', 'SOLUSDC', 'ADAUSDC'],
   safetyCapitalMargin: 0.3,
-  api: {
+  history: {
     klineHistoryInterval: 5, // 5 minutes
     klineHistoryLimit: 240, // 5 minutes * 240 candles = 20 hours price history
   },
@@ -35,5 +35,14 @@ export const settings: Settings = {
       periodLong: 50,
       periodShort: 20,
     },
+  },
+  risk: {
+    strongTrendMin: 25,
+    bullishMomentumMin: 50,
+    bullishMomentumMax: 70,
+    bearishMomentumMax: 45,
+    minRiskRewardRatio: 1.5,
+    slPaddingPercentage: 0.1,
+    trailingStopMultiplier: 1.5,
   },
 }

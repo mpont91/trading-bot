@@ -101,7 +101,7 @@ class Container {
       settings.indicators.smaCross.periodShort,
     )
 
-    this.apiService = new ApiService(settings.api, api)
+    this.apiService = new ApiService(settings.history, api)
     this.equityService = new EquityService(equityRepository, this.apiService)
     this.commissionEquityService = new CommissionEquityService(
       commissionEquityRepository,
@@ -140,7 +140,7 @@ class Container {
       bbIndicator,
       smaCrossIndicator,
     )
-    this.riskService = new RiskService()
+    this.riskService = new RiskService(settings.risk)
     this.decisionService = new DecisionService(
       this.indicatorService,
       this.riskService,
