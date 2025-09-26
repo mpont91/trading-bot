@@ -25,6 +25,8 @@ import {
   IndicatorSMACross,
 } from '../../domain/models/indicator'
 import Decimal from 'decimal.js'
+import { TimeInterval } from '../../domain/types/time-interval'
+import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 
 export class PrismaIndicatorRepository implements IndicatorRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -141,6 +143,27 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     }
 
     return this.toDomainSMACross(indicator)
+  }
+
+  async getGraphSMA(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorSMA[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const sma = await this.prisma.indicatorSMA.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.asc,
+      },
+    })
+
+    return this.toDomainListSMA(sma)
   }
 
   private toPrismaSMA(
@@ -289,5 +312,9 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
       smaShort: prismaIndicatorSMACross.sma_short.toNumber(),
       createdAt: prismaIndicatorSMACross.created_at,
     }
+  }
+
+  private toDomainListSMA(prismaSMA: PrismaIndicatorSMA[]): IndicatorSMA[] {
+    return prismaSMA.map(this.toDomainSMA)
   }
 }

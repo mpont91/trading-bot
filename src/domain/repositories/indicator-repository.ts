@@ -12,6 +12,7 @@ import {
   IndicatorSMACreate,
   IndicatorSMACrossCreate,
 } from '../models/indicator'
+import { TimeInterval } from '../types/time-interval'
 
 export interface IndicatorRepository {
   createSMA(indicator: IndicatorSMACreate): Promise<void>
@@ -26,4 +27,5 @@ export interface IndicatorRepository {
   getBB(symbol: string): Promise<IndicatorBB | null>
   createSMACross(indicator: IndicatorSMACrossCreate): Promise<void>
   getSMACross(symbol: string): Promise<IndicatorSMACross | null>
+  getGraphSMA(symbol: string, interval: TimeInterval): Promise<IndicatorSMA[]>
 }

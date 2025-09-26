@@ -6,8 +6,9 @@ import { getLastTrades } from './controllers/trade-controller'
 import {
   getLastOpportunities,
   getLastStrategies,
-  getSignalsGraph,
+  getStrategyAnalysis,
 } from './controllers/strategy-controller'
+import { getGraphSMA } from './controllers/indicator-controller'
 
 const router: Router = Router()
 
@@ -28,6 +29,7 @@ router.get('/market/last-strategies', getLastStrategies)
 router.get('/market/last-strategies/:symbol', getLastStrategies)
 router.get('/market/last-opportunities', getLastOpportunities)
 router.get('/market/last-opportunities/:symbol', getLastOpportunities)
-router.get('/market/graph/strategy-analysis/:symbol', getSignalsGraph)
+router.get('/market/graph/strategy-analysis/:symbol', getStrategyAnalysis)
+router.get('/market/graph/indicator/sma/:symbol', getGraphSMA)
 
 export default router

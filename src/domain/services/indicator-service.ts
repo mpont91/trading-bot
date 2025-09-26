@@ -16,6 +16,8 @@ import {
 } from '../models/indicator'
 import { SmaCrossIndicator } from '../indicators/sma-cross-indicator'
 import { ApiService } from './api-service'
+import { TimeInterval } from '../types/time-interval'
+import { reduceRecordsData } from '../helpers/graph-helper'
 
 export class IndicatorService {
   constructor(
@@ -122,5 +124,17 @@ export class IndicatorService {
       bb,
       smaCross,
     }
+  }
+
+  async getGraphSMA(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorSMA[]> {
+    const sma: IndicatorSMA[] = await this.indicatorRepository.getGraphSMA(
+      symbol,
+      interval,
+    )
+
+    return reduceRecordsData(sma)
   }
 }

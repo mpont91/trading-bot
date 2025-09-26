@@ -46,7 +46,7 @@ export async function getLastOpportunities(
   }
 }
 
-export async function getSignalsGraph(
+export async function getStrategyAnalysis(
   request: Request,
   response: Response,
 ): Promise<void> {
