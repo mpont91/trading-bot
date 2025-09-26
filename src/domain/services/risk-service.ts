@@ -10,6 +10,7 @@ export class RiskService {
     const isTrendingUp: boolean = sma.price > sma.sma
     const isGoldenCross: boolean = smaCross.smaShort > smaCross.smaLong
     const hasStrongTrend: boolean = adx.adx > this.settings.strongTrendMin
+    const hasBullishDirection: boolean = adx.pdi > adx.mdi
     const hasBullishMomentum: boolean =
       rsi.rsi > this.settings.bullishMomentumMin &&
       rsi.rsi < this.settings.bullishMomentumMax
@@ -19,6 +20,7 @@ export class RiskService {
       isTrendingUp &&
       isGoldenCross &&
       hasStrongTrend &&
+      hasBullishDirection &&
       hasBullishMomentum &&
       notOverextended
     )
