@@ -28,4 +28,12 @@ export interface IndicatorRepository {
   createSMACross(indicator: IndicatorSMACrossCreate): Promise<void>
   getSMACross(symbol: string): Promise<IndicatorSMACross | null>
   getGraphSMA(symbol: string, interval: TimeInterval): Promise<IndicatorSMA[]>
+  getGraphRSI(symbol: string, interval: TimeInterval): Promise<IndicatorRSI[]>
+  getGraphADX(symbol: string, interval: TimeInterval): Promise<IndicatorADX[]>
+  getGraphATR(symbol: string, interval: TimeInterval): Promise<IndicatorATR[]>
+  getGraphBB(symbol: string, interval: TimeInterval): Promise<IndicatorBB[]>
+  getGraphSMACross(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorSMACross[]>
 }

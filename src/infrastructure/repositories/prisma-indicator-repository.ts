@@ -166,6 +166,111 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainListSMA(sma)
   }
 
+  async getGraphRSI(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorRSI[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const rsi = await this.prisma.indicatorRSI.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.asc,
+      },
+    })
+
+    return this.toDomainListRSI(rsi)
+  }
+
+  async getGraphADX(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorADX[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const adx = await this.prisma.indicatorADX.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.asc,
+      },
+    })
+
+    return this.toDomainListADX(adx)
+  }
+
+  async getGraphATR(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorATR[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const atr = await this.prisma.indicatorATR.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.asc,
+      },
+    })
+
+    return this.toDomainListATR(atr)
+  }
+
+  async getGraphBB(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorBB[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const bb = await this.prisma.indicatorBB.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.asc,
+      },
+    })
+
+    return this.toDomainListBB(bb)
+  }
+
+  async getGraphSMACross(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorSMACross[]> {
+    const startTime: Date = getStartTimeFromTimeInterval(interval)
+
+    const smaCross = await this.prisma.indicatorSMACross.findMany({
+      where: {
+        symbol: symbol,
+        created_at: {
+          gte: startTime,
+        },
+      },
+      orderBy: {
+        created_at: Prisma.SortOrder.asc,
+      },
+    })
+
+    return this.toDomainListSMACross(smaCross)
+  }
+
   private toPrismaSMA(
     indicator: IndicatorSMACreate,
   ): Prisma.IndicatorSMACreateInput {
@@ -316,5 +421,27 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
 
   private toDomainListSMA(prismaSMA: PrismaIndicatorSMA[]): IndicatorSMA[] {
     return prismaSMA.map(this.toDomainSMA)
+  }
+
+  private toDomainListRSI(prismaRSI: PrismaIndicatorRSI[]): IndicatorRSI[] {
+    return prismaRSI.map(this.toDomainRSI)
+  }
+
+  private toDomainListADX(prismaADX: PrismaIndicatorADX[]): IndicatorADX[] {
+    return prismaADX.map(this.toDomainADX)
+  }
+
+  private toDomainListATR(prismaATR: PrismaIndicatorATR[]): IndicatorATR[] {
+    return prismaATR.map(this.toDomainATR)
+  }
+
+  private toDomainListBB(prismaBB: PrismaIndicatorBB[]): IndicatorBB[] {
+    return prismaBB.map(this.toDomainBB)
+  }
+
+  private toDomainListSMACross(
+    prismaSMACross: PrismaIndicatorSMACross[],
+  ): IndicatorSMACross[] {
+    return prismaSMACross.map(this.toDomainSMACross)
   }
 }

@@ -137,4 +137,62 @@ export class IndicatorService {
 
     return reduceRecordsData(sma)
   }
+
+  async getGraphRSI(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorRSI[]> {
+    const rsi: IndicatorRSI[] = await this.indicatorRepository.getGraphRSI(
+      symbol,
+      interval,
+    )
+
+    return reduceRecordsData(rsi)
+  }
+
+  async getGraphADX(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorADX[]> {
+    const adx: IndicatorADX[] = await this.indicatorRepository.getGraphADX(
+      symbol,
+      interval,
+    )
+
+    return reduceRecordsData(adx)
+  }
+
+  async getGraphATR(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorATR[]> {
+    const atr: IndicatorATR[] = await this.indicatorRepository.getGraphATR(
+      symbol,
+      interval,
+    )
+
+    return reduceRecordsData(atr)
+  }
+
+  async getGraphBB(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorBB[]> {
+    const bb: IndicatorBB[] = await this.indicatorRepository.getGraphBB(
+      symbol,
+      interval,
+    )
+
+    return reduceRecordsData(bb)
+  }
+
+  async getGraphSMACross(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorSMACross[]> {
+    const smaCross: IndicatorSMACross[] =
+      await this.indicatorRepository.getGraphSMACross(symbol, interval)
+
+    return reduceRecordsData(smaCross)
+  }
 }

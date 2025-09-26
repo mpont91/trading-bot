@@ -65,3 +65,23 @@ export interface IndicatorList {
   bb: IndicatorBB
   smaCross: IndicatorSMACross
 }
+
+export enum IndicatorName {
+  SMA = 'sma',
+  RSI = 'rsi',
+  ATR = 'atr',
+  ADX = 'adx',
+  BB = 'bb',
+  SMACROSS = 'smacross',
+}
+
+export function indicatorNameRule(
+  value: string,
+): asserts value is IndicatorName {
+  const options: IndicatorName[] = Object.values(IndicatorName)
+  if (!options.includes(value as IndicatorName)) {
+    throw new Error(
+      `Indicator name parameter must be one of the following: [${options.join(', ')}]`,
+    )
+  }
+}

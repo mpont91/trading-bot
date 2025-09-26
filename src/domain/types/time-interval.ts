@@ -1,9 +1,9 @@
 export enum TimeInterval {
-  Day = 'day',
-  Week = 'week',
-  Month = 'month',
-  Year = 'year',
-  All = 'all',
+  DAY = 'day',
+  WEEK = 'week',
+  MONTH = 'month',
+  YEAR = 'year',
+  ALL = 'all',
 }
 
 export function timeIntervalRule(value: string): asserts value is TimeInterval {
