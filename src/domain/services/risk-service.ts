@@ -1,41 +1,14 @@
 import { IndicatorList } from '../models/indicator'
 import { Stops } from '../models/strategy'
 import { RiskSettings } from '../types/settings'
+import { RiskRepository } from '../repositories/risk-repository'
+import { Risk, RiskCreate } from '../models/risk'
+import { median } from '../helpers/math-helper'
 export class RiskService {
-  constructor(private readonly settings: RiskSettings) {}
-
-  shouldBuy(indicators: IndicatorList): boolean {
-    const { bb, sma, rsi, adx, smaCross } = indicators
-
-    const isTrendingUp: boolean = sma.price > sma.sma
-    const isGoldenCross: boolean = smaCross.smaShort > smaCross.smaLong
-    const hasStrongTrend: boolean = adx.adx > this.settings.strongTrendMin
-    const hasBullishDirection: boolean = adx.pdi > adx.mdi
-    const hasBullishMomentum: boolean =
-      rsi.rsi > this.settings.bullishMomentumMin &&
-      rsi.rsi < this.settings.bullishMomentumMax
-    const notOverextended: boolean = bb.price < bb.upper
-
-    return (
-      isTrendingUp &&
-      isGoldenCross &&
-      hasStrongTrend &&
-      hasBullishDirection &&
-      hasBullishMomentum &&
-      notOverextended
-    )
-  }
-
-  shouldSell(indicators: IndicatorList): boolean {
-    const { bb, rsi, smaCross } = indicators
-
-    const isDeathCross: boolean = smaCross.smaShort < smaCross.smaLong
-    const hasBearishMomentum: boolean =
-      rsi.rsi < this.settings.bearishMomentumMax
-    const trendIsWeakening: boolean = bb.price < bb.middle
-
-    return isDeathCross || hasBearishMomentum || trendIsWeakening
-  }
+  constructor(
+    private readonly settings: RiskSettings,
+    private readonly riskRepository: RiskRepository,
+  ) {}
 
   stops(indicators: IndicatorList): Stops | null {
     const { bb, atr } = indicators
@@ -73,5 +46,71 @@ export class RiskService {
       tpPrice,
       slPrice,
     }
+  }
+
+  async evaluate(indicators: IndicatorList): Promise<Risk> {
+    const { bb, sma, rsi, adx, atr, smaCross } = indicators
+
+    const symbol: string = bb.symbol
+    const price: number = median([
+      bb.price,
+      sma.price,
+      rsi.price,
+      atr.price,
+      adx.price,
+      smaCross.price,
+    ])
+    const isTrendingUp: boolean = sma.price > sma.sma
+    const isGoldenCross: boolean = smaCross.smaShort > smaCross.smaLong
+    const hasStrongTrend: boolean = adx.adx > this.settings.strongTrendMin
+    const hasBullishDirection: boolean = adx.pdi > adx.mdi
+    const hasBullishMomentum: boolean =
+      rsi.rsi > this.settings.bullishMomentumMin &&
+      rsi.rsi < this.settings.bullishMomentumMax
+    const notOverextended: boolean = bb.price < bb.upper
+    const isDeathCross: boolean = smaCross.smaShort < smaCross.smaLong
+    const hasBearishMomentum: boolean =
+      rsi.rsi < this.settings.bearishMomentumMax
+    const trendIsWeakening: boolean = bb.price < bb.middle
+    const shouldBuy: boolean =
+      isTrendingUp &&
+      isGoldenCross &&
+      hasStrongTrend &&
+      hasBullishDirection &&
+      hasBullishMomentum &&
+      notOverextended
+    const shouldSell: boolean =
+      isDeathCross || (hasBearishMomentum && trendIsWeakening)
+
+    const risk: RiskCreate = {
+      symbol,
+      price,
+      isTrendingUp,
+      isGoldenCross,
+      hasStrongTrend,
+      hasBullishDirection,
+      hasBullishMomentum,
+      notOverextended,
+      isDeathCross,
+      hasBearishMomentum,
+      trendIsWeakening,
+      shouldBuy,
+      shouldSell,
+    }
+
+    if (shouldBuy) {
+      const stops: Stops | null = this.stops(indicators)
+      if (stops) {
+        if (stops) {
+          risk.tp = stops.tp
+          risk.sl = stops.sl
+          risk.ts = stops.ts
+          risk.tpPrice = stops.tpPrice
+          risk.slPrice = stops.slPrice
+        }
+      }
+    }
+
+    return await this.riskRepository.create(risk)
   }
 }

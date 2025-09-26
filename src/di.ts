@@ -44,6 +44,8 @@ import { PrismaPositionRepository } from './infrastructure/repositories/prisma-p
 import { DecisionService } from './domain/services/decision-service'
 import { ExecutionService } from './domain/services/execution-service'
 import { RiskService } from './domain/services/risk-service'
+import { RiskRepository } from './domain/repositories/risk-repository'
+import { PrismaRiskRepository } from './infrastructure/repositories/prisma-risk-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -87,6 +89,7 @@ class Container {
     const trailingRepository: TrailingRepository = new PrismaTrailingRepository(
       prisma,
     )
+    const riskRepository: RiskRepository = new PrismaRiskRepository(prisma)
 
     const adxIndicator: AdxIndicator = new AdxIndicator(settings.indicators.adx)
     const atrIndicator: AtrIndicator = new AtrIndicator(settings.indicators.atr)
@@ -140,7 +143,7 @@ class Container {
       bbIndicator,
       smaCrossIndicator,
     )
-    this.riskService = new RiskService(settings.risk)
+    this.riskService = new RiskService(settings.risk, riskRepository)
     this.decisionService = new DecisionService(
       this.indicatorService,
       this.riskService,

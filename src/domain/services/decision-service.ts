@@ -1,9 +1,9 @@
 import { Signal } from '../types/signal'
-import { Stops, StrategyCreate } from '../models/strategy'
+import { StrategyCreate } from '../models/strategy'
 import { IndicatorList } from '../models/indicator'
 import { IndicatorService } from './indicator-service'
-import { median } from '../helpers/math-helper'
 import { RiskService } from './risk-service'
+import { Risk } from '../models/risk'
 
 export class DecisionService {
   constructor(
@@ -21,42 +21,33 @@ export class DecisionService {
       )
     }
 
-    const { bb, sma, rsi, atr, adx, smaCross } = indicators
+    const risk: Risk = await this.riskService.evaluate(indicators)
 
-    const price: number = median([
-      bb.price,
-      sma.price,
-      rsi.price,
-      atr.price,
-      adx.price,
-      smaCross.price,
-    ])
+    if (risk.shouldBuy && risk.shouldSell) {
+      throw new Error(
+        'Risk evaluated should buy and sell at the same time. Something is broken!',
+      )
+    }
 
-    const strategy: StrategyCreate = {
+    let signal: Signal = Signal.HOLD
+
+    if (risk.shouldBuy) {
+      signal = Signal.BUY
+    }
+
+    if (risk.shouldSell) {
+      signal = Signal.SELL
+    }
+
+    return {
       symbol,
-      signal: Signal.HOLD,
-      price,
-      tp: undefined,
-      sl: undefined,
-      ts: undefined,
-      tpPrice: undefined,
-      slPrice: undefined,
+      signal,
+      price: risk.price,
+      tp: risk.tp,
+      sl: risk.sl,
+      ts: risk.ts,
+      tpPrice: risk.tpPrice,
+      slPrice: risk.slPrice,
     }
-
-    if (this.riskService.shouldBuy(indicators)) {
-      const stops: Stops | null = this.riskService.stops(indicators)
-      if (stops) {
-        strategy.signal = Signal.BUY
-        strategy.tp = stops.tp
-        strategy.sl = stops.sl
-        strategy.ts = stops.ts
-        strategy.tpPrice = stops.tpPrice
-        strategy.slPrice = stops.slPrice
-      }
-    } else if (this.riskService.shouldSell(indicators)) {
-      strategy.signal = Signal.SELL
-    }
-
-    return strategy
   }
 }
