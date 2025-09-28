@@ -1,21 +1,26 @@
-export interface Risk {
+import { Stops } from './strategy'
+
+export interface BuyConditions {
+  trendUp: boolean
+  goldenCross: boolean
+  strongTrend: boolean
+  bullishDirection: boolean
+  bullishMomentum: boolean
+  notOverextended: boolean
+}
+
+export interface SellConditions {
+  deathCross: boolean
+  bearishMomentum: boolean
+  trendWeakening: boolean
+}
+
+export interface Risk extends Stops, BuyConditions, SellConditions {
   id: number
   symbol: string
   price: number
-  isTrendingUp: boolean
-  isGoldenCross: boolean
-  hasStrongTrend: boolean
-  hasBullishDirection: boolean
-  hasBullishMomentum: boolean
-  notOverextended: boolean
-  isDeathCross: boolean
-  hasBearishMomentum: boolean
-  trendIsWeakening: boolean
-  sl?: number
-  tp?: number
-  ts?: number
-  tpPrice?: number
-  slPrice?: number
+  validStops?: boolean
+  riskReward?: boolean
   shouldBuy: boolean
   shouldSell: boolean
   createdAt: Date
