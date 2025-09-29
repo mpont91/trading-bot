@@ -40,14 +40,12 @@ export class RiskService {
     let validStops: boolean | undefined = undefined
 
     if (shouldBuy) {
-      const stopsEvaluated: Stops = this.evaluateStops(indicators)
-      riskReward = this.evaluateRiskReward(price, stopsEvaluated)
-      validStops = this.evaluateValidStops(price, stopsEvaluated)
+      stops = this.evaluateStops(indicators)
+      riskReward = this.evaluateRiskReward(price, stops)
+      validStops = this.evaluateValidStops(price, stops)
 
       if (!riskReward || !validStops) {
         shouldBuy = false
-      } else {
-        stops = stopsEvaluated
       }
     }
 
