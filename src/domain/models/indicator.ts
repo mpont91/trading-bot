@@ -66,6 +66,15 @@ export interface IndicatorList {
   smaCross: IndicatorSMACross
 }
 
+export interface IndicatorListCreate {
+  sma: IndicatorSMACreate
+  rsi: IndicatorRSICreate
+  atr: IndicatorATRCreate
+  adx: IndicatorADXCreate
+  bb: IndicatorBBCreate
+  smaCross: IndicatorSMACrossCreate
+}
+
 export enum IndicatorName {
   SMA = 'sma',
   RSI = 'rsi',

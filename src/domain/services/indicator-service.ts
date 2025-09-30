@@ -13,6 +13,7 @@ import {
   IndicatorSMA,
   IndicatorSMACross,
   IndicatorList,
+  IndicatorListCreate,
 } from '../models/indicator'
 import { SmaCrossIndicator } from '../indicators/sma-cross-indicator'
 import { ApiService } from './api-service'
@@ -31,77 +32,25 @@ export class IndicatorService {
     private readonly smaCrossIndicator: SmaCrossIndicator,
   ) {}
 
-  async storeSMA(symbol: string): Promise<void> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
-    await this.indicatorRepository.createSMA(
-      this.smaIndicator.calculate(symbol, klines),
-    )
-  }
-
-  async getSMA(symbol: string): Promise<IndicatorSMA | null> {
-    return this.indicatorRepository.getSMA(symbol)
-  }
-
-  async storeRSI(symbol: string): Promise<void> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
-    await this.indicatorRepository.createRSI(
-      this.rsiIndicator.calculate(symbol, klines),
-    )
-  }
-
-  async getRSI(symbol: string): Promise<IndicatorRSI | null> {
-    return this.indicatorRepository.getRSI(symbol)
-  }
-
-  async storeATR(symbol: string): Promise<void> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
-    await this.indicatorRepository.createATR(
-      this.atrIndicator.calculate(symbol, klines),
-    )
-  }
-
-  async getATR(symbol: string): Promise<IndicatorATR | null> {
-    return this.indicatorRepository.getATR(symbol)
-  }
-
-  async storeADX(symbol: string): Promise<void> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
-    await this.indicatorRepository.createADX(
-      this.adxIndicator.calculate(symbol, klines),
-    )
-  }
-
-  async getADX(symbol: string): Promise<IndicatorADX | null> {
-    return this.indicatorRepository.getADX(symbol)
-  }
-
-  async storeBB(symbol: string): Promise<void> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
-    await this.indicatorRepository.createBB(
-      this.bbIndicator.calculate(symbol, klines),
-    )
-  }
-  async getBB(symbol: string): Promise<IndicatorBB | null> {
-    return this.indicatorRepository.getBB(symbol)
-  }
-
-  async storeSMACross(symbol: string): Promise<void> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
-    await this.indicatorRepository.createSMACross(
-      this.smaCrossIndicator.calculate(symbol, klines),
-    )
-  }
-  async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
-    return this.indicatorRepository.getSMACross(symbol)
+  calculateAll(symbol: string, klines: Kline[]): IndicatorListCreate {
+    return {
+      sma: this.smaIndicator.calculate(symbol, klines),
+      rsi: this.rsiIndicator.calculate(symbol, klines),
+      adx: this.adxIndicator.calculate(symbol, klines),
+      atr: this.atrIndicator.calculate(symbol, klines),
+      bb: this.bbIndicator.calculate(symbol, klines),
+      smaCross: this.smaCrossIndicator.calculate(symbol, klines),
+    }
   }
 
   async storeAll(symbol: string): Promise<void> {
-    await this.storeSMA(symbol)
-    await this.storeRSI(symbol)
-    await this.storeATR(symbol)
-    await this.storeADX(symbol)
-    await this.storeBB(symbol)
-    await this.storeSMACross(symbol)
+    const klines: Kline[] = await this.apiService.getKline(symbol)
+    await this.storeSMA(symbol, klines)
+    await this.storeRSI(symbol, klines)
+    await this.storeATR(symbol, klines)
+    await this.storeADX(symbol, klines)
+    await this.storeBB(symbol, klines)
+    await this.storeSMACross(symbol, klines)
   }
 
   async getAll(symbol: string): Promise<IndicatorList | null> {
@@ -194,5 +143,55 @@ export class IndicatorService {
       await this.indicatorRepository.getGraphSMACross(symbol, interval)
 
     return reduceRecordsData(smaCross)
+  }
+
+  private async storeSMA(symbol: string, klines: Kline[]): Promise<void> {
+    await this.indicatorRepository.createSMA(
+      this.smaIndicator.calculate(symbol, klines),
+    )
+  }
+  private async storeRSI(symbol: string, klines: Kline[]): Promise<void> {
+    await this.indicatorRepository.createRSI(
+      this.rsiIndicator.calculate(symbol, klines),
+    )
+  }
+  private async storeADX(symbol: string, klines: Kline[]): Promise<void> {
+    await this.indicatorRepository.createADX(
+      this.adxIndicator.calculate(symbol, klines),
+    )
+  }
+  private async storeATR(symbol: string, klines: Kline[]): Promise<void> {
+    await this.indicatorRepository.createATR(
+      this.atrIndicator.calculate(symbol, klines),
+    )
+  }
+  private async storeBB(symbol: string, klines: Kline[]): Promise<void> {
+    await this.indicatorRepository.createBB(
+      this.bbIndicator.calculate(symbol, klines),
+    )
+  }
+  private async storeSMACross(symbol: string, klines: Kline[]): Promise<void> {
+    await this.indicatorRepository.createSMACross(
+      this.smaCrossIndicator.calculate(symbol, klines),
+    )
+  }
+
+  private async getSMA(symbol: string): Promise<IndicatorSMA | null> {
+    return this.indicatorRepository.getSMA(symbol)
+  }
+  private async getRSI(symbol: string): Promise<IndicatorRSI | null> {
+    return this.indicatorRepository.getRSI(symbol)
+  }
+  private async getATR(symbol: string): Promise<IndicatorATR | null> {
+    return this.indicatorRepository.getATR(symbol)
+  }
+  private async getADX(symbol: string): Promise<IndicatorADX | null> {
+    return this.indicatorRepository.getADX(symbol)
+  }
+  private async getBB(symbol: string): Promise<IndicatorBB | null> {
+    return this.indicatorRepository.getBB(symbol)
+  }
+  private async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
+    return this.indicatorRepository.getSMACross(symbol)
   }
 }
