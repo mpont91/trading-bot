@@ -27,7 +27,7 @@ export class RiskService {
     const buyConditions: BuyConditions = this.evaluateBuyConditions(indicators)
     const sellConditions: SellConditions =
       this.evaluateSellConditions(indicators)
-    let shouldBuy: boolean = this.evaluateShouldBuy(buyConditions)
+    const shouldBuy: boolean = this.evaluateShouldBuy(buyConditions)
     const shouldSell: boolean = this.evaluateShouldSell(sellConditions)
     let stops: Stops = {
       sl: undefined,
@@ -36,17 +36,9 @@ export class RiskService {
       tpPrice: undefined,
       slPrice: undefined,
     }
-    let riskReward: boolean | undefined = undefined
-    let validStops: boolean | undefined = undefined
 
     if (shouldBuy) {
       stops = this.evaluateStops(indicators)
-      riskReward = this.evaluateRiskReward(price, stops)
-      validStops = this.evaluateValidStops(price, stops)
-
-      if (!riskReward || !validStops) {
-        shouldBuy = false
-      }
     }
 
     const risk: RiskCreate = {
@@ -55,8 +47,6 @@ export class RiskService {
       ...buyConditions,
       ...sellConditions,
       ...stops,
-      validStops,
-      riskReward,
       shouldBuy,
       shouldSell,
     }
@@ -114,9 +104,7 @@ export class RiskService {
 
     const price: number = bb.price
 
-    const slPadding: number =
-      (price - bb.lower) * this.settings.slPaddingPercentage
-    const slPrice: number = bb.lower - slPadding
+    const slPrice: number = bb.lower
     const tpPrice: number = bb.upper
 
     const riskAmount: number = price - slPrice
@@ -135,25 +123,5 @@ export class RiskService {
       tpPrice,
       slPrice,
     }
-  }
-
-  private evaluateRiskReward(price: number, stops: Stops): boolean {
-    if (!stops.slPrice || !stops.tpPrice) {
-      return false
-    }
-
-    const riskAmount: number = price - stops.slPrice
-    const rewardAmount: number = stops.tpPrice - price
-    const riskRewardRatio: number = rewardAmount / riskAmount
-
-    return riskRewardRatio > this.settings.minRiskRewardRatio
-  }
-
-  private evaluateValidStops(price: number, stops: Stops): boolean {
-    if (!stops.slPrice || !stops.tpPrice) {
-      return false
-    }
-
-    return stops.slPrice < price && stops.tpPrice > price
   }
 }

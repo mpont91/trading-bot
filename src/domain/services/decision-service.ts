@@ -1,5 +1,5 @@
 import { Signal } from '../types/signal'
-import { Stops, StrategyCreate } from '../models/strategy'
+import { StrategyCreate } from '../models/strategy'
 import { IndicatorList } from '../models/indicator'
 import { IndicatorService } from './indicator-service'
 import { RiskService } from './risk-service'
@@ -22,13 +22,6 @@ export class DecisionService {
     }
 
     const risk: Risk = await this.riskService.evaluate(indicators)
-    let stops: Stops = {
-      sl: undefined,
-      tp: undefined,
-      ts: undefined,
-      tpPrice: undefined,
-      slPrice: undefined,
-    }
 
     if (risk.shouldBuy && risk.shouldSell) {
       throw new Error(
@@ -40,13 +33,6 @@ export class DecisionService {
 
     if (risk.shouldBuy) {
       signal = Signal.BUY
-      stops = {
-        sl: risk.sl,
-        tp: risk.tp,
-        ts: risk.ts,
-        tpPrice: risk.tpPrice,
-        slPrice: risk.slPrice,
-      }
     }
 
     if (risk.shouldSell) {
@@ -57,7 +43,11 @@ export class DecisionService {
       symbol,
       signal,
       price: risk.price,
-      ...stops,
+      tp: risk.tp,
+      sl: risk.sl,
+      ts: risk.ts,
+      tpPrice: risk.tpPrice,
+      slPrice: risk.slPrice,
     }
   }
 }

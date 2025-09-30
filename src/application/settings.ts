@@ -41,8 +41,6 @@ export const settings: Settings = {
     bullishMomentumMinRSI: 50,
     bullishMomentumMaxRSI: 70,
     bearishMomentumMaxRSI: 45,
-    minRiskRewardRatio: 1.5,
-    slPaddingPercentage: 0.1,
     trailingStopMultiplier: 1.5,
   },
 }

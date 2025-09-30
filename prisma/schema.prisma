@@ -179,8 +179,6 @@ model Risk {
   death_cross       Boolean
   bearish_momentum  Boolean
   trend_weakening   Boolean
-  valid_stops       Boolean?
-  risk_reward       Boolean?
   sl                Decimal?
   tp                Decimal?
   ts                Decimal?

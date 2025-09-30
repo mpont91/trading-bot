@@ -47,7 +47,5 @@ export interface RiskSettings {
   bullishMomentumMinRSI: number
   bullishMomentumMaxRSI: number
   bearishMomentumMaxRSI: number
-  minRiskRewardRatio: number
-  slPaddingPercentage: number
   trailingStopMultiplier: number
 }
