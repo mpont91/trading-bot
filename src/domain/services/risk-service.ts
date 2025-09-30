@@ -68,14 +68,14 @@ export class RiskService {
     const { bb, sma, rsi, adx, smaCross } = indicators
 
     const bullishMomentumMin: boolean =
-      rsi.rsi > this.settings.bullishMomentumMin
+      rsi.rsi > this.settings.bullishMomentumMinRSI
     const bullishMomentumMax: boolean =
-      rsi.rsi < this.settings.bullishMomentumMax
+      rsi.rsi < this.settings.bullishMomentumMaxRSI
 
     return {
       trendUp: sma.price > sma.sma,
       goldenCross: smaCross.smaShort > smaCross.smaLong,
-      strongTrend: adx.adx > this.settings.strongTrendMin,
+      strongTrend: adx.adx > this.settings.strongTrendMinADX,
       bullishDirection: adx.pdi > adx.mdi,
       bullishMomentum: bullishMomentumMin && bullishMomentumMax,
       notOverextended: bb.price < bb.upper,
@@ -86,7 +86,7 @@ export class RiskService {
     const { smaCross, rsi, bb } = indicators
     return {
       deathCross: smaCross.smaShort < smaCross.smaLong,
-      bearishMomentum: rsi.rsi < this.settings.bearishMomentumMax,
+      bearishMomentum: rsi.rsi < this.settings.bearishMomentumMaxRSI,
       trendWeakening: bb.price < bb.middle,
     }
   }

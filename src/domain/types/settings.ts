@@ -43,10 +43,10 @@ export interface IndicatorsSettings {
 }
 
 export interface RiskSettings {
-  strongTrendMin: number
-  bullishMomentumMin: number
-  bullishMomentumMax: number
-  bearishMomentumMax: number
+  strongTrendMinADX: number
+  bullishMomentumMinRSI: number
+  bullishMomentumMaxRSI: number
+  bearishMomentumMaxRSI: number
   minRiskRewardRatio: number
   slPaddingPercentage: number
   trailingStopMultiplier: number
