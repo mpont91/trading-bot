@@ -28,6 +28,12 @@ const scripts: Record<string, Fn> = {
   'api-submit-order': async (args: string[]) => {
     await (await import('./api/api-submit-order')).default(args)
   },
+  'backtester-fetch': async (args: string[]) => {
+    await (await import('./backtester/backtester-fetch')).default(args)
+  },
+  'backtester-simulate': async (args: string[]) => {
+    await (await import('./backtester/backtester-simulate')).default(args)
+  },
   'commission-equity-get': async () => {
     await (await import('./commission-equity/commission-equity-get')).default()
   },

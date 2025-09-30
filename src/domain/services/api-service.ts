@@ -43,6 +43,38 @@ export class ApiService {
     return this.api.getKline(symbol, interval, start, end)
   }
 
+  async getKlineHistorical(
+    symbol: string,
+    interval: KlineInterval,
+    start: Date,
+    end: Date,
+  ): Promise<Kline[]> {
+    let klines: Kline[] = []
+    let startDate: Date = new Date(start.getTime())
+
+    while (startDate < end) {
+      const chunk: Kline[] = await this.api.getKline(
+        symbol,
+        interval,
+        startDate,
+        end,
+      )
+
+      if (chunk.length === 0) {
+        break
+      }
+
+      klines = klines.concat(chunk)
+
+      const lastKline: Kline = chunk[chunk.length - 1]
+      const lastKlineTime: number = lastKline.time.getTime()
+
+      startDate = new Date(lastKlineTime + interval * 60 * 1000)
+    }
+
+    return klines.filter((kline: Kline): boolean => kline.time <= end)
+  }
+
   async getSymbol(symbol: string): Promise<Symbol> {
     return this.api.getSymbol(symbol)
   }

@@ -145,6 +145,7 @@ export class BinanceClientApi implements Api {
     const options: RestMarketTypes.klineCandlestickDataOptions = {
       startTime: start.getTime(),
       endTime: end.getTime(),
+      limit: 1000,
     }
     const binanceKlineInterval: Interval =
       mapDomainToBinanceKlineInterval(interval)
