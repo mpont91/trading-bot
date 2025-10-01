@@ -1,4 +1,4 @@
-import { IndicatorList } from '../models/indicator'
+import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { Stops } from '../models/strategy'
 import { RiskSettings } from '../types/settings'
 import { RiskRepository } from '../repositories/risk-repository'
@@ -10,7 +10,11 @@ export class RiskService {
     private readonly riskRepository: RiskRepository,
   ) {}
 
-  async evaluate(indicators: IndicatorList): Promise<Risk> {
+  async store(indicators: IndicatorList | IndicatorListCreate): Promise<Risk> {
+    return await this.riskRepository.create(this.evaluate(indicators))
+  }
+
+  evaluate(indicators: IndicatorList | IndicatorListCreate): RiskCreate {
     const { bb, sma, rsi, adx, atr, smaCross } = indicators
 
     const symbol: string = bb.symbol
@@ -41,7 +45,7 @@ export class RiskService {
       stops = this.evaluateStops(indicators)
     }
 
-    const risk: RiskCreate = {
+    return {
       symbol,
       price,
       ...buyConditions,
@@ -50,11 +54,11 @@ export class RiskService {
       shouldBuy,
       shouldSell,
     }
-
-    return await this.riskRepository.create(risk)
   }
 
-  private evaluateBuyConditions(indicators: IndicatorList): BuyConditions {
+  private evaluateBuyConditions(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): BuyConditions {
     const { bb, sma, rsi, adx, smaCross } = indicators
 
     const bullishMomentumMin: boolean =
@@ -72,7 +76,9 @@ export class RiskService {
     }
   }
 
-  private evaluateSellConditions(indicators: IndicatorList): SellConditions {
+  private evaluateSellConditions(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): SellConditions {
     const { smaCross, rsi, bb } = indicators
     return {
       deathCross: smaCross.smaShort < smaCross.smaLong,
@@ -83,8 +89,9 @@ export class RiskService {
 
   private evaluateShouldSell(sellConditions: SellConditions): boolean {
     return (
-      sellConditions.deathCross ||
-      (sellConditions.bearishMomentum && sellConditions.trendWeakening)
+      sellConditions.deathCross &&
+      sellConditions.bearishMomentum &&
+      sellConditions.trendWeakening
     )
   }
 
@@ -99,7 +106,9 @@ export class RiskService {
     )
   }
 
-  private evaluateStops(indicators: IndicatorList): Stops {
+  private evaluateStops(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): Stops {
     const { bb, atr } = indicators
 
     const price: number = bb.price
