@@ -10,11 +10,17 @@ export class RiskService {
     private readonly riskRepository: RiskRepository,
   ) {}
 
-  async store(indicators: IndicatorList | IndicatorListCreate): Promise<Risk> {
-    return await this.riskRepository.create(this.evaluate(indicators))
+  async calculateAndCreate(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): Promise<Risk> {
+    return await this.create(this.calculate(indicators))
   }
 
-  evaluate(indicators: IndicatorList | IndicatorListCreate): RiskCreate {
+  async create(risk: RiskCreate): Promise<Risk> {
+    return await this.riskRepository.create(risk)
+  }
+
+  calculate(indicators: IndicatorList | IndicatorListCreate): RiskCreate {
     const { bb, sma, rsi, adx, atr, smaCross } = indicators
 
     const symbol: string = bb.symbol

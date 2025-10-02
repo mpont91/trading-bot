@@ -16,7 +16,7 @@ export class TradeService {
     private readonly trailingService: TrailingService,
   ) {}
 
-  async store(tradeCreate: TradeCreate): Promise<Trade> {
+  async create(tradeCreate: TradeCreate): Promise<Trade> {
     return this.tradeRepository.create(tradeCreate)
   }
 
@@ -41,7 +41,7 @@ export class TradeService {
       throw new Error('Strategy is not created correctly! Something is broken!')
     }
 
-    await this.trailingService.store({
+    await this.trailingService.create({
       symbol: strategy.symbol,
       tp: strategy.tp,
       sl: strategy.sl,
@@ -68,7 +68,7 @@ export class TradeService {
 
     await this.trailingService.remove(position.symbol)
 
-    await this.store({
+    await this.create({
       symbol: entryOrder.symbol,
       quantity: entryOrder.quantity,
       entryOrderId: entryOrder.id,

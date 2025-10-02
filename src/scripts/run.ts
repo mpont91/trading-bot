@@ -54,8 +54,10 @@ const scripts: Record<string, Fn> = {
   'indicator-get-all': async (args: string[]) => {
     await (await import('./indicator/indicator-get-all')).default(args)
   },
-  'indicator-store-all': async (args: string[]) => {
-    await (await import('./indicator/indicator-store-all')).default(args)
+  'indicator-calculate-create-all': async (args: string[]) => {
+    await (
+      await import('./indicator/indicator-calculate-create-all')
+    ).default(args)
   },
   'investment-fetch-calculate-amount': async () => {
     await (
@@ -88,8 +90,8 @@ const scripts: Record<string, Fn> = {
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)
   },
-  'strategy-store': async (args: string[]) => {
-    await (await import('./strategy/strategy-store')).default(args)
+  'strategy-calculate-create': async (args: string[]) => {
+    await (await import('./strategy/strategy-calculate-create')).default(args)
   },
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()

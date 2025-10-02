@@ -9,7 +9,7 @@ export class TrailingService {
     private readonly apiService: ApiService,
   ) {}
 
-  async store(trailing: TrailingCreate): Promise<Trailing> {
+  async create(trailing: TrailingCreate): Promise<Trailing> {
     return this.trailingRepository.create(trailing)
   }
 

@@ -31,10 +31,12 @@ import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval
 export class PrismaIndicatorRepository implements IndicatorRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async createSMA(indicator: IndicatorSMACreate): Promise<void> {
-    await this.prisma.indicatorSMA.create({
-      data: this.toPrismaSMA(indicator),
-    })
+  async createSMA(indicator: IndicatorSMACreate): Promise<IndicatorSMA> {
+    return this.toDomainSMA(
+      await this.prisma.indicatorSMA.create({
+        data: this.toPrismaSMA(indicator),
+      }),
+    )
   }
 
   async getSMA(symbol: string): Promise<IndicatorSMA | null> {
@@ -50,10 +52,12 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainSMA(indicator)
   }
 
-  async createRSI(indicator: IndicatorRSICreate): Promise<void> {
-    await this.prisma.indicatorRSI.create({
-      data: this.toPrismaRSI(indicator),
-    })
+  async createRSI(indicator: IndicatorRSICreate): Promise<IndicatorRSI> {
+    return this.toDomainRSI(
+      await this.prisma.indicatorRSI.create({
+        data: this.toPrismaRSI(indicator),
+      }),
+    )
   }
 
   async getRSI(symbol: string): Promise<IndicatorRSI | null> {
@@ -69,10 +73,12 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainRSI(indicator)
   }
 
-  async createATR(indicator: IndicatorATRCreate): Promise<void> {
-    await this.prisma.indicatorATR.create({
-      data: this.toPrismaATR(indicator),
-    })
+  async createATR(indicator: IndicatorATRCreate): Promise<IndicatorATR> {
+    return this.toDomainATR(
+      await this.prisma.indicatorATR.create({
+        data: this.toPrismaATR(indicator),
+      }),
+    )
   }
 
   async getATR(symbol: string): Promise<IndicatorATR | null> {
@@ -88,10 +94,12 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainATR(indicator)
   }
 
-  async createADX(indicator: IndicatorADXCreate): Promise<void> {
-    await this.prisma.indicatorADX.create({
-      data: this.toPrismaADX(indicator),
-    })
+  async createADX(indicator: IndicatorADXCreate): Promise<IndicatorADX> {
+    return this.toDomainADX(
+      await this.prisma.indicatorADX.create({
+        data: this.toPrismaADX(indicator),
+      }),
+    )
   }
 
   async getADX(symbol: string): Promise<IndicatorADX | null> {
@@ -107,10 +115,12 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainADX(indicator)
   }
 
-  async createBB(indicator: IndicatorBBCreate): Promise<void> {
-    await this.prisma.indicatorBB.create({
-      data: this.toPrismaBB(indicator),
-    })
+  async createBB(indicator: IndicatorBBCreate): Promise<IndicatorBB> {
+    return this.toDomainBB(
+      await this.prisma.indicatorBB.create({
+        data: this.toPrismaBB(indicator),
+      }),
+    )
   }
 
   async getBB(symbol: string): Promise<IndicatorBB | null> {
@@ -126,10 +136,14 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
     return this.toDomainBB(indicator)
   }
 
-  async createSMACross(indicator: IndicatorSMACrossCreate): Promise<void> {
-    await this.prisma.indicatorSMACross.create({
-      data: this.toPrismaSMACross(indicator),
-    })
+  async createSMACross(
+    indicator: IndicatorSMACrossCreate,
+  ): Promise<IndicatorSMACross> {
+    return this.toDomainSMACross(
+      await this.prisma.indicatorSMACross.create({
+        data: this.toPrismaSMACross(indicator),
+      }),
+    )
   }
 
   async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {

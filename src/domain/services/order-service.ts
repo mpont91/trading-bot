@@ -9,15 +9,15 @@ export class OrderService {
   ) {}
 
   async submitOrder(orderRequest: OrderRequest): Promise<Order> {
-    //TODO: Is possible to store the order without having to call getOrder again?
+    //TODO: Is possible to save the order without having to call getOrder again?
     const orderId: string = await this.apiService.submitOrder(orderRequest)
 
-    return this.store(
+    return this.create(
       await this.apiService.getOrder(orderRequest.symbol, orderId),
     )
   }
 
-  async store(orderCreate: OrderCreate): Promise<Order> {
+  async create(orderCreate: OrderCreate): Promise<Order> {
     return this.orderRepository.create(orderCreate)
   }
 

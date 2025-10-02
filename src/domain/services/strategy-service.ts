@@ -1,5 +1,5 @@
 import { StrategyRepository } from '../repositories/strategy-repository'
-import { Strategy } from '../models/strategy'
+import { Strategy, StrategyCreate } from '../models/strategy'
 import { StrategyAnalysis } from '../types/strategy-analysis'
 import { TimeInterval } from '../types/time-interval'
 import { reduceRecordsData } from '../helpers/graph-helper'
@@ -11,10 +11,12 @@ export class StrategyService {
     private readonly decisionService: DecisionService,
   ) {}
 
-  async store(symbol: string): Promise<Strategy> {
-    return this.strategyRepository.create(
-      await this.decisionService.evaluate(symbol),
-    )
+  async calculateAndCreate(symbol: string): Promise<Strategy> {
+    return this.create(await this.decisionService.evaluate(symbol))
+  }
+
+  async create(strategy: StrategyCreate): Promise<Strategy> {
+    return this.strategyRepository.create(strategy)
   }
 
   async last(symbol: string): Promise<Strategy | null> {

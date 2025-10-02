@@ -1,5 +1,6 @@
 import { Container } from '../../di'
 import { IndicatorService } from '../../domain/services/indicator-service'
+import { IndicatorList } from '../../domain/models/indicator'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args
@@ -9,7 +10,8 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const indicatorService: IndicatorService = Container.getIndicatorService()
-  await indicatorService.storeAll(symbol)
+  const response: IndicatorList =
+    await indicatorService.calculateAndCreateAll(symbol)
 
-  console.log('Indicators stored successfully!')
+  console.dir(response, { depth: null })
 }

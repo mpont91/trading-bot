@@ -15,17 +15,17 @@ import {
 import { TimeInterval } from '../types/time-interval'
 
 export interface IndicatorRepository {
-  createSMA(indicator: IndicatorSMACreate): Promise<void>
+  createSMA(indicator: IndicatorSMACreate): Promise<IndicatorSMA>
   getSMA(symbol: string): Promise<IndicatorSMA | null>
-  createRSI(indicator: IndicatorRSICreate): Promise<void>
+  createRSI(indicator: IndicatorRSICreate): Promise<IndicatorRSI>
   getRSI(symbol: string): Promise<IndicatorRSI | null>
-  createATR(indicator: IndicatorATRCreate): Promise<void>
+  createATR(indicator: IndicatorATRCreate): Promise<IndicatorATR>
   getATR(symbol: string): Promise<IndicatorATR | null>
-  createADX(indicator: IndicatorADXCreate): Promise<void>
+  createADX(indicator: IndicatorADXCreate): Promise<IndicatorADX>
   getADX(symbol: string): Promise<IndicatorADX | null>
-  createBB(indicator: IndicatorBBCreate): Promise<void>
+  createBB(indicator: IndicatorBBCreate): Promise<IndicatorBB>
   getBB(symbol: string): Promise<IndicatorBB | null>
-  createSMACross(indicator: IndicatorSMACrossCreate): Promise<void>
+  createSMACross(indicator: IndicatorSMACrossCreate): Promise<IndicatorSMACross>
   getSMACross(symbol: string): Promise<IndicatorSMACross | null>
   getGraphSMA(symbol: string, interval: TimeInterval): Promise<IndicatorSMA[]>
   getGraphRSI(symbol: string, interval: TimeInterval): Promise<IndicatorRSI[]>

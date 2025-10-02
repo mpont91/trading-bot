@@ -21,7 +21,7 @@ export class DecisionService {
       )
     }
 
-    const risk: Risk = await this.riskService.store(indicators)
+    const risk: Risk = await this.riskService.calculateAndCreate(indicators)
 
     if (risk.shouldBuy && risk.shouldSell) {
       throw new Error(

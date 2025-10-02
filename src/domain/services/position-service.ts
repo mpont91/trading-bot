@@ -12,7 +12,7 @@ export class PositionService {
     private readonly orderService: OrderService,
   ) {}
 
-  async store(position: Position): Promise<Position> {
+  async create(position: Position): Promise<Position> {
     return this.positionRepository.create(position)
   }
 
@@ -38,7 +38,7 @@ export class PositionService {
       side: Side.LONG,
     })
 
-    await this.store({
+    await this.create({
       symbol,
       entryOrderId: entryOrder.id,
       quantity: entryOrder.quantity,

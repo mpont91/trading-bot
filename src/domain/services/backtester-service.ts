@@ -57,7 +57,7 @@ export class BacktesterService {
       const indicators: IndicatorListCreate =
         this.indicatorService.calculateAll(symbol, currentKlines)
 
-      const risk: RiskCreate = this.riskService.evaluate(indicators)
+      const risk: RiskCreate = this.riskService.calculate(indicators)
 
       if (this.position) {
         if (risk.shouldSell) {
