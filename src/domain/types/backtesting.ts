@@ -1,6 +1,13 @@
+export interface BacktestingSettings {
+  initialEquity: number
+  commissionRate: number
+  historyLimit: number
+  safetyCapitalMargin: number
+  maxPositionsOpened: number
+}
 export interface BacktestingPosition {
   entryPrice: number
-  amount: number
+  quantity: number
   tpPrice: number
   slPrice: number
   ts: number
@@ -17,4 +24,6 @@ export interface BacktestingSummary {
   sell: number
   sl: number
   ts: number
+  pnl: number
+  net: number
 }

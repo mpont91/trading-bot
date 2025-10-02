@@ -14,7 +14,7 @@ export default async function (args: string[]): Promise<void> {
   const apiService: ApiService = Container.getApiService()
 
   const start: Date = new Date('2024-01-01T00:00:00Z')
-  const end: Date = new Date('2024-12-31T23:59:59Z')
+  const end: Date = new Date('2024-01-07T23:59:59Z')
   const klineInterval: KlineInterval = settings.history.klineHistoryInterval
 
   const response: Kline[] = await apiService.getKlineHistorical(

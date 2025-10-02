@@ -4,7 +4,41 @@ import { Kline } from '../../domain/types/kline'
 import { IndicatorService } from '../../domain/services/indicator-service'
 import { RiskService } from '../../domain/services/risk-service'
 import { BacktesterService } from '../../domain/services/backtester-service'
-import { BacktestingSummary } from '../../domain/types/backtesting'
+import {
+  BacktestingSettings,
+  BacktestingSummary,
+} from '../../domain/types/backtesting'
+import { InvestmentService } from '../../domain/services/investment-service'
+import { ApiService } from '../../domain/services/api-service'
+
+function settings(): BacktestingSettings {
+  return {
+    initialEquity: 1000,
+    commissionRate: 0.00075,
+    historyLimit: 240,
+    safetyCapitalMargin: 0.3,
+    maxPositionsOpened: 1,
+  }
+}
+
+function initializeBacktesterService(): BacktesterService {
+  const backtestingSettings: BacktestingSettings = settings()
+  const apiService: ApiService = Container.getApiService()
+  const indicatorService: IndicatorService = Container.getIndicatorService()
+  const riskService: RiskService = Container.getRiskService()
+  const investmentService: InvestmentService = new InvestmentService(
+    backtestingSettings.safetyCapitalMargin,
+    backtestingSettings.maxPositionsOpened,
+    apiService,
+  )
+
+  return new BacktesterService(
+    indicatorService,
+    riskService,
+    investmentService,
+    backtestingSettings,
+  )
+}
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args
@@ -25,13 +59,7 @@ export default async function (args: string[]): Promise<void> {
     fs.readFileSync(`./data/${symbol.toLowerCase()}.json`, 'utf-8'),
   )
 
-  const indicatorService: IndicatorService = Container.getIndicatorService()
-  const riskService: RiskService = Container.getRiskService()
-
-  const backtesterService: BacktesterService = new BacktesterService(
-    indicatorService,
-    riskService,
-  )
+  const backtesterService: BacktesterService = initializeBacktesterService()
 
   const response: BacktestingSummary = backtesterService.simulate(
     symbol,
