@@ -17,6 +17,7 @@ export class BacktesterService {
   position: BacktestingPosition | null
   commissionRate: number
   historyLimit: number
+  cash: number
 
   constructor(
     private readonly indicatorService: IndicatorService,
@@ -26,7 +27,7 @@ export class BacktesterService {
   ) {
     this.summary = {
       initialEquity: this.backtestingSettings.initialEquity,
-      finalEquity: this.backtestingSettings.initialEquity,
+      finalEquity: 0,
       fees: 0,
       trades: 0,
       success: 0,
@@ -40,6 +41,7 @@ export class BacktesterService {
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
     this.historyLimit = this.backtestingSettings.historyLimit
+    this.cash = this.backtestingSettings.initialEquity
   }
 
   simulate(symbol: string, klines: Kline[]): BacktestingSummary {
@@ -57,24 +59,33 @@ export class BacktesterService {
 
       const risk: RiskCreate = this.riskService.evaluate(indicators)
 
-      if (!this.position && risk.shouldBuy) {
-        this.buy(risk)
-        continue
-      }
-
-      if (
-        this.position &&
-        (risk.shouldSell ||
-          klines[i].lowPrice <= this.position.slPrice ||
-          (this.position.tsPrice &&
-            klines[i].lowPrice <= this.position.tsPrice))
-      ) {
-        this.countReasonToSell(risk, klines[i].lowPrice)
-        this.sell(risk.price)
-      }
-
       if (this.position) {
+        if (risk.shouldSell) {
+          this.summary.sell++
+          this.sell(klines[i].closePrice)
+          continue
+        }
+
+        if (klines[i].lowPrice <= this.position.slPrice) {
+          this.summary.sl++
+          this.sell(this.position.slPrice)
+          continue
+        }
+
+        if (
+          this.position.tsPrice &&
+          klines[i].lowPrice <= this.position.tsPrice
+        ) {
+          this.summary.ts++
+          this.sell(this.position.tsPrice)
+          continue
+        }
+
         this.trailing(klines[i].highPrice)
+      } else {
+        if (risk.shouldBuy) {
+          this.buy(risk)
+        }
       }
     }
 
@@ -82,6 +93,7 @@ export class BacktesterService {
       this.sell(klines[klines.length - 1].closePrice)
     }
 
+    this.summary.finalEquity = this.cash
     this.summary.pnl = this.summary.finalEquity - this.summary.initialEquity
     this.summary.net = this.summary.pnl - this.summary.fees
 
@@ -94,8 +106,8 @@ export class BacktesterService {
     }
 
     const balance: Balance = {
-      equity: this.summary.finalEquity,
-      available: this.summary.finalEquity,
+      equity: this.cash,
+      available: this.cash,
     }
 
     const amount: number =
@@ -111,7 +123,7 @@ export class BacktesterService {
       ts: risk.ts!,
       tsPrice: null,
     }
-    this.summary.finalEquity -= amount
+    this.cash -= amount
     this.summary.fees += amount * this.commissionRate
   }
 
@@ -122,7 +134,7 @@ export class BacktesterService {
 
     const amount: number = this.position.quantity * price
 
-    this.summary.finalEquity += amount * (1 - this.commissionRate)
+    this.cash += amount * (1 - this.commissionRate)
     this.summary.fees += amount * this.commissionRate
     this.summary.trades++
     if (this.position.entryPrice <= price) {
@@ -149,19 +161,6 @@ export class BacktesterService {
       if (potentialNewTsPrice > this.position.tsPrice) {
         this.position.tsPrice = potentialNewTsPrice
       }
-    }
-  }
-
-  countReasonToSell(risk: RiskCreate, price: number) {
-    if (!this.position) {
-      throw new Error('There is no open position to sell!')
-    }
-    if (risk.shouldSell) {
-      this.summary.sell++
-    } else if (price <= this.position.slPrice) {
-      this.summary.sl++
-    } else if (this.position.tsPrice && price <= this.position.tsPrice) {
-      this.summary.ts++
     }
   }
 }
