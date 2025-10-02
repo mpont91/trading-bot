@@ -4,7 +4,7 @@ import { Equity } from '../../domain/models/equity'
 
 export default async function (): Promise<void> {
   const equityService: EquityService = Container.getEquityService()
-  const response: Equity = await equityService.store()
+  const response: Equity = await equityService.fetchAndCreate()
 
   console.dir(response, { depth: null })
 }

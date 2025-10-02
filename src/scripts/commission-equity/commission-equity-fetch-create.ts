@@ -5,7 +5,8 @@ import { CommissionEquity } from '../../domain/models/commission-equity'
 export default async function (): Promise<void> {
   const commissionEquityService: CommissionEquityService =
     Container.getCommissionEquityService()
-  const response: CommissionEquity = await commissionEquityService.store()
+  const response: CommissionEquity =
+    await commissionEquityService.fetchAndCreate()
 
   console.dir(response, { depth: null })
 }

@@ -37,9 +37,9 @@ const scripts: Record<string, Fn> = {
   'commission-equity-get': async () => {
     await (await import('./commission-equity/commission-equity-get')).default()
   },
-  'commission-equity-store': async () => {
+  'commission-equity-fetch-create': async () => {
     await (
-      await import('./commission-equity/commission-equity-store')
+      await import('./commission-equity/commission-equity-fetch-create')
     ).default()
   },
   'decision-evaluate': async (args: string[]) => {
@@ -48,8 +48,8 @@ const scripts: Record<string, Fn> = {
   'equity-graph': async (args: string[]) => {
     await (await import('./equity/equity-graph')).default(args)
   },
-  'equity-store': async () => {
-    await (await import('./equity/equity-store')).default()
+  'equity-fetch-create': async () => {
+    await (await import('./equity/equity-fetch-create')).default()
   },
   'indicator-get-all': async (args: string[]) => {
     await (await import('./indicator/indicator-get-all')).default(args)

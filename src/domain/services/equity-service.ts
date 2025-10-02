@@ -1,6 +1,6 @@
 import { TimeInterval } from '../types/time-interval'
 import { EquityRepository } from '../repositories/equity-repository'
-import { Equity } from '../models/equity'
+import { Equity, EquityCreate } from '../models/equity'
 import { reduceRecordsData } from '../helpers/graph-helper'
 import { ApiService } from './api-service'
 
@@ -10,8 +10,12 @@ export class EquityService {
     private readonly apiService: ApiService,
   ) {}
 
-  async store(): Promise<Equity> {
-    return this.equityRepository.create(await this.apiService.getEquity())
+  async create(equity: EquityCreate): Promise<Equity> {
+    return this.equityRepository.create(equity)
+  }
+
+  async fetchAndCreate(): Promise<Equity> {
+    return this.create(await this.apiService.getEquity())
   }
 
   async graph(interval: TimeInterval): Promise<Equity[]> {

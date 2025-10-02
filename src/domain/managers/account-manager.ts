@@ -8,7 +8,7 @@ export class AccountManager implements ManagerInterface {
     private readonly commissionEquityService: CommissionEquityService,
   ) {}
   async start(): Promise<void> {
-    await this.equityService.store()
-    await this.commissionEquityService.store()
+    await this.equityService.fetchAndCreate()
+    await this.commissionEquityService.fetchAndCreate()
   }
 }
