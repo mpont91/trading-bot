@@ -113,7 +113,7 @@ export class BacktesterService {
     const amount: number =
       this.investmentService.calculateInvestmentAmount(balance)
 
-    const quantity: number = (amount * (1 - this.commissionRate)) / risk.price
+    const quantity: number = amount / risk.price
 
     this.position = {
       entryPrice: risk.price,
@@ -134,7 +134,7 @@ export class BacktesterService {
 
     const amount: number = this.position.quantity * price
 
-    this.cash += amount * (1 - this.commissionRate)
+    this.cash += amount
     this.summary.fees += amount * this.commissionRate
     this.summary.trades++
     if (this.position.entryPrice <= price) {
@@ -154,7 +154,7 @@ export class BacktesterService {
     if (!this.position.tsPrice && price >= this.position.tpPrice) {
       this.position.tsPrice = calculateSL(
         this.position.tpPrice,
-        this.position.ts,
+        this.position.ts / 100,
       )
     } else if (this.position.tsPrice) {
       const potentialNewTsPrice = calculateSL(price, this.position.ts)
