@@ -30,7 +30,7 @@ export class PositionService {
 
   async openPosition(symbol: string): Promise<Order> {
     const quantity: number =
-      await this.investmentService.getInvestmentQuantity(symbol)
+      await this.investmentService.fetchAndCalculateInvestmentQuantity(symbol)
 
     const entryOrder: Order = await this.orderService.submitOrder({
       symbol,

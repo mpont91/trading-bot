@@ -10,16 +10,22 @@ export class InvestmentService {
     private readonly apiService: ApiService,
   ) {}
 
-  async getInvestmentQuantity(symbol: string): Promise<number> {
-    const investment: number = await this.getInvestmentAmount()
-    return this.getQuantityAdjusted(symbol, investment)
+  async fetchAndCalculateInvestmentQuantity(symbol: string): Promise<number> {
+    const balance = await this.apiService.getBalance()
+    const symbolInformation: Symbol = await this.apiService.getSymbol(symbol)
+
+    const investmentAmount: number = this.calculateInvestmentAmount(balance)
+    return this.calculateAdjustedQuantity(symbolInformation, investmentAmount)
   }
 
-  async getInvestmentAmount(): Promise<number> {
+  async fetchAndCalculateInvestmentAmount(): Promise<number> {
     const balance: Balance = await this.apiService.getBalance()
+    return this.calculateInvestmentAmount(balance)
+  }
+
+  calculateInvestmentAmount(balance: Balance): number {
     const margin: number = balance.equity * this.safetyCapitalMargin
     const total: number = balance.equity - margin
-
     const investment: number = total / this.maxPositionsOpened
 
     if (investment > balance.available) {
@@ -31,17 +37,12 @@ export class InvestmentService {
     return roundQuantity(investment)
   }
 
-  async getQuantityAdjusted(symbol: string, amount: number): Promise<number> {
-    const symbolInformation: Symbol = await this.apiService.getSymbol(symbol)
-
-    const quantity: number = amount / symbolInformation.price
-    const adjustedQuantity: number = adjustQuantity(
-      quantity,
-      symbolInformation.stepSize,
-    )
+  calculateAdjustedQuantity(symbol: Symbol, amount: number): number {
+    const quantity: number = amount / symbol.price
+    const adjustedQuantity: number = adjustQuantity(quantity, symbol.stepSize)
 
     if (adjustedQuantity <= 0) {
-      throw new Error(`Calculated quantity is too small for ${symbol}.`)
+      throw new Error(`Calculated quantity is too small for ${symbol.name}.`)
     }
 
     return roundQuantity(adjustedQuantity)

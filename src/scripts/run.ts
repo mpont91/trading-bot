@@ -57,11 +57,15 @@ const scripts: Record<string, Fn> = {
   'indicator-store-all': async (args: string[]) => {
     await (await import('./indicator/indicator-store-all')).default(args)
   },
-  'investment-get-amount': async () => {
-    await (await import('./investment/investment-get-amount')).default()
+  'investment-fetch-calculate-amount': async () => {
+    await (
+      await import('./investment/investment-fetch-calculate-amount')
+    ).default()
   },
-  'investment-get-quantity': async (args: string[]) => {
-    await (await import('./investment/investment-get-quantity')).default(args)
+  'investment-fetch-calculate-quantity': async (args: string[]) => {
+    await (
+      await import('./investment/investment-fetch-calculate-quantity')
+    ).default(args)
   },
   'order-get': async (args: string[]) => {
     await (await import('./order/order-get')).default(args)

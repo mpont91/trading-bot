@@ -9,7 +9,8 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const investmentService: InvestmentService = Container.getInvestmentService()
-  const response: number = await investmentService.getInvestmentQuantity(symbol)
+  const response: number =
+    await investmentService.fetchAndCalculateInvestmentQuantity(symbol)
 
   console.log(response)
 }
