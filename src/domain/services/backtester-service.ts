@@ -11,6 +11,8 @@ import { IndicatorService } from './indicator-service'
 import { RiskService } from './risk-service'
 import { InvestmentService } from './investment-service'
 import { Balance } from '../types/balance'
+import { DecisionService } from './decision-service'
+import { StrategyCreate } from '../models/strategy'
 
 export class BacktesterService {
   summary: BacktestingSummary
@@ -22,6 +24,7 @@ export class BacktesterService {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly riskService: RiskService,
+    private readonly decisionService: DecisionService,
     private readonly investmentService: InvestmentService,
     private readonly backtestingSettings: BacktestingSettings,
   ) {
@@ -58,9 +61,10 @@ export class BacktesterService {
         this.indicatorService.calculateAll(symbol, currentKlines)
 
       const risk: RiskCreate = this.riskService.calculate(indicators)
+      const strategy: StrategyCreate = this.decisionService.calculate(risk)
 
       if (this.position) {
-        if (risk.shouldSell) {
+        if (strategy.signal === 'SELL') {
           this.summary.sell++
           this.sell(klines[i].closePrice)
           continue
@@ -83,8 +87,8 @@ export class BacktesterService {
 
         this.trailing(klines[i].highPrice)
       } else {
-        if (risk.shouldBuy) {
-          this.buy(risk)
+        if (strategy.signal === 'BUY') {
+          this.buy(strategy)
         }
       }
     }
@@ -100,7 +104,7 @@ export class BacktesterService {
     return this.summary
   }
 
-  buy(risk: RiskCreate): void {
+  buy(strategy: StrategyCreate): void {
     if (this.position) {
       throw new Error('There is already an open position when trying to buy!')
     }
@@ -113,14 +117,14 @@ export class BacktesterService {
     const amount: number =
       this.investmentService.calculateInvestmentAmount(balance)
 
-    const quantity: number = amount / risk.price
+    const quantity: number = amount / strategy.price
 
     this.position = {
-      entryPrice: risk.price,
+      entryPrice: strategy.price,
       quantity: quantity,
-      tpPrice: risk.tpPrice!,
-      slPrice: risk.slPrice!,
-      ts: risk.ts!,
+      tpPrice: strategy.tpPrice!,
+      slPrice: strategy.slPrice!,
+      ts: strategy.ts!,
       tsPrice: null,
     }
     this.cash -= amount

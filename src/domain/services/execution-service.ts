@@ -14,29 +14,22 @@ export class ExecutionService {
 
   async execute(symbol: string): Promise<void> {
     const strategy: Strategy | null = await this.strategyService.last(symbol)
-    if (!strategy || strategy.signal === Signal.HOLD) {
-      return
-    }
-
     const position: Position | null = await this.positionService.get(symbol)
 
-    if (
-      !position &&
-      strategy.signal === Signal.BUY &&
-      (await this.tradeService.canOpenNewTrade())
-    ) {
-      await this.tradeService.openTrade(strategy)
-      return
-    }
-
-    if (position && strategy.signal === Signal.SELL) {
-      await this.tradeService.closeTrade(position)
-      return
-    }
-
     if (position) {
+      if (strategy?.signal === Signal.SELL) {
+        await this.tradeService.closeTrade(position)
+        return
+      }
       await this.tradeService.handleTrade(position)
-      return
+    } else {
+      if (
+        strategy?.signal === Signal.BUY &&
+        (await this.tradeService.canOpenNewTrade())
+      ) {
+        await this.tradeService.openTrade(strategy)
+        return
+      }
     }
   }
 }

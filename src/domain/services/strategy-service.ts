@@ -12,7 +12,7 @@ export class StrategyService {
   ) {}
 
   async calculateAndCreate(symbol: string): Promise<Strategy> {
-    return this.create(await this.decisionService.evaluate(symbol))
+    return this.create(await this.decisionService.fetchAndCalculate(symbol))
   }
 
   async create(strategy: StrategyCreate): Promise<Strategy> {

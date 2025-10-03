@@ -10,7 +10,8 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const decisionService: DecisionService = Container.getDecisionService()
-  const response: StrategyCreate = await decisionService.evaluate(symbol)
+  const response: StrategyCreate =
+    await decisionService.fetchAndCalculate(symbol)
 
   console.dir(response, { depth: null })
 }

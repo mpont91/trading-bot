@@ -3,7 +3,7 @@ import { StrategyCreate } from '../models/strategy'
 import { IndicatorList } from '../models/indicator'
 import { IndicatorService } from './indicator-service'
 import { RiskService } from './risk-service'
-import { Risk } from '../models/risk'
+import { Risk, RiskCreate } from '../models/risk'
 
 export class DecisionService {
   constructor(
@@ -11,7 +11,7 @@ export class DecisionService {
     private readonly riskService: RiskService,
   ) {}
 
-  async evaluate(symbol: string): Promise<StrategyCreate> {
+  async fetchAndCalculate(symbol: string): Promise<StrategyCreate> {
     const indicators: IndicatorList | null =
       await this.indicatorService.getAll(symbol)
 
@@ -22,7 +22,10 @@ export class DecisionService {
     }
 
     const risk: Risk = await this.riskService.calculateAndCreate(indicators)
+    return this.calculate(risk)
+  }
 
+  calculate(risk: Risk | RiskCreate): StrategyCreate {
     if (risk.shouldBuy && risk.shouldSell) {
       throw new Error(
         'Risk evaluated should buy and sell at the same time. Something is broken!',
@@ -40,7 +43,7 @@ export class DecisionService {
     }
 
     return {
-      symbol,
+      symbol: risk.symbol,
       signal,
       price: risk.price,
       tp: risk.tp,

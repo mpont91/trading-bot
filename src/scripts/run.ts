@@ -42,8 +42,8 @@ const scripts: Record<string, Fn> = {
       await import('./commission-equity/commission-equity-fetch-create')
     ).default()
   },
-  'decision-evaluate': async (args: string[]) => {
-    await (await import('./decision/decision-evaluate')).default(args)
+  'decision-fetch-calculate': async (args: string[]) => {
+    await (await import('./decision/decision-fetch-calculate')).default(args)
   },
   'equity-graph': async (args: string[]) => {
     await (await import('./equity/equity-graph')).default(args)
