@@ -79,17 +79,19 @@ export class RiskService {
       bullishDirection: adx.pdi > adx.mdi,
       bullishMomentum: bullishMomentumMin && bullishMomentumMax,
       notOverextended: bb.price < bb.upper,
+      favorableEntryPrice: bb.pb <= this.settings.favorableEntryPriceMaxBB,
     }
   }
 
   private evaluateSellConditions(
     indicators: IndicatorList | IndicatorListCreate,
   ): SellConditions {
-    const { smaCross, rsi, bb } = indicators
+    const { smaCross, rsi, bb, adx } = indicators
     return {
       deathCross: smaCross.smaShort < smaCross.smaLong,
       bearishMomentum: rsi.rsi < this.settings.bearishMomentumMaxRSI,
       trendWeakening: bb.price < bb.middle,
+      bearishConviction: adx.adx > this.settings.bearishConvictionMinADX,
     }
   }
 
@@ -97,7 +99,8 @@ export class RiskService {
     return (
       sellConditions.deathCross &&
       sellConditions.bearishMomentum &&
-      sellConditions.trendWeakening
+      sellConditions.trendWeakening &&
+      sellConditions.bearishConviction
     )
   }
 
@@ -108,7 +111,8 @@ export class RiskService {
       buyConditions.strongTrend &&
       buyConditions.bullishDirection &&
       buyConditions.bullishMomentum &&
-      buyConditions.notOverextended
+      buyConditions.notOverextended &&
+      buyConditions.favorableEntryPrice
     )
   }
 

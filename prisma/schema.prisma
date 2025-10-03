@@ -167,24 +167,26 @@ model Trailing {
 }
 
 model Risk {
-  id                Int      @id @default(autoincrement())
-  symbol            String
-  price             Decimal
-  trend_up          Boolean
-  golden_cross      Boolean
-  strong_trend      Boolean
-  bullish_direction Boolean
-  bullish_momentum  Boolean
-  not_overextended  Boolean
-  death_cross       Boolean
-  bearish_momentum  Boolean
-  trend_weakening   Boolean
-  sl                Decimal?
-  tp                Decimal?
-  ts                Decimal?
-  tp_price          Decimal?
-  sl_price          Decimal?
-  should_buy        Boolean
-  should_sell       Boolean
-  created_at        DateTime @default(now())
+  id                    Int      @id @default(autoincrement())
+  symbol                String
+  price                 Decimal
+  trend_up              Boolean
+  golden_cross          Boolean
+  strong_trend          Boolean
+  bullish_direction     Boolean
+  bullish_momentum      Boolean
+  not_overextended      Boolean
+  favorable_entry_price Boolean
+  death_cross           Boolean
+  bearish_momentum      Boolean
+  bearish_conviction    Boolean
+  trend_weakening       Boolean
+  sl                    Decimal?
+  tp                    Decimal?
+  ts                    Decimal?
+  tp_price              Decimal?
+  sl_price              Decimal?
+  should_buy            Boolean
+  should_sell           Boolean
+  created_at            DateTime @default(now())
 }

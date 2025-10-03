@@ -7,12 +7,14 @@ export interface BuyConditions {
   bullishDirection: boolean
   bullishMomentum: boolean
   notOverextended: boolean
+  favorableEntryPrice: boolean
 }
 
 export interface SellConditions {
   deathCross: boolean
   bearishMomentum: boolean
   trendWeakening: boolean
+  bearishConviction: boolean
 }
 
 export interface Risk extends Stops, BuyConditions, SellConditions {
