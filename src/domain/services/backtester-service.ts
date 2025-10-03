@@ -41,6 +41,9 @@ export class BacktesterService {
       ts: 0,
       pnl: 0,
       net: 0,
+      signalHold: 0,
+      signalBuy: 0,
+      signalSell: 0,
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
@@ -56,6 +59,18 @@ export class BacktesterService {
 
       const risk: RiskCreate = this.riskService.calculate(indicators)
       const strategy: StrategyCreate = this.decisionService.calculate(risk)
+
+      switch (strategy.signal) {
+        case 'HOLD':
+          this.summary.signalHold++
+          break
+        case 'SELL':
+          this.summary.signalSell++
+          break
+        case 'BUY':
+          this.summary.signalBuy++
+          break
+      }
 
       if (this.position) {
         if (strategy.signal === 'SELL') {

@@ -24,4 +24,7 @@ export interface BacktestingSummary {
   ts: number
   pnl: number
   net: number
+  signalHold: number
+  signalBuy: number
+  signalSell: number
 }
