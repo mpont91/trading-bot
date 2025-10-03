@@ -9,30 +9,21 @@ import {
   BacktestingSummary,
 } from '../../domain/types/backtesting'
 import { InvestmentService } from '../../domain/services/investment-service'
-import { ApiService } from '../../domain/services/api-service'
 import { DecisionService } from '../../domain/services/decision-service'
 
 function settings(): BacktestingSettings {
   return {
     initialEquity: 1000,
     commissionRate: 0.00075,
-    historyLimit: 240,
-    safetyCapitalMargin: 0.3,
-    maxPositionsOpened: 1,
   }
 }
 
 function initializeBacktesterService(): BacktesterService {
   const backtestingSettings: BacktestingSettings = settings()
-  const apiService: ApiService = Container.getApiService()
   const indicatorService: IndicatorService = Container.getIndicatorService()
   const riskService: RiskService = Container.getRiskService()
   const decisionService: DecisionService = Container.getDecisionService()
-  const investmentService: InvestmentService = new InvestmentService(
-    backtestingSettings.safetyCapitalMargin,
-    backtestingSettings.maxPositionsOpened,
-    apiService,
-  )
+  const investmentService: InvestmentService = Container.getInvestmentService()
 
   return new BacktesterService(
     indicatorService,

@@ -13,6 +13,7 @@ import { InvestmentService } from './investment-service'
 import { Balance } from '../types/balance'
 import { DecisionService } from './decision-service'
 import { StrategyCreate } from '../models/strategy'
+import { settings } from '../../application/settings'
 
 export class BacktesterService {
   summary: BacktestingSummary
@@ -43,20 +44,13 @@ export class BacktesterService {
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
-    this.historyLimit = this.backtestingSettings.historyLimit
+    this.historyLimit = settings.history.klineHistoryLimit
     this.cash = this.backtestingSettings.initialEquity
   }
 
   simulate(symbol: string, klines: Kline[]): BacktestingSummary {
-    for (
-      let i: number = this.backtestingSettings.historyLimit;
-      i < klines.length;
-      i++
-    ) {
-      const currentKlines: Kline[] = klines.slice(
-        i - this.backtestingSettings.historyLimit,
-        i + 1,
-      )
+    for (let i: number = this.historyLimit; i < klines.length; i++) {
+      const currentKlines: Kline[] = klines.slice(i - this.historyLimit, i + 1)
       const indicators: IndicatorListCreate =
         this.indicatorService.calculateAll(symbol, currentKlines)
 
