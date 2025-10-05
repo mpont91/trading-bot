@@ -1,20 +1,20 @@
 import { SMA } from 'technicalindicators'
-import { Kline } from '../types/kline'
+import { Candle } from '../types/Candle'
 import { IndicatorSMACreate } from '../models/indicator'
 import {
-  validateIndicatorKlines,
+  validateIndicatorCandles,
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
 export class SmaIndicator {
   constructor(private readonly period: number) {}
 
-  calculate(symbol: string, klines: Kline[]): IndicatorSMACreate {
-    validateIndicatorKlines(this.period, klines.length)
+  calculate(symbol: string, candles: Candle[]): IndicatorSMACreate {
+    validateIndicatorCandles(this.period, candles.length)
 
     const values: number[] = SMA.calculate({
       period: this.period,
-      values: klines.map((k: Kline) => k.closePrice),
+      values: candles.map((k: Candle) => k.closePrice),
     })
 
     validateIndicatorValues(values.length)
@@ -22,7 +22,7 @@ export class SmaIndicator {
     return {
       period: this.period,
       symbol: symbol,
-      price: klines[klines.length - 1].closePrice,
+      price: candles[candles.length - 1].closePrice,
       sma: values[values.length - 1],
     }
   }

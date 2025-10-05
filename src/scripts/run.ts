@@ -13,8 +13,8 @@ const scripts: Record<string, Fn> = {
   'api-get-equity': async () => {
     await (await import('./api/api-get-equity')).default()
   },
-  'api-get-kline': async (args: string[]) => {
-    await (await import('./api/api-get-kline')).default(args)
+  'api-get-candles': async (args: string[]) => {
+    await (await import('./api/api-get-candles')).default(args)
   },
   'api-get-order': async (args: string[]) => {
     await (await import('./api/api-get-order')).default(args)

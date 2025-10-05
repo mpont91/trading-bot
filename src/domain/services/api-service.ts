@@ -3,7 +3,7 @@ import { Api } from '../../application/api'
 import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
-import { Kline, TimeFrame } from '../types/kline'
+import { Candle, TimeFrame } from '../types/Candle'
 import { HistorySettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
 import { EquityCreate } from '../models/equity'
@@ -35,25 +35,27 @@ export class ApiService {
     return this.api.getPrice(symbol)
   }
 
-  async getKline(symbol: string): Promise<Kline[]> {
-    const timeFrame: TimeFrame = this.settings.klineHistoryInterval
-    const limit: number = this.settings.klineHistoryLimit
+  async getCandles(symbol: string): Promise<Candle[]> {
+    const timeFrame: TimeFrame = this.settings.timeFrame
+    const candles: number = this.settings.candles
     const end: Date = new Date()
-    const start: Date = new Date(end.getTime() - limit * timeFrame * 60 * 1000)
-    return this.api.getKline(symbol, timeFrame, start, end)
+    const start: Date = new Date(
+      end.getTime() - candles * timeFrame * 60 * 1000,
+    )
+    return this.api.getCandles(symbol, timeFrame, start, end)
   }
 
-  async getKlineHistorical(
+  async getCandlesHistorical(
     symbol: string,
     timeFrame: TimeFrame,
     start: Date,
     end: Date,
-  ): Promise<Kline[]> {
-    let klines: Kline[] = []
+  ): Promise<Candle[]> {
+    let candles: Candle[] = []
     let startDate: Date = new Date(start.getTime())
 
     while (startDate < end) {
-      const chunk: Kline[] = await this.api.getKline(
+      const chunk: Candle[] = await this.api.getCandles(
         symbol,
         timeFrame,
         startDate,
@@ -64,15 +66,15 @@ export class ApiService {
         break
       }
 
-      klines = klines.concat(chunk)
+      candles = candles.concat(chunk)
 
-      const lastKline: Kline = chunk[chunk.length - 1]
-      const lastKlineTime: number = lastKline.time.getTime()
+      const lastCandle: Candle = chunk[chunk.length - 1]
+      const lastCandleTime: number = lastCandle.time.getTime()
 
-      startDate = new Date(lastKlineTime + timeFrame * 60 * 1000)
+      startDate = new Date(lastCandleTime + timeFrame * 60 * 1000)
     }
 
-    return klines.filter((kline: Kline): boolean => kline.time <= end)
+    return candles.filter((candle: Candle): boolean => candle.time <= end)
   }
 
   async getSymbol(symbol: string): Promise<Symbol> {

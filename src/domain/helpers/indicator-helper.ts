@@ -1,4 +1,4 @@
-export function validateIndicatorKlines(
+export function validateIndicatorCandles(
   period: number,
   pricesLength: number,
 ): void {

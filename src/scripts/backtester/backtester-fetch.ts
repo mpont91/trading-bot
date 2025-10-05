@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
-import { Kline, TimeFrame } from '../../domain/types/kline'
+import { Candle, TimeFrame } from '../../domain/types/Candle'
 import { settings } from '../../application/settings'
 
 export default async function (args: string[]): Promise<void> {
@@ -15,9 +15,9 @@ export default async function (args: string[]): Promise<void> {
 
   const start: Date = new Date('2024-01-01T00:00:00Z')
   const end: Date = new Date('2024-01-07T23:59:59Z')
-  const timeFrame: TimeFrame = settings.history.klineHistoryInterval
+  const timeFrame: TimeFrame = settings.history.timeFrame
 
-  const response: Kline[] = await apiService.getKlineHistorical(
+  const response: Candle[] = await apiService.getCandlesHistorical(
     symbol,
     timeFrame,
     start,

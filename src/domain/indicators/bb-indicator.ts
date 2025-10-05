@@ -1,9 +1,9 @@
 import { BollingerBands } from 'technicalindicators'
-import { Kline } from '../types/kline'
+import { Candle } from '../types/Candle'
 import { BollingerBandsOutput } from 'technicalindicators/declarations/generated'
 import { IndicatorBBCreate } from '../models/indicator'
 import {
-  validateIndicatorKlines,
+  validateIndicatorCandles,
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
@@ -13,12 +13,12 @@ export class BbIndicator {
     private readonly multiplier: number,
   ) {}
 
-  calculate(symbol: string, klines: Kline[]): IndicatorBBCreate {
-    validateIndicatorKlines(this.period, klines.length)
+  calculate(symbol: string, candles: Candle[]): IndicatorBBCreate {
+    validateIndicatorCandles(this.period, candles.length)
     const values: BollingerBandsOutput[] = BollingerBands.calculate({
       period: this.period,
       stdDev: this.multiplier,
-      values: klines.map((k: Kline) => k.closePrice),
+      values: candles.map((k: Candle) => k.closePrice),
     })
 
     const value: BollingerBandsOutput = values[values.length - 1]
@@ -28,7 +28,7 @@ export class BbIndicator {
     return {
       period: this.period,
       symbol: symbol,
-      price: klines[klines.length - 1].closePrice,
+      price: candles[candles.length - 1].closePrice,
       upper: value.upper,
       middle: value.middle,
       lower: value.lower,

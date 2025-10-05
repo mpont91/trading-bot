@@ -5,11 +5,11 @@ import {
   RestTradeTypes,
 } from '@binance/connector-typescript'
 import { Api } from '../../application/api'
-import { Kline, TimeFrame } from '../../domain/types/kline'
+import { Candle, TimeFrame } from '../../domain/types/Candle'
 import {
-  mapBinanceToDomainKline,
+  mapBinanceToDomainCandle,
   mapDomainToBinanceTimeFrame,
-} from './mappers/kline-mapper'
+} from './mappers/candle-mapper'
 import { Balance } from '../../domain/types/balance'
 import { Symbol } from '../../domain/types/symbol'
 import { mapBinanceToDomainSymbol } from './mappers/symbol-mapper'
@@ -136,23 +136,22 @@ export class BinanceClientApi implements Api {
     return parseFloat(response.price)
   }
 
-  async getKline(
+  async getCandles(
     symbol: string,
     timeFrame: TimeFrame,
     start: Date,
     end: Date,
-  ): Promise<Kline[]> {
+  ): Promise<Candle[]> {
     const options: RestMarketTypes.klineCandlestickDataOptions = {
       startTime: start.getTime(),
       endTime: end.getTime(),
       limit: 1000,
     }
-    const binanceKlineInterval: Interval =
-      mapDomainToBinanceTimeFrame(timeFrame)
+    const binanceTimeFrame: Interval = mapDomainToBinanceTimeFrame(timeFrame)
     const response: RestMarketTypes.klineCandlestickDataResponse[] =
-      await this.api.klineCandlestickData(symbol, binanceKlineInterval, options)
+      await this.api.klineCandlestickData(symbol, binanceTimeFrame, options)
 
-    return response.map(mapBinanceToDomainKline)
+    return response.map(mapBinanceToDomainCandle)
   }
 
   async getSymbol(symbol: string): Promise<Symbol> {

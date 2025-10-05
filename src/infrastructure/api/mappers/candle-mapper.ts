@@ -1,16 +1,16 @@
-import { Kline, TimeFrame } from '../../../domain/types/kline'
+import { Candle, TimeFrame } from '../../../domain/types/Candle'
 import { Interval, RestMarketTypes } from '@binance/connector-typescript'
 
-export function mapBinanceToDomainKline(
-  kline: RestMarketTypes.klineCandlestickDataResponse,
-): Kline {
+export function mapBinanceToDomainCandle(
+  candle: RestMarketTypes.klineCandlestickDataResponse,
+): Candle {
   return {
-    time: new Date(kline[0]),
-    openPrice: parseFloat(kline[1] as string),
-    highPrice: parseFloat(kline[2] as string),
-    lowPrice: parseFloat(kline[3] as string),
-    closePrice: parseFloat(kline[4] as string),
-    volume: parseFloat(kline[5] as string),
+    time: new Date(candle[0]),
+    openPrice: parseFloat(candle[1] as string),
+    highPrice: parseFloat(candle[2] as string),
+    lowPrice: parseFloat(candle[3] as string),
+    closePrice: parseFloat(candle[4] as string),
+    volume: parseFloat(candle[5] as string),
   }
 }
 

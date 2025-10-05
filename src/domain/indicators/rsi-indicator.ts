@@ -1,20 +1,20 @@
 import { RSI } from 'technicalindicators'
-import { Kline } from '../types/kline'
+import { Candle } from '../types/Candle'
 import { IndicatorRSICreate } from '../models/indicator'
 import {
-  validateIndicatorKlines,
+  validateIndicatorCandles,
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
 export class RsiIndicator {
   constructor(private readonly period: number) {}
 
-  calculate(symbol: string, klines: Kline[]): IndicatorRSICreate {
-    validateIndicatorKlines(this.period, klines.length)
+  calculate(symbol: string, candles: Candle[]): IndicatorRSICreate {
+    validateIndicatorCandles(this.period, candles.length)
 
     const values: number[] = RSI.calculate({
       period: this.period,
-      values: klines.map((k: Kline) => k.closePrice),
+      values: candles.map((k: Candle) => k.closePrice),
     })
 
     validateIndicatorValues(values.length)
@@ -22,7 +22,7 @@ export class RsiIndicator {
     return {
       period: this.period,
       symbol: symbol,
-      price: klines[klines.length - 1].closePrice,
+      price: candles[candles.length - 1].closePrice,
       rsi: values[values.length - 1],
     }
   }

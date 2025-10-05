@@ -1,6 +1,6 @@
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
-import { Kline } from '../../domain/types/kline'
+import { Candle } from '../../domain/types/Candle'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args
@@ -10,7 +10,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const apiService: ApiService = Container.getApiService()
-  const response: Kline[] = await apiService.getKline(symbol)
+  const response: Candle[] = await apiService.getCandles(symbol)
 
   console.dir(response, { depth: null })
 }

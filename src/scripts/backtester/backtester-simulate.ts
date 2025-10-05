@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { Container } from '../../di'
-import { Kline } from '../../domain/types/kline'
+import { Candle } from '../../domain/types/Candle'
 import { IndicatorService } from '../../domain/services/indicator-service'
 import { RiskService } from '../../domain/services/risk-service'
 import { BacktesterService } from '../../domain/services/backtester-service'
@@ -49,7 +49,7 @@ export default async function (args: string[]): Promise<void> {
     )
   }
 
-  const klines: Kline[] = JSON.parse(
+  const candles: Candle[] = JSON.parse(
     fs.readFileSync(`./data/${symbol.toLowerCase()}.json`, 'utf-8'),
   )
 
@@ -57,7 +57,7 @@ export default async function (args: string[]): Promise<void> {
 
   const response: BacktestingSummary = backtesterService.simulate(
     symbol,
-    klines,
+    candles,
   )
 
   console.dir(response, { depth: null })

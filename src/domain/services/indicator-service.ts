@@ -1,7 +1,7 @@
 import { SmaIndicator } from '../indicators/sma-indicator'
 import { RsiIndicator } from '../indicators/rsi-indicator'
 import { AtrIndicator } from '../indicators/atr-indicator'
-import { Kline } from '../types/kline'
+import { Candle } from '../types/Candle'
 import { AdxIndicator } from '../indicators/adx-indicator'
 import { BbIndicator } from '../indicators/bb-indicator'
 import { IndicatorRepository } from '../repositories/indicator-repository'
@@ -38,26 +38,26 @@ export class IndicatorService {
     private readonly smaCrossIndicator: SmaCrossIndicator,
   ) {}
 
-  calculateAll(symbol: string, klines: Kline[]): IndicatorListCreate {
+  calculateAll(symbol: string, candles: Candle[]): IndicatorListCreate {
     return {
-      sma: this.smaIndicator.calculate(symbol, klines),
-      rsi: this.rsiIndicator.calculate(symbol, klines),
-      adx: this.adxIndicator.calculate(symbol, klines),
-      atr: this.atrIndicator.calculate(symbol, klines),
-      bb: this.bbIndicator.calculate(symbol, klines),
-      smaCross: this.smaCrossIndicator.calculate(symbol, klines),
+      sma: this.smaIndicator.calculate(symbol, candles),
+      rsi: this.rsiIndicator.calculate(symbol, candles),
+      adx: this.adxIndicator.calculate(symbol, candles),
+      atr: this.atrIndicator.calculate(symbol, candles),
+      bb: this.bbIndicator.calculate(symbol, candles),
+      smaCross: this.smaCrossIndicator.calculate(symbol, candles),
     }
   }
 
   async calculateAndCreateAll(symbol: string): Promise<IndicatorList> {
-    const klines: Kline[] = await this.apiService.getKline(symbol)
+    const candles: Candle[] = await this.apiService.getCandles(symbol)
     return {
-      sma: await this.calculateAndCreateSMA(symbol, klines),
-      rsi: await this.calculateAndCreateRSI(symbol, klines),
-      adx: await this.calculateAndCreateADX(symbol, klines),
-      atr: await this.calculateAndCreateATR(symbol, klines),
-      bb: await this.calculateAndCreateBB(symbol, klines),
-      smaCross: await this.calculateAndCreateSMACross(symbol, klines),
+      sma: await this.calculateAndCreateSMA(symbol, candles),
+      rsi: await this.calculateAndCreateRSI(symbol, candles),
+      adx: await this.calculateAndCreateADX(symbol, candles),
+      atr: await this.calculateAndCreateATR(symbol, candles),
+      bb: await this.calculateAndCreateBB(symbol, candles),
+      smaCross: await this.calculateAndCreateSMACross(symbol, candles),
     }
   }
 
@@ -155,39 +155,41 @@ export class IndicatorService {
 
   private async calculateAndCreateSMA(
     symbol: string,
-    klines: Kline[],
+    candles: Candle[],
   ): Promise<IndicatorSMA> {
-    return this.createSMA(this.smaIndicator.calculate(symbol, klines))
+    return this.createSMA(this.smaIndicator.calculate(symbol, candles))
   }
   private async calculateAndCreateRSI(
     symbol: string,
-    klines: Kline[],
+    candles: Candle[],
   ): Promise<IndicatorRSI> {
-    return this.createRSI(this.rsiIndicator.calculate(symbol, klines))
+    return this.createRSI(this.rsiIndicator.calculate(symbol, candles))
   }
   private async calculateAndCreateADX(
     symbol: string,
-    klines: Kline[],
+    candles: Candle[],
   ): Promise<IndicatorADX> {
-    return this.createADX(this.adxIndicator.calculate(symbol, klines))
+    return this.createADX(this.adxIndicator.calculate(symbol, candles))
   }
   private async calculateAndCreateATR(
     symbol: string,
-    klines: Kline[],
+    candles: Candle[],
   ): Promise<IndicatorATR> {
-    return this.createATR(this.atrIndicator.calculate(symbol, klines))
+    return this.createATR(this.atrIndicator.calculate(symbol, candles))
   }
   private async calculateAndCreateBB(
     symbol: string,
-    klines: Kline[],
+    candles: Candle[],
   ): Promise<IndicatorBB> {
-    return this.createBB(this.bbIndicator.calculate(symbol, klines))
+    return this.createBB(this.bbIndicator.calculate(symbol, candles))
   }
   private async calculateAndCreateSMACross(
     symbol: string,
-    klines: Kline[],
+    candles: Candle[],
   ): Promise<IndicatorSMACross> {
-    return this.createSMACross(this.smaCrossIndicator.calculate(symbol, klines))
+    return this.createSMACross(
+      this.smaCrossIndicator.calculate(symbol, candles),
+    )
   }
 
   private async createSMA(sma: IndicatorSMACreate): Promise<IndicatorSMA> {

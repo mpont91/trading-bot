@@ -1,4 +1,4 @@
-import { TimeFrame } from './kline'
+import { TimeFrame } from './Candle'
 
 export interface Settings {
   intervalTradingTime: number
@@ -23,8 +23,8 @@ export interface BinanceSettings {
 }
 
 export interface HistorySettings {
-  klineHistoryInterval: TimeFrame
-  klineHistoryLimit: number
+  timeFrame: TimeFrame
+  candles: number
 }
 
 export interface IndicatorsSettings {

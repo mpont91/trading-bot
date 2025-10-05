@@ -1,4 +1,4 @@
-import { Kline } from '../types/kline'
+import { Candle } from '../types/Candle'
 import { IndicatorListCreate } from '../models/indicator'
 import { RiskCreate } from '../models/risk'
 import { calculateSL } from '../helpers/stops-helper'
@@ -19,7 +19,7 @@ export class BacktesterService {
   summary: BacktestingSummary
   position: BacktestingPosition | null
   commissionRate: number
-  historyLimit: number
+  candles: number
   cash: number
 
   constructor(
@@ -58,15 +58,15 @@ export class BacktesterService {
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
-    this.historyLimit = settings.history.klineHistoryLimit
+    this.candles = settings.history.candles
     this.cash = this.backtestingSettings.initialEquity
   }
 
-  simulate(symbol: string, klines: Kline[]): BacktestingSummary {
-    for (let i: number = this.historyLimit; i < klines.length; i++) {
-      const currentKlines: Kline[] = klines.slice(i - this.historyLimit, i + 1)
+  simulate(symbol: string, candles: Candle[]): BacktestingSummary {
+    for (let i: number = this.candles; i < candles.length; i++) {
+      const currentCandles: Candle[] = candles.slice(i - this.candles, i + 1)
       const indicators: IndicatorListCreate =
-        this.indicatorService.calculateAll(symbol, currentKlines)
+        this.indicatorService.calculateAll(symbol, currentCandles)
 
       const risk: RiskCreate = this.riskService.calculate(indicators)
 
@@ -89,11 +89,11 @@ export class BacktesterService {
       if (this.position) {
         if (strategy.signal === 'SELL') {
           this.summary.sell++
-          this.sell(klines[i].closePrice)
+          this.sell(candles[i].closePrice)
           continue
         }
 
-        if (klines[i].lowPrice <= this.position.slPrice) {
+        if (candles[i].lowPrice <= this.position.slPrice) {
           this.summary.sl++
           this.sell(this.position.slPrice)
           continue
@@ -101,14 +101,14 @@ export class BacktesterService {
 
         if (
           this.position.tsPrice &&
-          klines[i].lowPrice <= this.position.tsPrice
+          candles[i].lowPrice <= this.position.tsPrice
         ) {
           this.summary.ts++
           this.sell(this.position.tsPrice)
           continue
         }
 
-        this.trailing(klines[i].highPrice)
+        this.trailing(candles[i].highPrice)
       } else {
         if (strategy.signal === 'BUY') {
           this.buy(strategy)
@@ -117,7 +117,7 @@ export class BacktesterService {
     }
 
     if (this.position) {
-      this.sell(klines[klines.length - 1].closePrice)
+      this.sell(candles[candles.length - 1].closePrice)
     }
 
     this.summary.finalEquity = this.cash

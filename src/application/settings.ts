@@ -31,8 +31,8 @@ export const settings: Settings = {
   maxPositionsOpened: parseNumber(process.env.MAX_POSITIONS_OPENED, 5),
   safetyCapitalMargin: parseNumber(process.env.SAFETY_CAPITAL_MARGIN, 0.3),
   history: {
-    klineHistoryInterval: 5,
-    klineHistoryLimit: parseNumber(process.env.HISTORY_CANDLES, 240), // 5 minutes * 240 candles = 20 hours price history
+    timeFrame: 5,
+    candles: parseNumber(process.env.HISTORY_CANDLES, 240),
   },
   indicators: {
     sma: parseNumber(process.env.INDICATOR_SMA_PERIOD, 20),

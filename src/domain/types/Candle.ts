@@ -4,7 +4,7 @@ export const timeFrameOptions = [
 
 export type TimeFrame = (typeof timeFrameOptions)[number]
 
-export interface Kline {
+export interface Candle {
   time: Date
   openPrice: number
   highPrice: number

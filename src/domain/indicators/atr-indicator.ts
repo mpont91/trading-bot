@@ -1,21 +1,21 @@
 import { ATR } from 'technicalindicators'
-import { Kline } from '../types/kline'
+import { Candle } from '../types/Candle'
 import { IndicatorATRCreate } from '../models/indicator'
 import {
-  validateIndicatorKlines,
+  validateIndicatorCandles,
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
 export class AtrIndicator {
   constructor(private readonly period: number) {}
 
-  calculate(symbol: string, klines: Kline[]): IndicatorATRCreate {
-    validateIndicatorKlines(this.period, klines.length)
+  calculate(symbol: string, candles: Candle[]): IndicatorATRCreate {
+    validateIndicatorCandles(this.period, candles.length)
     const values: number[] = ATR.calculate({
       period: this.period,
-      high: klines.map((k: Kline) => k.highPrice),
-      low: klines.map((k: Kline) => k.lowPrice),
-      close: klines.map((k: Kline) => k.closePrice),
+      high: candles.map((k: Candle) => k.highPrice),
+      low: candles.map((k: Candle) => k.lowPrice),
+      close: candles.map((k: Candle) => k.closePrice),
     })
 
     validateIndicatorValues(values.length)
@@ -23,7 +23,7 @@ export class AtrIndicator {
     return {
       period: this.period,
       symbol: symbol,
-      price: klines[klines.length - 1].closePrice,
+      price: candles[candles.length - 1].closePrice,
       atr: values[values.length - 1],
     }
   }
