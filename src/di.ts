@@ -28,16 +28,16 @@ import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-s
 import { TrailingService } from './domain/services/trailing-service'
 import { TrailingRepository } from './domain/repositories/trailing-repository'
 import { PrismaTrailingRepository } from './infrastructure/repositories/prisma-trailing-repository'
-import { AdxIndicator } from './domain/indicators/adx-indicator'
-import { AtrIndicator } from './domain/indicators/atr-indicator'
-import { RsiIndicator } from './domain/indicators/rsi-indicator'
-import { SmaIndicator } from './domain/indicators/sma-indicator'
-import { BbIndicator } from './domain/indicators/bb-indicator'
+import { AdxIndicatorCalculator } from './domain/indicators/adx-indicator-calculator'
+import { AtrIndicatorCalculator } from './domain/indicators/atr-indicator-calculator'
+import { RsiIndicatorCalculator } from './domain/indicators/rsi-indicator-calculator'
+import { SmaIndicatorCalculator } from './domain/indicators/sma-indicator-calculator'
+import { BbIndicatorCalculator } from './domain/indicators/bb-indicator-calculator'
 import { IndicatorService } from './domain/services/indicator-service'
 import { IndicatorRepository } from './domain/repositories/indicator-repository'
 import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { TradingManager } from './domain/managers/trading-manager'
-import { SmaCrossIndicator } from './domain/indicators/sma-cross-indicator'
+import { SmaCrossIndicatorCalculator } from './domain/indicators/sma-cross-indicator-calculator'
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
 import { PositionRepository } from './domain/repositories/position-repository'
 import { PrismaPositionRepository } from './infrastructure/repositories/prisma-position-repository'
@@ -91,18 +91,24 @@ class Container {
     )
     const riskRepository: RiskRepository = new PrismaRiskRepository(prisma)
 
-    const adxIndicator: AdxIndicator = new AdxIndicator(settings.indicators.adx)
-    const atrIndicator: AtrIndicator = new AtrIndicator(settings.indicators.atr)
-    const rsiIndicator: RsiIndicator = new RsiIndicator(settings.indicators.rsi)
-    const smaIndicator: SmaIndicator = new SmaIndicator(settings.indicators.sma)
-    const bbIndicator: BbIndicator = new BbIndicator(
-      settings.indicators.bb.period,
-      settings.indicators.bb.multiplier,
-    )
-    const smaCrossIndicator: SmaCrossIndicator = new SmaCrossIndicator(
-      settings.indicators.smaCross.periodLong,
-      settings.indicators.smaCross.periodShort,
-    )
+    const adxIndicatorCalculator: AdxIndicatorCalculator =
+      new AdxIndicatorCalculator(settings.indicators.adx)
+    const atrIndicatorCalculator: AtrIndicatorCalculator =
+      new AtrIndicatorCalculator(settings.indicators.atr)
+    const rsiIndicatorCalculator: RsiIndicatorCalculator =
+      new RsiIndicatorCalculator(settings.indicators.rsi)
+    const smaIndicatorCalculator: SmaIndicatorCalculator =
+      new SmaIndicatorCalculator(settings.indicators.sma)
+    const bbIndicatorCalculator: BbIndicatorCalculator =
+      new BbIndicatorCalculator(
+        settings.indicators.bb.period,
+        settings.indicators.bb.multiplier,
+      )
+    const smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator =
+      new SmaCrossIndicatorCalculator(
+        settings.indicators.smaCross.periodLong,
+        settings.indicators.smaCross.periodShort,
+      )
 
     this.apiService = new ApiService(settings.history, api)
     this.equityService = new EquityService(equityRepository, this.apiService)
@@ -136,12 +142,12 @@ class Container {
     this.indicatorService = new IndicatorService(
       this.apiService,
       indicatorRepository,
-      smaIndicator,
-      rsiIndicator,
-      adxIndicator,
-      atrIndicator,
-      bbIndicator,
-      smaCrossIndicator,
+      smaIndicatorCalculator,
+      rsiIndicatorCalculator,
+      adxIndicatorCalculator,
+      atrIndicatorCalculator,
+      bbIndicatorCalculator,
+      smaCrossIndicatorCalculator,
     )
     this.riskService = new RiskService(settings.risk, riskRepository)
     this.decisionService = new DecisionService(

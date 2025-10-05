@@ -1,9 +1,9 @@
-import { SmaIndicator } from '../indicators/sma-indicator'
-import { RsiIndicator } from '../indicators/rsi-indicator'
-import { AtrIndicator } from '../indicators/atr-indicator'
+import { SmaIndicatorCalculator } from '../indicators/sma-indicator-calculator'
+import { RsiIndicatorCalculator } from '../indicators/rsi-indicator-calculator'
+import { AtrIndicatorCalculator } from '../indicators/atr-indicator-calculator'
 import { Candle } from '../types/Candle'
-import { AdxIndicator } from '../indicators/adx-indicator'
-import { BbIndicator } from '../indicators/bb-indicator'
+import { AdxIndicatorCalculator } from '../indicators/adx-indicator-calculator'
+import { BbIndicatorCalculator } from '../indicators/bb-indicator-calculator'
 import { IndicatorRepository } from '../repositories/indicator-repository'
 import {
   IndicatorADX,
@@ -21,7 +21,7 @@ import {
   IndicatorADXCreate,
   IndicatorRSICreate,
 } from '../models/indicator'
-import { SmaCrossIndicator } from '../indicators/sma-cross-indicator'
+import { SmaCrossIndicatorCalculator } from '../indicators/sma-cross-indicator-calculator'
 import { ApiService } from './api-service'
 import { TimeInterval } from '../types/time-interval'
 import { reduceRecordsData } from '../helpers/graph-helper'
@@ -30,26 +30,26 @@ export class IndicatorService {
   constructor(
     private readonly apiService: ApiService,
     private readonly indicatorRepository: IndicatorRepository,
-    private readonly smaIndicator: SmaIndicator,
-    private readonly rsiIndicator: RsiIndicator,
-    private readonly adxIndicator: AdxIndicator,
-    private readonly atrIndicator: AtrIndicator,
-    private readonly bbIndicator: BbIndicator,
-    private readonly smaCrossIndicator: SmaCrossIndicator,
+    private readonly smaIndicatorCalculator: SmaIndicatorCalculator,
+    private readonly rsiIndicatorCalculator: RsiIndicatorCalculator,
+    private readonly adxIndicatorCalculator: AdxIndicatorCalculator,
+    private readonly atrIndicatorCalculator: AtrIndicatorCalculator,
+    private readonly bbIndicatorCalculator: BbIndicatorCalculator,
+    private readonly smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator,
   ) {}
 
   calculateAll(symbol: string, candles: Candle[]): IndicatorListCreate {
     return {
-      sma: this.smaIndicator.calculate(symbol, candles),
-      rsi: this.rsiIndicator.calculate(symbol, candles),
-      adx: this.adxIndicator.calculate(symbol, candles),
-      atr: this.atrIndicator.calculate(symbol, candles),
-      bb: this.bbIndicator.calculate(symbol, candles),
-      smaCross: this.smaCrossIndicator.calculate(symbol, candles),
+      sma: this.smaIndicatorCalculator.calculate(symbol, candles),
+      rsi: this.rsiIndicatorCalculator.calculate(symbol, candles),
+      adx: this.adxIndicatorCalculator.calculate(symbol, candles),
+      atr: this.atrIndicatorCalculator.calculate(symbol, candles),
+      bb: this.bbIndicatorCalculator.calculate(symbol, candles),
+      smaCross: this.smaCrossIndicatorCalculator.calculate(symbol, candles),
     }
   }
 
-  async calculateAndCreateAll(symbol: string): Promise<IndicatorList> {
+  async fetchAndCalculateAndCreateAll(symbol: string): Promise<IndicatorList> {
     const candles: Candle[] = await this.apiService.getCandles(symbol)
     return {
       sma: await this.calculateAndCreateSMA(symbol, candles),
@@ -157,38 +157,46 @@ export class IndicatorService {
     symbol: string,
     candles: Candle[],
   ): Promise<IndicatorSMA> {
-    return this.createSMA(this.smaIndicator.calculate(symbol, candles))
+    return this.createSMA(
+      this.smaIndicatorCalculator.calculate(symbol, candles),
+    )
   }
   private async calculateAndCreateRSI(
     symbol: string,
     candles: Candle[],
   ): Promise<IndicatorRSI> {
-    return this.createRSI(this.rsiIndicator.calculate(symbol, candles))
+    return this.createRSI(
+      this.rsiIndicatorCalculator.calculate(symbol, candles),
+    )
   }
   private async calculateAndCreateADX(
     symbol: string,
     candles: Candle[],
   ): Promise<IndicatorADX> {
-    return this.createADX(this.adxIndicator.calculate(symbol, candles))
+    return this.createADX(
+      this.adxIndicatorCalculator.calculate(symbol, candles),
+    )
   }
   private async calculateAndCreateATR(
     symbol: string,
     candles: Candle[],
   ): Promise<IndicatorATR> {
-    return this.createATR(this.atrIndicator.calculate(symbol, candles))
+    return this.createATR(
+      this.atrIndicatorCalculator.calculate(symbol, candles),
+    )
   }
   private async calculateAndCreateBB(
     symbol: string,
     candles: Candle[],
   ): Promise<IndicatorBB> {
-    return this.createBB(this.bbIndicator.calculate(symbol, candles))
+    return this.createBB(this.bbIndicatorCalculator.calculate(symbol, candles))
   }
   private async calculateAndCreateSMACross(
     symbol: string,
     candles: Candle[],
   ): Promise<IndicatorSMACross> {
     return this.createSMACross(
-      this.smaCrossIndicator.calculate(symbol, candles),
+      this.smaCrossIndicatorCalculator.calculate(symbol, candles),
     )
   }
 

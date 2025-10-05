@@ -11,7 +11,7 @@ export default async function (args: string[]): Promise<void> {
 
   const indicatorService: IndicatorService = Container.getIndicatorService()
   const response: IndicatorList =
-    await indicatorService.calculateAndCreateAll(symbol)
+    await indicatorService.fetchAndCalculateAndCreateAll(symbol)
 
   console.dir(response, { depth: null })
 }

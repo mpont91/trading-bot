@@ -1,18 +1,18 @@
-import { RSI } from 'technicalindicators'
+import { SMA } from 'technicalindicators'
 import { Candle } from '../types/Candle'
-import { IndicatorRSICreate } from '../models/indicator'
+import { IndicatorSMACreate } from '../models/indicator'
 import {
   validateIndicatorCandles,
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
-export class RsiIndicator {
+export class SmaIndicatorCalculator {
   constructor(private readonly period: number) {}
 
-  calculate(symbol: string, candles: Candle[]): IndicatorRSICreate {
+  calculate(symbol: string, candles: Candle[]): IndicatorSMACreate {
     validateIndicatorCandles(this.period, candles.length)
 
-    const values: number[] = RSI.calculate({
+    const values: number[] = SMA.calculate({
       period: this.period,
       values: candles.map((k: Candle) => k.closePrice),
     })
@@ -23,7 +23,7 @@ export class RsiIndicator {
       period: this.period,
       symbol: symbol,
       price: candles[candles.length - 1].closePrice,
-      rsi: values[values.length - 1],
+      sma: values[values.length - 1],
     }
   }
 }

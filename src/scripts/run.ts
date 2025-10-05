@@ -54,9 +54,9 @@ const scripts: Record<string, Fn> = {
   'indicator-get-all': async (args: string[]) => {
     await (await import('./indicator/indicator-get-all')).default(args)
   },
-  'indicator-calculate-create-all': async (args: string[]) => {
+  'indicator-fetch-calculate-create-all': async (args: string[]) => {
     await (
-      await import('./indicator/indicator-calculate-create-all')
+      await import('./indicator/indicator-fetch-calculate-create-all')
     ).default(args)
   },
   'investment-fetch-calculate-amount': async () => {

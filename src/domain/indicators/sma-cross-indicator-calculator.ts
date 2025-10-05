@@ -6,7 +6,7 @@ import {
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
-export class SmaCrossIndicator {
+export class SmaCrossIndicatorCalculator {
   constructor(
     private readonly periodLong: number,
     private readonly periodShort: number,

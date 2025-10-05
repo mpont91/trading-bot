@@ -6,7 +6,7 @@ import {
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
-export class AtrIndicator {
+export class AtrIndicatorCalculator {
   constructor(private readonly period: number) {}
 
   calculate(symbol: string, candles: Candle[]): IndicatorATRCreate {

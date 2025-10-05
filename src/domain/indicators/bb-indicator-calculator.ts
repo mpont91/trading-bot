@@ -7,7 +7,7 @@ import {
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
-export class BbIndicator {
+export class BbIndicatorCalculator {
   constructor(
     private readonly period: number,
     private readonly multiplier: number,

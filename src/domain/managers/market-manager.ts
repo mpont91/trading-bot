@@ -10,7 +10,7 @@ export class MarketManager implements ManagerInterface {
   ) {}
   async start(): Promise<void> {
     for (const symbol of this.symbols) {
-      await this.indicatorService.calculateAndCreateAll(symbol)
+      await this.indicatorService.fetchAndCalculateAndCreateAll(symbol)
       await this.strategyService.calculateAndCreate(symbol)
     }
   }

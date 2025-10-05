@@ -7,7 +7,7 @@ import {
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
 
-export class AdxIndicator {
+export class AdxIndicatorCalculator {
   constructor(private readonly period: number) {}
 
   calculate(symbol: string, candles: Candle[]): IndicatorADXCreate {
