@@ -14,9 +14,7 @@ export function mapBinanceToDomainKline(
   }
 }
 
-export function mapDomainToBinanceKlineInterval(
-  timeFrame: TimeFrame,
-): Interval {
+export function mapDomainToBinanceTimeFrame(timeFrame: TimeFrame): Interval {
   const mapping: { [key in TimeFrame]: Interval } = {
     1: '1m' as Interval,
     3: '3m' as Interval,
