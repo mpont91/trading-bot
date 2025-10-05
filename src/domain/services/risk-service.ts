@@ -105,15 +105,23 @@ export class RiskService {
   }
 
   private evaluateShouldBuy(buyConditions: BuyConditions): boolean {
-    return (
-      buyConditions.trendUp &&
-      buyConditions.goldenCross &&
-      buyConditions.strongTrend &&
-      buyConditions.bullishDirection &&
-      buyConditions.bullishMomentum &&
-      buyConditions.notOverextended &&
-      buyConditions.favorableEntryPrice
-    )
+    return this.calculateBuyScore(buyConditions) >= this.settings.buyScoreMin
+  }
+
+  private calculateBuyScore(buyConditions: BuyConditions): number {
+    if (!buyConditions.goldenCross || !buyConditions.favorableEntryPrice) {
+      return 0
+    }
+
+    let score: number = 0
+
+    if (buyConditions.favorableEntryPrice) score += 3
+    if (buyConditions.goldenCross) score += 2
+    if (buyConditions.bullishDirection) score += 1
+    if (buyConditions.bullishMomentum) score += 1
+    if (buyConditions.strongTrend) score += 1
+
+    return score
   }
 
   private evaluateStops(

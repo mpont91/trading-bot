@@ -52,6 +52,7 @@ export const settings: Settings = {
     },
   },
   risk: {
+    buyScoreMin: parseNumber(process.env.RISK_MIN_BUY_SCORE, 5),
     favorableEntryPriceMaxBB: parseNumber(
       process.env.RISK_FAVORABLE_ENTRY_PRICE_MAX_BB,
       0.5,

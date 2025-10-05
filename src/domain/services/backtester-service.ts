@@ -44,6 +44,17 @@ export class BacktesterService {
       signalHold: 0,
       signalBuy: 0,
       signalSell: 0,
+      trendUp: 0,
+      goldenCross: 0,
+      strongTrend: 0,
+      bullishDirection: 0,
+      bullishMomentum: 0,
+      notOverextended: 0,
+      favorableEntryPrice: 0,
+      deathCross: 0,
+      bearishMomentum: 0,
+      trendWeakening: 0,
+      bearishConviction: 0,
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
@@ -58,6 +69,9 @@ export class BacktesterService {
         this.indicatorService.calculateAll(symbol, currentKlines)
 
       const risk: RiskCreate = this.riskService.calculate(indicators)
+
+      this.countRiskConditions(risk)
+
       const strategy: StrategyCreate = this.decisionService.calculate(risk)
 
       switch (strategy.signal) {
@@ -175,5 +189,19 @@ export class BacktesterService {
         this.position.tsPrice = potentialNewTsPrice
       }
     }
+  }
+
+  countRiskConditions(risk: RiskCreate): void {
+    if (risk.bullishDirection) this.summary.bullishDirection++
+    if (risk.bullishMomentum) this.summary.bullishMomentum++
+    if (risk.deathCross) this.summary.deathCross++
+    if (risk.bearishMomentum) this.summary.bearishMomentum++
+    if (risk.bearishConviction) this.summary.bearishConviction++
+    if (risk.strongTrend) this.summary.strongTrend++
+    if (risk.goldenCross) this.summary.goldenCross++
+    if (risk.trendWeakening) this.summary.trendWeakening++
+    if (risk.notOverextended) this.summary.notOverextended++
+    if (risk.favorableEntryPrice) this.summary.favorableEntryPrice++
+    if (risk.trendUp) this.summary.trendUp++
   }
 }

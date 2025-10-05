@@ -27,4 +27,15 @@ export interface BacktestingSummary {
   signalHold: number
   signalBuy: number
   signalSell: number
+  trendUp: number
+  goldenCross: number
+  strongTrend: number
+  bullishDirection: number
+  bullishMomentum: number
+  notOverextended: number
+  favorableEntryPrice: number
+  deathCross: number
+  bearishMomentum: number
+  trendWeakening: number
+  bearishConviction: number
 }
