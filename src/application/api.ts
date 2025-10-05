@@ -1,7 +1,7 @@
 import { Balance } from '../domain/types/balance'
 import { Symbol } from '../domain/types/symbol'
 import { OrderRequest, OrderCreate } from '../domain/models/order'
-import { Kline, KlineInterval } from '../domain/types/kline'
+import { Kline, TimeFrame } from '../domain/types/kline'
 import { CommissionEquityCreate } from '../domain/models/commission-equity'
 import { EquityCreate } from '../domain/models/equity'
 import { Coin } from '../domain/types/coin'
@@ -14,7 +14,7 @@ export interface Api {
   getPrice(symbol: string): Promise<number>
   getKline(
     symbol: string,
-    interval: KlineInterval,
+    timeFrame: TimeFrame,
     start: Date,
     end: Date,
   ): Promise<Kline[]>

@@ -1,4 +1,4 @@
-import { KlineInterval } from './kline'
+import { TimeFrame } from './kline'
 
 export interface Settings {
   intervalTradingTime: number
@@ -23,7 +23,7 @@ export interface BinanceSettings {
 }
 
 export interface HistorySettings {
-  klineHistoryInterval: KlineInterval
+  klineHistoryInterval: TimeFrame
   klineHistoryLimit: number
 }
 

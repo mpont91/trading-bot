@@ -3,7 +3,7 @@ import { Api } from '../../application/api'
 import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
-import { Kline, KlineInterval } from '../types/kline'
+import { Kline, TimeFrame } from '../types/kline'
 import { HistorySettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
 import { EquityCreate } from '../models/equity'
@@ -36,16 +36,16 @@ export class ApiService {
   }
 
   async getKline(symbol: string): Promise<Kline[]> {
-    const interval: KlineInterval = this.settings.klineHistoryInterval
+    const timeFrame: TimeFrame = this.settings.klineHistoryInterval
     const limit: number = this.settings.klineHistoryLimit
     const end: Date = new Date()
-    const start: Date = new Date(end.getTime() - limit * interval * 60 * 1000)
-    return this.api.getKline(symbol, interval, start, end)
+    const start: Date = new Date(end.getTime() - limit * timeFrame * 60 * 1000)
+    return this.api.getKline(symbol, timeFrame, start, end)
   }
 
   async getKlineHistorical(
     symbol: string,
-    interval: KlineInterval,
+    timeFrame: TimeFrame,
     start: Date,
     end: Date,
   ): Promise<Kline[]> {
@@ -55,7 +55,7 @@ export class ApiService {
     while (startDate < end) {
       const chunk: Kline[] = await this.api.getKline(
         symbol,
-        interval,
+        timeFrame,
         startDate,
         end,
       )
@@ -69,7 +69,7 @@ export class ApiService {
       const lastKline: Kline = chunk[chunk.length - 1]
       const lastKlineTime: number = lastKline.time.getTime()
 
-      startDate = new Date(lastKlineTime + interval * 60 * 1000)
+      startDate = new Date(lastKlineTime + timeFrame * 60 * 1000)
     }
 
     return klines.filter((kline: Kline): boolean => kline.time <= end)

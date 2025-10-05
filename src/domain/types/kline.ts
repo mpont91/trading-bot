@@ -1,8 +1,8 @@
-export const klineIntervalOptions = [
+export const timeFrameOptions = [
   1, 3, 5, 15, 30, 60, 120, 240, 360, 720, 1440, 4320, 10080,
 ] as const
 
-export type KlineInterval = (typeof klineIntervalOptions)[number]
+export type TimeFrame = (typeof timeFrameOptions)[number]
 
 export interface Kline {
   time: Date

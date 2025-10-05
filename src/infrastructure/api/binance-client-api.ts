@@ -5,7 +5,7 @@ import {
   RestTradeTypes,
 } from '@binance/connector-typescript'
 import { Api } from '../../application/api'
-import { Kline, KlineInterval } from '../../domain/types/kline'
+import { Kline, TimeFrame } from '../../domain/types/kline'
 import {
   mapBinanceToDomainKline,
   mapDomainToBinanceKlineInterval,
@@ -138,7 +138,7 @@ export class BinanceClientApi implements Api {
 
   async getKline(
     symbol: string,
-    interval: KlineInterval,
+    timeFrame: TimeFrame,
     start: Date,
     end: Date,
   ): Promise<Kline[]> {
@@ -148,7 +148,7 @@ export class BinanceClientApi implements Api {
       limit: 1000,
     }
     const binanceKlineInterval: Interval =
-      mapDomainToBinanceKlineInterval(interval)
+      mapDomainToBinanceKlineInterval(timeFrame)
     const response: RestMarketTypes.klineCandlestickDataResponse[] =
       await this.api.klineCandlestickData(symbol, binanceKlineInterval, options)
 

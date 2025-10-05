@@ -1,4 +1,4 @@
-import { Kline, KlineInterval } from '../../../domain/types/kline'
+import { Kline, TimeFrame } from '../../../domain/types/kline'
 import { Interval, RestMarketTypes } from '@binance/connector-typescript'
 
 export function mapBinanceToDomainKline(
@@ -15,9 +15,9 @@ export function mapBinanceToDomainKline(
 }
 
 export function mapDomainToBinanceKlineInterval(
-  klineInterval: KlineInterval,
+  timeFrame: TimeFrame,
 ): Interval {
-  const mapping: { [key in KlineInterval]: Interval } = {
+  const mapping: { [key in TimeFrame]: Interval } = {
     1: '1m' as Interval,
     3: '3m' as Interval,
     5: '5m' as Interval,
@@ -32,5 +32,5 @@ export function mapDomainToBinanceKlineInterval(
     4320: '3d' as Interval,
     10080: '1w' as Interval,
   }
-  return mapping[klineInterval]
+  return mapping[timeFrame]
 }
