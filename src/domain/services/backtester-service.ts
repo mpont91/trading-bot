@@ -8,10 +8,9 @@ import {
   BacktestingSummary,
 } from '../types/backtesting'
 import { IndicatorService } from './indicator-service'
-import { RiskService } from './risk-service'
 import { InvestmentService } from './investment-service'
 import { Balance } from '../types/balance'
-import { DecisionService } from './decision-service'
+import { StrategyReportService } from './strategy-report-service'
 import { StrategyActionCreate } from '../models/strategy-action'
 import { settings } from '../../application/settings'
 
@@ -24,8 +23,7 @@ export class BacktesterService {
 
   constructor(
     private readonly indicatorService: IndicatorService,
-    private readonly riskService: RiskService,
-    private readonly decisionService: DecisionService,
+    private readonly strategyReportService: StrategyReportService,
     private readonly investmentService: InvestmentService,
     private readonly backtestingSettings: BacktestingSettings,
   ) {
@@ -68,12 +66,13 @@ export class BacktesterService {
       const indicators: IndicatorListCreate =
         this.indicatorService.calculateAll(symbol, currentCandles)
 
-      const risk: StrategyReportCreate = this.riskService.calculate(indicators)
+      const risk: StrategyReportCreate =
+        this.strategyReportService.evaluate(indicators)
 
       this.countRiskConditions(risk)
 
       const strategy: StrategyActionCreate =
-        this.decisionService.calculate(risk)
+        this.strategyReportService.calculate(risk)
 
       switch (strategy.signal) {
         case 'HOLD':

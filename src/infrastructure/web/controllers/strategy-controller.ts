@@ -2,11 +2,11 @@ import { Request, Response } from 'express'
 import { createErrorResponse } from '../helpers/response-helper'
 import { Container } from '../../../di'
 import { StrategyAction } from '../../../domain/models/strategy-action'
-import { StrategyService } from '../../../domain/services/strategy-service'
+import { StrategyActionService } from '../../../domain/services/strategy-action-service'
 import { StrategyAnalysis } from '../../../domain/types/strategy-analysis'
 import { timeIntervalRule } from '../../../domain/types/time-interval'
 
-const strategyService: StrategyService = Container.getStrategyService()
+const strategyService: StrategyActionService = Container.getStrategyService()
 
 export async function getLastStrategies(
   request: Request,

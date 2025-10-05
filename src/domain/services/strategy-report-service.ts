@@ -1,14 +1,14 @@
 import { Signal } from '../types/signal'
 import { StrategyActionCreate } from '../models/strategy-action'
-import { IndicatorList } from '../models/indicator'
+import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { IndicatorService } from './indicator-service'
-import { RiskService } from './risk-service'
 import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
+import { Strategy } from '../strategies/strategy'
 
-export class DecisionService {
+export class StrategyReportService {
   constructor(
     private readonly indicatorService: IndicatorService,
-    private readonly riskService: RiskService,
+    private readonly strategy: Strategy,
   ) {}
 
   async fetchAndCalculate(symbol: string): Promise<StrategyActionCreate> {
@@ -22,8 +22,14 @@ export class DecisionService {
     }
 
     const risk: StrategyReport =
-      await this.riskService.calculateAndCreate(indicators)
+      await this.strategy.calculateAndCreate(indicators)
     return this.calculate(risk)
+  }
+
+  evaluate(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): StrategyReport | StrategyReportCreate {
+    return this.strategy.calculate(indicators)
   }
 
   calculate(risk: StrategyReport | StrategyReportCreate): StrategyActionCreate {

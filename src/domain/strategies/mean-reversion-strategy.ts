@@ -9,10 +9,11 @@ import {
   SellConditions,
 } from '../models/strategy-report'
 import { median } from '../helpers/math-helper'
-export class RiskService {
+import { Strategy } from './strategy'
+export class MeanReversionStrategy implements Strategy {
   constructor(
     private readonly settings: RiskSettings,
-    private readonly riskRepository: StrategyReportRepository,
+    private readonly strategyReportRepository: StrategyReportRepository,
   ) {}
 
   async calculateAndCreate(
@@ -21,8 +22,8 @@ export class RiskService {
     return await this.create(this.calculate(indicators))
   }
 
-  async create(risk: StrategyReportCreate): Promise<StrategyReport> {
-    return await this.riskRepository.create(risk)
+  async create(strategyReport: StrategyReportCreate): Promise<StrategyReport> {
+    return await this.strategyReportRepository.create(strategyReport)
   }
 
   calculate(
@@ -141,11 +142,11 @@ export class RiskService {
     const slPrice: number = bb.lower
     const tpPrice: number = bb.upper
 
-    const riskAmount: number = price - slPrice
-    const rewardAmount: number = tpPrice - price
+    const sl: number = price - slPrice
+    const tp: number = tpPrice - price
 
-    const slPercent: number = (riskAmount / price) * 100
-    const tpPercent: number = (rewardAmount / price) * 100
+    const slPercent: number = (sl / price) * 100
+    const tpPercent: number = (tp / price) * 100
 
     const trailingStopMultiplier: number = this.settings.trailingStopMultiplier
     const tsPercent: number = ((atr.atr * trailingStopMultiplier) / price) * 100

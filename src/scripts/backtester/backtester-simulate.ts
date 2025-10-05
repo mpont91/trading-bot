@@ -2,14 +2,13 @@ import fs from 'fs'
 import { Container } from '../../di'
 import { Candle } from '../../domain/types/candle'
 import { IndicatorService } from '../../domain/services/indicator-service'
-import { RiskService } from '../../domain/services/risk-service'
 import { BacktesterService } from '../../domain/services/backtester-service'
 import {
   BacktestingSettings,
   BacktestingSummary,
 } from '../../domain/types/backtesting'
 import { InvestmentService } from '../../domain/services/investment-service'
-import { DecisionService } from '../../domain/services/decision-service'
+import { StrategyReportService } from '../../domain/services/strategy-report-service'
 
 function settings(): BacktestingSettings {
   return {
@@ -21,13 +20,11 @@ function settings(): BacktestingSettings {
 function initializeBacktesterService(): BacktesterService {
   const backtestingSettings: BacktestingSettings = settings()
   const indicatorService: IndicatorService = Container.getIndicatorService()
-  const riskService: RiskService = Container.getRiskService()
-  const decisionService: DecisionService = Container.getDecisionService()
+  const decisionService: StrategyReportService = Container.getDecisionService()
   const investmentService: InvestmentService = Container.getInvestmentService()
 
   return new BacktesterService(
     indicatorService,
-    riskService,
     decisionService,
     investmentService,
     backtestingSettings,

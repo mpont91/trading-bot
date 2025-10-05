@@ -1,5 +1,5 @@
 import { Container } from '../../di'
-import { DecisionService } from '../../domain/services/decision-service'
+import { StrategyReportService } from '../../domain/services/strategy-report-service'
 import { StrategyActionCreate } from '../../domain/models/strategy-action'
 
 export default async function (args: string[]): Promise<void> {
@@ -9,7 +9,7 @@ export default async function (args: string[]): Promise<void> {
     throw new Error('Missing required argument: symbol')
   }
 
-  const decisionService: DecisionService = Container.getDecisionService()
+  const decisionService: StrategyReportService = Container.getDecisionService()
   const response: StrategyActionCreate =
     await decisionService.fetchAndCalculate(symbol)
 

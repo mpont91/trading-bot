@@ -3,12 +3,12 @@ import { StrategyAction, StrategyActionCreate } from '../models/strategy-action'
 import { StrategyAnalysis } from '../types/strategy-analysis'
 import { TimeInterval } from '../types/time-interval'
 import { reduceRecordsData } from '../helpers/graph-helper'
-import { DecisionService } from './decision-service'
+import { StrategyReportService } from './strategy-report-service'
 
-export class StrategyService {
+export class StrategyActionService {
   constructor(
-    private readonly strategyRepository: StrategyActionRepository,
-    private readonly decisionService: DecisionService,
+    private readonly strategyActionRepository: StrategyActionRepository,
+    private readonly decisionService: StrategyReportService,
   ) {}
 
   async calculateAndCreate(symbol: string): Promise<StrategyAction> {
@@ -16,19 +16,19 @@ export class StrategyService {
   }
 
   async create(strategy: StrategyActionCreate): Promise<StrategyAction> {
-    return this.strategyRepository.create(strategy)
+    return this.strategyActionRepository.create(strategy)
   }
 
   async last(symbol: string): Promise<StrategyAction | null> {
-    return await this.strategyRepository.last(symbol)
+    return await this.strategyActionRepository.last(symbol)
   }
 
   async list(symbol?: string): Promise<StrategyAction[]> {
-    return this.strategyRepository.list(symbol)
+    return this.strategyActionRepository.list(symbol)
   }
 
   async listOpportunities(symbol?: string): Promise<StrategyAction[]> {
-    return this.strategyRepository.listOpportunities(symbol)
+    return this.strategyActionRepository.listOpportunities(symbol)
   }
 
   async getStrategyAnalysis(
@@ -36,11 +36,14 @@ export class StrategyService {
     interval: TimeInterval,
   ): Promise<StrategyAnalysis> {
     const prices: StrategyAction[] =
-      await this.strategyRepository.getPriceGraph(symbol, interval)
+      await this.strategyActionRepository.getPriceGraph(symbol, interval)
     const pricesReducedData: StrategyAction[] = reduceRecordsData(prices)
 
     const opportunities: StrategyAction[] =
-      await this.strategyRepository.getOpportunitiesGraph(symbol, interval)
+      await this.strategyActionRepository.getOpportunitiesGraph(
+        symbol,
+        interval,
+      )
     const opportunitiesReducedData: StrategyAction[] =
       reduceRecordsData(opportunities)
 

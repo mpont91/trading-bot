@@ -1,4 +1,4 @@
-import { StrategyService } from './strategy-service'
+import { StrategyActionService } from './strategy-action-service'
 import { TradeService } from './trade-service'
 import { PositionService } from './position-service'
 import { StrategyAction } from '../models/strategy-action'
@@ -8,7 +8,7 @@ import { Position } from '../models/position'
 export class ExecutionService {
   constructor(
     private readonly positionService: PositionService,
-    private readonly strategyService: StrategyService,
+    private readonly strategyService: StrategyActionService,
     private readonly tradeService: TradeService,
   ) {}
 

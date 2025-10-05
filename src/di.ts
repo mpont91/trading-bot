@@ -22,7 +22,7 @@ import { InvestmentService } from './domain/services/investment-service'
 import { settings } from './application/settings'
 import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
-import { StrategyService } from './domain/services/strategy-service'
+import { StrategyActionService } from './domain/services/strategy-action-service'
 import { StrategyActionRepository } from './domain/repositories/strategy-action-repository'
 import { PrismaStrategyActionRepository } from './infrastructure/repositories/prisma-strategy-action-repository'
 import { TrailingService } from './domain/services/trailing-service'
@@ -41,11 +41,12 @@ import { SmaCrossIndicatorCalculator } from './domain/indicators/sma-cross-indic
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
 import { PositionRepository } from './domain/repositories/position-repository'
 import { PrismaPositionRepository } from './infrastructure/repositories/prisma-position-repository'
-import { DecisionService } from './domain/services/decision-service'
+import { StrategyReportService } from './domain/services/strategy-report-service'
 import { ExecutionService } from './domain/services/execution-service'
-import { RiskService } from './domain/services/risk-service'
 import { StrategyReportRepository } from './domain/repositories/strategy-report-repository'
 import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
+import { Strategy } from './domain/strategies/strategy'
+import { MeanReversionStrategy } from './domain/strategies/mean-reversion-strategy'
 
 class Container {
   private static launcherMarket: Launcher
@@ -60,11 +61,10 @@ class Container {
   private static positionService: PositionService
   private static performanceService: PerformanceService
   private static indicatorService: IndicatorService
-  private static strategyService: StrategyService
+  private static strategyService: StrategyActionService
   private static trailingService: TrailingService
-  private static decisionService: DecisionService
+  private static decisionService: StrategyReportService
   private static executionService: ExecutionService
-  private static riskService: RiskService
 
   static initialize(): void {
     const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
@@ -149,12 +149,15 @@ class Container {
       bbIndicatorCalculator,
       smaCrossIndicatorCalculator,
     )
-    this.riskService = new RiskService(settings.risk, strategyReportRepository)
-    this.decisionService = new DecisionService(
-      this.indicatorService,
-      this.riskService,
+    const meanReversionStrategy: Strategy = new MeanReversionStrategy(
+      settings.risk,
+      strategyReportRepository,
     )
-    this.strategyService = new StrategyService(
+    this.decisionService = new StrategyReportService(
+      this.indicatorService,
+      meanReversionStrategy,
+    )
+    this.strategyService = new StrategyActionService(
       strategyActionRepository,
       this.decisionService,
     )
@@ -221,19 +224,16 @@ class Container {
   static getPerformanceService(): PerformanceService {
     return this.performanceService
   }
-  static getRiskService(): RiskService {
-    return this.riskService
-  }
   static getIndicatorService(): IndicatorService {
     return this.indicatorService
   }
-  static getStrategyService(): StrategyService {
+  static getStrategyService(): StrategyActionService {
     return this.strategyService
   }
   static getTrailingService(): TrailingService {
     return this.trailingService
   }
-  static getDecisionService(): DecisionService {
+  static getDecisionService(): StrategyReportService {
     return this.decisionService
   }
 }
