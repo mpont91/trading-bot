@@ -1,7 +1,7 @@
 import { StrategyService } from './strategy-service'
 import { TradeService } from './trade-service'
 import { PositionService } from './position-service'
-import { Strategy } from '../models/strategy'
+import { StrategyAction } from '../models/strategy-action'
 import { Signal } from '../types/signal'
 import { Position } from '../models/position'
 
@@ -13,7 +13,8 @@ export class ExecutionService {
   ) {}
 
   async execute(symbol: string): Promise<void> {
-    const strategy: Strategy | null = await this.strategyService.last(symbol)
+    const strategy: StrategyAction | null =
+      await this.strategyService.last(symbol)
     const position: Position | null = await this.positionService.get(symbol)
 
     if (position) {

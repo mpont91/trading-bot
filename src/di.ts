@@ -23,8 +23,8 @@ import { settings } from './application/settings'
 import { MarketManager } from './domain/managers/market-manager'
 import { ManagerInterface } from './domain/managers/manager-interface'
 import { StrategyService } from './domain/services/strategy-service'
-import { StrategyRepository } from './domain/repositories/strategy-repository'
-import { PrismaStrategyRepository } from './infrastructure/repositories/prisma-strategy-repository'
+import { StrategyActionRepository } from './domain/repositories/strategy-action-repository'
+import { PrismaStrategyActionRepository } from './infrastructure/repositories/prisma-strategy-action-repository'
 import { TrailingService } from './domain/services/trailing-service'
 import { TrailingRepository } from './domain/repositories/trailing-repository'
 import { PrismaTrailingRepository } from './infrastructure/repositories/prisma-trailing-repository'
@@ -44,8 +44,8 @@ import { PrismaPositionRepository } from './infrastructure/repositories/prisma-p
 import { DecisionService } from './domain/services/decision-service'
 import { ExecutionService } from './domain/services/execution-service'
 import { RiskService } from './domain/services/risk-service'
-import { RiskRepository } from './domain/repositories/risk-repository'
-import { PrismaRiskRepository } from './infrastructure/repositories/prisma-risk-repository'
+import { StrategyReportRepository } from './domain/repositories/strategy-report-repository'
+import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
 
 class Container {
   private static launcherMarket: Launcher
@@ -80,16 +80,16 @@ class Container {
     const tradeRepository: TradeRepository = new PrismaTradeRepository(prisma)
     const indicatorRepository: IndicatorRepository =
       new PrismaIndicatorRepository(prisma)
-    const strategyRepository: StrategyRepository = new PrismaStrategyRepository(
-      prisma,
-    )
+    const strategyActionRepository: StrategyActionRepository =
+      new PrismaStrategyActionRepository(prisma)
     const positionRepository: PositionRepository = new PrismaPositionRepository(
       prisma,
     )
     const trailingRepository: TrailingRepository = new PrismaTrailingRepository(
       prisma,
     )
-    const riskRepository: RiskRepository = new PrismaRiskRepository(prisma)
+    const strategyReportRepository: StrategyReportRepository =
+      new PrismaStrategyReportRepository(prisma)
 
     const adxIndicatorCalculator: AdxIndicatorCalculator =
       new AdxIndicatorCalculator(settings.indicators.adx)
@@ -149,13 +149,13 @@ class Container {
       bbIndicatorCalculator,
       smaCrossIndicatorCalculator,
     )
-    this.riskService = new RiskService(settings.risk, riskRepository)
+    this.riskService = new RiskService(settings.risk, strategyReportRepository)
     this.decisionService = new DecisionService(
       this.indicatorService,
       this.riskService,
     )
     this.strategyService = new StrategyService(
-      strategyRepository,
+      strategyActionRepository,
       this.decisionService,
     )
     this.executionService = new ExecutionService(

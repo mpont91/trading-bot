@@ -1,4 +1,4 @@
-import { Candle, TimeFrame } from '../../../domain/types/Candle'
+import { Candle, TimeFrame } from '../../../domain/types/candle'
 import { Interval, RestMarketTypes } from '@binance/connector-typescript'
 
 export function mapBinanceToDomainCandle(

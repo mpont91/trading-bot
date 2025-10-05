@@ -1,11 +1,11 @@
 -- CreateEnum
-CREATE TYPE "public"."Side" AS ENUM ('LONG', 'SHORT');
+CREATE TYPE "Side" AS ENUM ('LONG', 'SHORT');
 
 -- CreateEnum
-CREATE TYPE "public"."Signal" AS ENUM ('BUY', 'SELL', 'HOLD');
+CREATE TYPE "Signal" AS ENUM ('BUY', 'SELL', 'HOLD');
 
 -- CreateTable
-CREATE TABLE "public"."Equity" (
+CREATE TABLE "Equity" (
     "id" SERIAL NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -14,7 +14,7 @@ CREATE TABLE "public"."Equity" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."CommissionEquity" (
+CREATE TABLE "CommissionEquity" (
     "id" SERIAL NOT NULL,
     "currency" TEXT NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
@@ -25,11 +25,11 @@ CREATE TABLE "public"."CommissionEquity" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Order" (
+CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
     "order_id" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
-    "side" "public"."Side" NOT NULL,
+    "side" "Side" NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "amount" DECIMAL(65,30) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE "public"."Order" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Trade" (
+CREATE TABLE "Trade" (
     "id" SERIAL NOT NULL,
     "symbol" TEXT NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE "public"."Trade" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."IndicatorSMA" (
+CREATE TABLE "IndicatorSMA" (
     "id" SERIAL NOT NULL,
     "period" INTEGER NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE "public"."IndicatorSMA" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."IndicatorRSI" (
+CREATE TABLE "IndicatorRSI" (
     "id" SERIAL NOT NULL,
     "period" INTEGER NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE "public"."IndicatorRSI" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."IndicatorATR" (
+CREATE TABLE "IndicatorATR" (
     "id" SERIAL NOT NULL,
     "period" INTEGER NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE "public"."IndicatorATR" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."IndicatorADX" (
+CREATE TABLE "IndicatorADX" (
     "id" SERIAL NOT NULL,
     "period" INTEGER NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -107,7 +107,7 @@ CREATE TABLE "public"."IndicatorADX" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."IndicatorBB" (
+CREATE TABLE "IndicatorBB" (
     "id" SERIAL NOT NULL,
     "period" INTEGER NOT NULL,
     "symbol" TEXT NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE "public"."IndicatorBB" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."IndicatorSMACross" (
+CREATE TABLE "IndicatorSMACross" (
     "id" SERIAL NOT NULL,
     "period_long" INTEGER NOT NULL,
     "period_short" INTEGER NOT NULL,
@@ -136,23 +136,7 @@ CREATE TABLE "public"."IndicatorSMACross" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Strategy" (
-    "id" SERIAL NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "signal" "public"."Signal" NOT NULL,
-    "sl" DECIMAL(65,30),
-    "tp" DECIMAL(65,30),
-    "ts" DECIMAL(65,30),
-    "tp_price" DECIMAL(65,30),
-    "sl_price" DECIMAL(65,30),
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Strategy_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."Position" (
+CREATE TABLE "Position" (
     "symbol" TEXT NOT NULL,
     "entry_order_id" INTEGER NOT NULL,
     "quantity" DECIMAL(65,30) NOT NULL,
@@ -164,7 +148,7 @@ CREATE TABLE "public"."Position" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Trailing" (
+CREATE TABLE "Trailing" (
     "symbol" TEXT NOT NULL,
     "tp" DECIMAL(65,30) NOT NULL,
     "sl" DECIMAL(65,30) NOT NULL,
@@ -179,7 +163,23 @@ CREATE TABLE "public"."Trailing" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Risk" (
+CREATE TABLE "StrategyAction" (
+    "id" SERIAL NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL(65,30) NOT NULL,
+    "signal" "Signal" NOT NULL,
+    "sl" DECIMAL(65,30),
+    "tp" DECIMAL(65,30),
+    "ts" DECIMAL(65,30),
+    "tp_price" DECIMAL(65,30),
+    "sl_price" DECIMAL(65,30),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "StrategyAction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "StrategyReport" (
     "id" SERIAL NOT NULL,
     "symbol" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
@@ -203,26 +203,26 @@ CREATE TABLE "public"."Risk" (
     "should_sell" BOOLEAN NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Risk_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "StrategyReport_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE INDEX "Order_symbol_side_idx" ON "public"."Order"("symbol", "side");
+CREATE INDEX "Order_symbol_side_idx" ON "Order"("symbol", "side");
 
 -- CreateIndex
-CREATE INDEX "Order_symbol_idx" ON "public"."Order"("symbol");
+CREATE INDEX "Order_symbol_idx" ON "Order"("symbol");
 
 -- CreateIndex
-CREATE INDEX "Order_side_idx" ON "public"."Order"("side");
+CREATE INDEX "Order_side_idx" ON "Order"("side");
 
 -- CreateIndex
-CREATE INDEX "Trade_symbol_idx" ON "public"."Trade"("symbol");
+CREATE INDEX "Trade_symbol_idx" ON "Trade"("symbol");
 
 -- CreateIndex
-CREATE INDEX "Strategy_symbol_signal_idx" ON "public"."Strategy"("symbol", "signal");
+CREATE INDEX "StrategyAction_symbol_signal_idx" ON "StrategyAction"("symbol", "signal");
 
 -- CreateIndex
-CREATE INDEX "Strategy_symbol_idx" ON "public"."Strategy"("symbol");
+CREATE INDEX "StrategyAction_symbol_idx" ON "StrategyAction"("symbol");
 
 -- CreateIndex
-CREATE INDEX "Strategy_signal_idx" ON "public"."Strategy"("signal");
+CREATE INDEX "StrategyAction_signal_idx" ON "StrategyAction"("signal");

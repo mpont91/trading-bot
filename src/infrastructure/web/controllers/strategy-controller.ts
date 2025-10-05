@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { createErrorResponse } from '../helpers/response-helper'
 import { Container } from '../../../di'
-import { Strategy } from '../../../domain/models/strategy'
+import { StrategyAction } from '../../../domain/models/strategy-action'
 import { StrategyService } from '../../../domain/services/strategy-service'
 import { StrategyAnalysis } from '../../../domain/types/strategy-analysis'
 import { timeIntervalRule } from '../../../domain/types/time-interval'
@@ -15,7 +15,7 @@ export async function getLastStrategies(
   try {
     const symbol: string | undefined = request.params.symbol
 
-    const strategies: Strategy[] = await strategyService.list(
+    const strategies: StrategyAction[] = await strategyService.list(
       symbol?.toUpperCase(),
     )
 
@@ -34,9 +34,8 @@ export async function getLastOpportunities(
   try {
     const symbol: string | undefined = request.params.symbol
 
-    const opportunities: Strategy[] = await strategyService.listOpportunities(
-      symbol?.toUpperCase(),
-    )
+    const opportunities: StrategyAction[] =
+      await strategyService.listOpportunities(symbol?.toUpperCase())
 
     response.json({
       data: opportunities,

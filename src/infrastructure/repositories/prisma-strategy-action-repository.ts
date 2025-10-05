@@ -1,28 +1,33 @@
 import {
-  Strategy as PrismaStrategy,
+  StrategyAction as PrismaStrategyAction,
   Prisma,
   PrismaClient,
 } from '@prisma/client'
 import Decimal from 'decimal.js'
-import { StrategyRepository } from '../../domain/repositories/strategy-repository'
-import { Strategy, StrategyCreate } from '../../domain/models/strategy'
+import { StrategyActionRepository } from '../../domain/repositories/strategy-action-repository'
+import {
+  StrategyAction,
+  StrategyActionCreate,
+} from '../../domain/models/strategy-action'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 import { Signal } from '../../domain/types/signal'
 
-export class PrismaStrategyRepository implements StrategyRepository {
+export class PrismaStrategyActionRepository
+  implements StrategyActionRepository
+{
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(strategy: StrategyCreate): Promise<Strategy> {
+  async create(strategy: StrategyActionCreate): Promise<StrategyAction> {
     return this.toDomain(
-      await this.prisma.strategy.create({
+      await this.prisma.strategyAction.create({
         data: this.toPrisma(strategy),
       }),
     )
   }
 
-  async last(symbol: string): Promise<Strategy | null> {
-    const strategy = await this.prisma.strategy.findFirst({
+  async last(symbol: string): Promise<StrategyAction | null> {
+    const strategy = await this.prisma.strategyAction.findFirst({
       where: {
         symbol: symbol,
       },
@@ -38,7 +43,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     return this.toDomain(strategy)
   }
 
-  async list(symbol?: string): Promise<Strategy[]> {
+  async list(symbol?: string): Promise<StrategyAction[]> {
     let queryOptions = {}
 
     if (symbol) {
@@ -62,12 +67,12 @@ export class PrismaStrategyRepository implements StrategyRepository {
       }
     }
 
-    const strategies = await this.prisma.strategy.findMany(queryOptions)
+    const strategies = await this.prisma.strategyAction.findMany(queryOptions)
 
     return this.toDomainList(strategies)
   }
 
-  async listOpportunities(symbol?: string): Promise<Strategy[]> {
+  async listOpportunities(symbol?: string): Promise<StrategyAction[]> {
     let queryOptions = {}
 
     if (symbol) {
@@ -93,7 +98,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
       }
     }
 
-    const strategies = await this.prisma.strategy.findMany(queryOptions)
+    const strategies = await this.prisma.strategyAction.findMany(queryOptions)
 
     return this.toDomainList(strategies)
   }
@@ -101,10 +106,10 @@ export class PrismaStrategyRepository implements StrategyRepository {
   async getPriceGraph(
     symbol: string,
     interval: TimeInterval,
-  ): Promise<Strategy[]> {
+  ): Promise<StrategyAction[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const strategies = await this.prisma.strategy.findMany({
+    const strategies = await this.prisma.strategyAction.findMany({
       where: {
         symbol: symbol,
         created_at: {
@@ -122,10 +127,10 @@ export class PrismaStrategyRepository implements StrategyRepository {
   async getOpportunitiesGraph(
     symbol: string,
     interval: TimeInterval,
-  ): Promise<Strategy[]> {
+  ): Promise<StrategyAction[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const strategies = await this.prisma.strategy.findMany({
+    const strategies = await this.prisma.strategyAction.findMany({
       where: {
         symbol: symbol,
         signal: { not: Signal.HOLD },
@@ -141,7 +146,7 @@ export class PrismaStrategyRepository implements StrategyRepository {
     return this.toDomainList(strategies)
   }
 
-  private toDomain(prismaStrategy: PrismaStrategy): Strategy {
+  private toDomain(prismaStrategy: PrismaStrategyAction): StrategyAction {
     return {
       id: prismaStrategy.id,
       symbol: prismaStrategy.symbol,
@@ -160,24 +165,28 @@ export class PrismaStrategyRepository implements StrategyRepository {
     }
   }
 
-  private toPrisma(strategyCreate: StrategyCreate): Prisma.StrategyCreateInput {
+  private toPrisma(
+    strategyAction: StrategyActionCreate,
+  ): Prisma.StrategyActionCreateInput {
     return {
-      symbol: strategyCreate.symbol,
-      price: new Decimal(strategyCreate.price),
-      signal: strategyCreate.signal,
-      tp: strategyCreate.tp ? new Decimal(strategyCreate.tp) : undefined,
-      sl: strategyCreate.sl ? new Decimal(strategyCreate.sl) : undefined,
-      ts: strategyCreate.ts ? new Decimal(strategyCreate.ts) : undefined,
-      tp_price: strategyCreate.tpPrice
-        ? new Decimal(strategyCreate.tpPrice)
+      symbol: strategyAction.symbol,
+      price: new Decimal(strategyAction.price),
+      signal: strategyAction.signal,
+      tp: strategyAction.tp ? new Decimal(strategyAction.tp) : undefined,
+      sl: strategyAction.sl ? new Decimal(strategyAction.sl) : undefined,
+      ts: strategyAction.ts ? new Decimal(strategyAction.ts) : undefined,
+      tp_price: strategyAction.tpPrice
+        ? new Decimal(strategyAction.tpPrice)
         : undefined,
-      sl_price: strategyCreate.slPrice
-        ? new Decimal(strategyCreate.slPrice)
+      sl_price: strategyAction.slPrice
+        ? new Decimal(strategyAction.slPrice)
         : undefined,
     }
   }
 
-  private toDomainList(prismaStrategy: PrismaStrategy[]): Strategy[] {
+  private toDomainList(
+    prismaStrategy: PrismaStrategyAction[],
+  ): StrategyAction[] {
     return prismaStrategy.map(this.toDomain)
   }
 }

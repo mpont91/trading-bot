@@ -128,23 +128,6 @@ model IndicatorSMACross {
   created_at   DateTime @default(now())
 }
 
-model Strategy {
-  id         Int      @id @default(autoincrement())
-  symbol     String
-  price      Decimal
-  signal     Signal
-  sl         Decimal?
-  tp         Decimal?
-  ts         Decimal?
-  tp_price   Decimal?
-  sl_price   Decimal?
-  created_at DateTime @default(now())
-
-  @@index([symbol, signal])
-  @@index([symbol])
-  @@index([signal])
-}
-
 model Position {
   symbol         String   @id
   entry_order_id Int
@@ -166,7 +149,24 @@ model Trailing {
   updated_at DateTime @default(now())
 }
 
-model Risk {
+model StrategyAction {
+  id         Int      @id @default(autoincrement())
+  symbol     String
+  price      Decimal
+  signal     Signal
+  sl         Decimal?
+  tp         Decimal?
+  ts         Decimal?
+  tp_price   Decimal?
+  sl_price   Decimal?
+  created_at DateTime @default(now())
+
+  @@index([symbol, signal])
+  @@index([symbol])
+  @@index([signal])
+}
+
+model StrategyReport {
   id                    Int      @id @default(autoincrement())
   symbol                String
   price                 Decimal

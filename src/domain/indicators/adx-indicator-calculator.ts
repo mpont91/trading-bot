@@ -1,5 +1,5 @@
 import { ADX } from 'technicalindicators'
-import { Candle } from '../types/Candle'
+import { Candle } from '../types/candle'
 import { ADXOutput } from 'technicalindicators/declarations/directionalmovement/ADX'
 import { IndicatorADXCreate } from '../models/indicator'
 import {

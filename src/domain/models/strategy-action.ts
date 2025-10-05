@@ -8,7 +8,7 @@ export interface Stops {
   slPrice?: number
 }
 
-export interface Strategy extends Stops {
+export interface StrategyAction extends Stops {
   id: number
   symbol: string
   price: number
@@ -16,4 +16,4 @@ export interface Strategy extends Stops {
   createdAt: Date
 }
 
-export type StrategyCreate = Omit<Strategy, 'id' | 'createdAt'>
+export type StrategyActionCreate = Omit<StrategyAction, 'id' | 'createdAt'>

@@ -1,26 +1,33 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
-import { Stops } from '../models/strategy'
+import { Stops } from '../models/strategy-action'
 import { RiskSettings } from '../types/settings'
-import { RiskRepository } from '../repositories/risk-repository'
-import { BuyConditions, Risk, RiskCreate, SellConditions } from '../models/risk'
+import { StrategyReportRepository } from '../repositories/strategy-report-repository'
+import {
+  BuyConditions,
+  StrategyReport,
+  StrategyReportCreate,
+  SellConditions,
+} from '../models/strategy-report'
 import { median } from '../helpers/math-helper'
 export class RiskService {
   constructor(
     private readonly settings: RiskSettings,
-    private readonly riskRepository: RiskRepository,
+    private readonly riskRepository: StrategyReportRepository,
   ) {}
 
   async calculateAndCreate(
     indicators: IndicatorList | IndicatorListCreate,
-  ): Promise<Risk> {
+  ): Promise<StrategyReport> {
     return await this.create(this.calculate(indicators))
   }
 
-  async create(risk: RiskCreate): Promise<Risk> {
+  async create(risk: StrategyReportCreate): Promise<StrategyReport> {
     return await this.riskRepository.create(risk)
   }
 
-  calculate(indicators: IndicatorList | IndicatorListCreate): RiskCreate {
+  calculate(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): StrategyReportCreate {
     const { bb, sma, rsi, adx, atr, smaCross } = indicators
 
     const symbol: string = bb.symbol

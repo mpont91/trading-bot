@@ -5,7 +5,7 @@ import {
   RestTradeTypes,
 } from '@binance/connector-typescript'
 import { Api } from '../../application/api'
-import { Candle, TimeFrame } from '../../domain/types/Candle'
+import { Candle, TimeFrame } from '../../domain/types/candle'
 import {
   mapBinanceToDomainCandle,
   mapDomainToBinanceTimeFrame,

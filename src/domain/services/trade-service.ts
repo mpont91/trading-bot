@@ -1,7 +1,7 @@
 import { Trade, TradeCreate } from '../models/trade'
 import { TradeRepository } from '../repositories/trade-repository'
 import { Order } from '../models/order'
-import { Strategy } from '../models/strategy'
+import { StrategyAction } from '../models/strategy-action'
 import { Position } from '../models/position'
 import { TrailingService } from './trailing-service'
 import { PositionService } from './position-service'
@@ -28,7 +28,7 @@ export class TradeService {
     return (await this.positionService.list()).length < this.maxOpenPosition
   }
 
-  async openTrade(strategy: Strategy): Promise<void> {
+  async openTrade(strategy: StrategyAction): Promise<void> {
     await this.positionService.openPosition(strategy.symbol)
 
     if (

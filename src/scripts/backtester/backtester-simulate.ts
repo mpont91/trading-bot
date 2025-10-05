@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { Container } from '../../di'
-import { Candle } from '../../domain/types/Candle'
+import { Candle } from '../../domain/types/candle'
 import { IndicatorService } from '../../domain/services/indicator-service'
 import { RiskService } from '../../domain/services/risk-service'
 import { BacktesterService } from '../../domain/services/backtester-service'

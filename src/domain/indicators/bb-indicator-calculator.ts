@@ -1,5 +1,5 @@
 import { BollingerBands } from 'technicalindicators'
-import { Candle } from '../types/Candle'
+import { Candle } from '../types/candle'
 import { BollingerBandsOutput } from 'technicalindicators/declarations/generated'
 import { IndicatorBBCreate } from '../models/indicator'
 import {

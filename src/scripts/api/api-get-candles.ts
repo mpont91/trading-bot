@@ -1,6 +1,6 @@
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
-import { Candle } from '../../domain/types/Candle'
+import { Candle } from '../../domain/types/candle'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args

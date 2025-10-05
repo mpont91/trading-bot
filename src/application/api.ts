@@ -1,7 +1,7 @@
 import { Balance } from '../domain/types/balance'
 import { Symbol } from '../domain/types/symbol'
 import { OrderRequest, OrderCreate } from '../domain/models/order'
-import { Candle, TimeFrame } from '../domain/types/Candle'
+import { Candle, TimeFrame } from '../domain/types/candle'
 import { CommissionEquityCreate } from '../domain/models/commission-equity'
 import { EquityCreate } from '../domain/models/equity'
 import { Coin } from '../domain/types/coin'

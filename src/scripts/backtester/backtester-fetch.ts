@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
-import { Candle, TimeFrame } from '../../domain/types/Candle'
+import { Candle, TimeFrame } from '../../domain/types/candle'
 import { settings } from '../../application/settings'
 
 export default async function (args: string[]): Promise<void> {

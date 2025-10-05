@@ -1,6 +1,6 @@
-import { Candle } from '../types/Candle'
+import { Candle } from '../types/candle'
 import { IndicatorListCreate } from '../models/indicator'
-import { RiskCreate } from '../models/risk'
+import { StrategyReportCreate } from '../models/strategy-report'
 import { calculateSL } from '../helpers/stops-helper'
 import {
   BacktestingPosition,
@@ -12,7 +12,7 @@ import { RiskService } from './risk-service'
 import { InvestmentService } from './investment-service'
 import { Balance } from '../types/balance'
 import { DecisionService } from './decision-service'
-import { StrategyCreate } from '../models/strategy'
+import { StrategyActionCreate } from '../models/strategy-action'
 import { settings } from '../../application/settings'
 
 export class BacktesterService {
@@ -68,11 +68,12 @@ export class BacktesterService {
       const indicators: IndicatorListCreate =
         this.indicatorService.calculateAll(symbol, currentCandles)
 
-      const risk: RiskCreate = this.riskService.calculate(indicators)
+      const risk: StrategyReportCreate = this.riskService.calculate(indicators)
 
       this.countRiskConditions(risk)
 
-      const strategy: StrategyCreate = this.decisionService.calculate(risk)
+      const strategy: StrategyActionCreate =
+        this.decisionService.calculate(risk)
 
       switch (strategy.signal) {
         case 'HOLD':
@@ -127,7 +128,7 @@ export class BacktesterService {
     return this.summary
   }
 
-  buy(strategy: StrategyCreate): void {
+  buy(strategy: StrategyActionCreate): void {
     if (this.position) {
       throw new Error('There is already an open position when trying to buy!')
     }
@@ -191,7 +192,7 @@ export class BacktesterService {
     }
   }
 
-  countRiskConditions(risk: RiskCreate): void {
+  countRiskConditions(risk: StrategyReportCreate): void {
     if (risk.bullishDirection) this.summary.bullishDirection++
     if (risk.bullishMomentum) this.summary.bullishMomentum++
     if (risk.deathCross) this.summary.deathCross++

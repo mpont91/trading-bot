@@ -1,4 +1,4 @@
-import { Stops } from './strategy'
+import { Stops } from './strategy-action'
 
 export interface BuyConditions {
   trendUp: boolean
@@ -17,15 +17,13 @@ export interface SellConditions {
   bearishConviction: boolean
 }
 
-export interface Risk extends Stops, BuyConditions, SellConditions {
+export interface StrategyReport extends Stops, BuyConditions, SellConditions {
   id: number
   symbol: string
   price: number
-  validStops?: boolean
-  riskReward?: boolean
   shouldBuy: boolean
   shouldSell: boolean
   createdAt: Date
 }
 
-export type RiskCreate = Omit<Risk, 'id' | 'createdAt'>
+export type StrategyReportCreate = Omit<StrategyReport, 'id' | 'createdAt'>

@@ -1,5 +1,5 @@
 import { SMA } from 'technicalindicators'
-import { Candle } from '../types/Candle'
+import { Candle } from '../types/candle'
 import { IndicatorSMACreate } from '../models/indicator'
 import {
   validateIndicatorCandles,

@@ -1,4 +1,4 @@
-import { TimeFrame } from './Candle'
+import { TimeFrame } from './candle'
 
 export interface Settings {
   intervalTradingTime: number

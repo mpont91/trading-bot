@@ -1,6 +1,6 @@
 import { Container } from '../../di'
 import { DecisionService } from '../../domain/services/decision-service'
-import { StrategyCreate } from '../../domain/models/strategy'
+import { StrategyActionCreate } from '../../domain/models/strategy-action'
 
 export default async function (args: string[]): Promise<void> {
   const [symbol] = args
@@ -10,7 +10,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const decisionService: DecisionService = Container.getDecisionService()
-  const response: StrategyCreate =
+  const response: StrategyActionCreate =
     await decisionService.fetchAndCalculate(symbol)
 
   console.dir(response, { depth: null })

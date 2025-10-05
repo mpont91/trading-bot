@@ -1,7 +1,7 @@
 import { SmaIndicatorCalculator } from '../indicators/sma-indicator-calculator'
 import { RsiIndicatorCalculator } from '../indicators/rsi-indicator-calculator'
 import { AtrIndicatorCalculator } from '../indicators/atr-indicator-calculator'
-import { Candle } from '../types/Candle'
+import { Candle } from '../types/candle'
 import { AdxIndicatorCalculator } from '../indicators/adx-indicator-calculator'
 import { BbIndicatorCalculator } from '../indicators/bb-indicator-calculator'
 import { IndicatorRepository } from '../repositories/indicator-repository'
