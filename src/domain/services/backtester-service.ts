@@ -69,8 +69,6 @@ export class BacktesterService {
       const risk: StrategyReportCreate =
         this.strategyReportService.evaluate(indicators)
 
-      this.countRiskConditions(risk)
-
       const strategy: StrategyActionCreate =
         this.strategyReportService.calculate(risk)
 
@@ -189,19 +187,5 @@ export class BacktesterService {
         this.position.tsPrice = potentialNewTsPrice
       }
     }
-  }
-
-  countRiskConditions(risk: StrategyReportCreate): void {
-    if (risk.bullishDirection) this.summary.bullishDirection++
-    if (risk.bullishMomentum) this.summary.bullishMomentum++
-    if (risk.deathCross) this.summary.deathCross++
-    if (risk.bearishMomentum) this.summary.bearishMomentum++
-    if (risk.bearishConviction) this.summary.bearishConviction++
-    if (risk.strongTrend) this.summary.strongTrend++
-    if (risk.goldenCross) this.summary.goldenCross++
-    if (risk.trendWeakening) this.summary.trendWeakening++
-    if (risk.notOverextended) this.summary.notOverextended++
-    if (risk.favorableEntryPrice) this.summary.favorableEntryPrice++
-    if (risk.trendUp) this.summary.trendUp++
   }
 }

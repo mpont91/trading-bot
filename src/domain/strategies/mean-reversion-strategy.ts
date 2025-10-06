@@ -1,15 +1,14 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { StrategyMeanReversion } from '../types/settings'
 import { StrategyReportRepository } from '../repositories/strategy-report-repository'
-import {
-  BuyConditions,
-  StrategyReport,
-  StrategyReportCreate,
-  SellConditions,
-} from '../models/strategy-report'
+import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
 import { median } from '../helpers/math-helper'
 import { Strategy } from './strategy'
 import { StrategyStops } from '../types/strategy-stops'
+import {
+  StrategyBuyConditions,
+  StrategySellConditions,
+} from '../types/strategy-conditions'
 export class MeanReversionStrategy implements Strategy {
   constructor(
     private readonly settings: StrategyMeanReversion,
@@ -42,17 +41,18 @@ export class MeanReversionStrategy implements Strategy {
       smaCross.price,
     ])
 
-    const buyConditions: BuyConditions = this.evaluateBuyConditions(indicators)
-    const sellConditions: SellConditions =
+    const buyConditions: StrategyBuyConditions =
+      this.evaluateBuyConditions(indicators)
+    const sellConditions: StrategySellConditions =
       this.evaluateSellConditions(indicators)
     const shouldBuy: boolean = this.evaluateShouldBuy(buyConditions)
     const shouldSell: boolean = this.evaluateShouldSell(sellConditions)
     let stops: StrategyStops = {
-      sl: undefined,
-      tp: undefined,
-      ts: undefined,
-      tpPrice: undefined,
-      slPrice: undefined,
+      sl: null,
+      tp: null,
+      ts: null,
+      tpPrice: null,
+      slPrice: null,
     }
 
     if (shouldBuy) {
@@ -60,10 +60,13 @@ export class MeanReversionStrategy implements Strategy {
     }
 
     return {
+      name: 'mean reversion strategy',
       symbol,
       price,
-      ...buyConditions,
-      ...sellConditions,
+      conditions: {
+        buy: buyConditions,
+        sell: sellConditions,
+      },
       ...stops,
       shouldBuy,
       shouldSell,
@@ -72,7 +75,7 @@ export class MeanReversionStrategy implements Strategy {
 
   private evaluateBuyConditions(
     indicators: IndicatorList | IndicatorListCreate,
-  ): BuyConditions {
+  ): StrategyBuyConditions {
     const { bb, sma, rsi, adx, smaCross } = indicators
 
     const bullishMomentumMin: boolean =
@@ -93,7 +96,7 @@ export class MeanReversionStrategy implements Strategy {
 
   private evaluateSellConditions(
     indicators: IndicatorList | IndicatorListCreate,
-  ): SellConditions {
+  ): StrategySellConditions {
     const { smaCross, rsi, bb, adx } = indicators
     return {
       deathCross: smaCross.smaShort < smaCross.smaLong,
@@ -103,20 +106,20 @@ export class MeanReversionStrategy implements Strategy {
     }
   }
 
-  private evaluateShouldSell(sellConditions: SellConditions): boolean {
+  private evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
     return (
-      sellConditions.deathCross &&
-      sellConditions.bearishMomentum &&
-      sellConditions.trendWeakening &&
-      sellConditions.bearishConviction
+      !!sellConditions.deathCross &&
+      !!sellConditions.bearishMomentum &&
+      !!sellConditions.trendWeakening &&
+      !!sellConditions.bearishConviction
     )
   }
 
-  private evaluateShouldBuy(buyConditions: BuyConditions): boolean {
+  private evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
     return this.calculateBuyScore(buyConditions) >= this.settings.buyScoreMin
   }
 
-  private calculateBuyScore(buyConditions: BuyConditions): number {
+  private calculateBuyScore(buyConditions: StrategyBuyConditions): number {
     if (!buyConditions.goldenCross || !buyConditions.favorableEntryPrice) {
       return 0
     }

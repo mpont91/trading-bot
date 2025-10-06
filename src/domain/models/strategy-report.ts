@@ -1,32 +1,24 @@
-import { StrategyStops } from '../types/strategy-stops'
+import { strategyStopsSchema } from '../types/strategy-stops'
+import { strategyConditionsSchema } from '../types/strategy-conditions'
+import { z } from 'zod'
 
-export interface BuyConditions {
-  trendUp: boolean
-  goldenCross: boolean
-  strongTrend: boolean
-  bullishDirection: boolean
-  bullishMomentum: boolean
-  notOverextended: boolean
-  favorableEntryPrice: boolean
-}
+export const strategyReportSchema = z
+  .object({
+    id: z.number().int(),
+    name: z.string(),
+    symbol: z.string(),
+    price: z.number(),
+    conditions: strategyConditionsSchema,
+    shouldBuy: z.boolean(),
+    shouldSell: z.boolean(),
+    createdAt: z.date(),
+  })
+  .extend(strategyStopsSchema.shape)
 
-export interface SellConditions {
-  deathCross: boolean
-  bearishMomentum: boolean
-  trendWeakening: boolean
-  bearishConviction: boolean
-}
+export const strategyReportCreateSchema = strategyReportSchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export interface StrategyReport
-  extends StrategyStops,
-    BuyConditions,
-    SellConditions {
-  id: number
-  symbol: string
-  price: number
-  shouldBuy: boolean
-  shouldSell: boolean
-  createdAt: Date
-}
-
-export type StrategyReportCreate = Omit<StrategyReport, 'id' | 'createdAt'>
+export type StrategyReport = z.infer<typeof strategyReportSchema>
+export type StrategyReportCreate = z.infer<typeof strategyReportCreateSchema>

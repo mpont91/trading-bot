@@ -154,21 +154,15 @@ export class PrismaStrategyActionRepository
       symbol: prismaStrategyAction.symbol,
       price: prismaStrategyAction.price.toNumber(),
       signal: prismaStrategyAction.signal,
-      tp: prismaStrategyAction.tp
-        ? prismaStrategyAction.tp.toNumber()
-        : undefined,
-      sl: prismaStrategyAction.sl
-        ? prismaStrategyAction.sl.toNumber()
-        : undefined,
-      ts: prismaStrategyAction.ts
-        ? prismaStrategyAction.ts.toNumber()
-        : undefined,
+      tp: prismaStrategyAction.tp ? prismaStrategyAction.tp.toNumber() : null,
+      sl: prismaStrategyAction.sl ? prismaStrategyAction.sl.toNumber() : null,
+      ts: prismaStrategyAction.ts ? prismaStrategyAction.ts.toNumber() : null,
       tpPrice: prismaStrategyAction.tp_price
         ? prismaStrategyAction.tp_price.toNumber()
-        : undefined,
+        : null,
       slPrice: prismaStrategyAction.sl_price
         ? prismaStrategyAction.sl_price.toNumber()
-        : undefined,
+        : null,
       createdAt: prismaStrategyAction.created_at,
     }
   }

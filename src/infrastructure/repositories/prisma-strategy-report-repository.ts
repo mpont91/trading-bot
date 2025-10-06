@@ -8,7 +8,9 @@ import { StrategyReportRepository } from '../../domain/repositories/strategy-rep
 import {
   StrategyReport,
   StrategyReportCreate,
+  strategyReportCreateSchema,
 } from '../../domain/models/strategy-report'
+import { z } from 'zod'
 
 export class PrismaStrategyReportRepository
   implements StrategyReportRepository
@@ -24,68 +26,62 @@ export class PrismaStrategyReportRepository
   }
 
   private toDomain(prismaStrategyReport: PrismaStrategyReport): StrategyReport {
-    return {
-      id: prismaStrategyReport.id,
-      symbol: prismaStrategyReport.symbol,
-      price: prismaStrategyReport.price.toNumber(),
-      trendUp: prismaStrategyReport.trend_up,
-      goldenCross: prismaStrategyReport.golden_cross,
-      strongTrend: prismaStrategyReport.strong_trend,
-      bullishDirection: prismaStrategyReport.bullish_direction,
-      bullishMomentum: prismaStrategyReport.bullish_momentum,
-      notOverextended: prismaStrategyReport.not_overextended,
-      favorableEntryPrice: prismaStrategyReport.favorable_entry_price,
-      deathCross: prismaStrategyReport.death_cross,
-      bearishMomentum: prismaStrategyReport.bearish_momentum,
-      bearishConviction: prismaStrategyReport.bearish_conviction,
-      trendWeakening: prismaStrategyReport.trend_weakening,
-      tp: prismaStrategyReport.tp
-        ? prismaStrategyReport.tp.toNumber()
-        : undefined,
-      sl: prismaStrategyReport.sl
-        ? prismaStrategyReport.sl.toNumber()
-        : undefined,
-      ts: prismaStrategyReport.ts
-        ? prismaStrategyReport.ts.toNumber()
-        : undefined,
-      tpPrice: prismaStrategyReport.tp_price
-        ? prismaStrategyReport.tp_price.toNumber()
-        : undefined,
-      slPrice: prismaStrategyReport.sl_price
-        ? prismaStrategyReport.sl_price.toNumber()
-        : undefined,
-      shouldBuy: prismaStrategyReport.should_buy,
-      shouldSell: prismaStrategyReport.should_sell,
-      createdAt: prismaStrategyReport.created_at,
-    }
+    const prismaReportSchema = z
+      .object({
+        id: z.number(),
+        name: z.string(),
+        symbol: z.string(),
+        price: z.instanceof(Prisma.Decimal),
+        conditions: z.any(),
+        should_buy: z.boolean(),
+        should_sell: z.boolean(),
+        created_at: z.date(),
+        tp: z.instanceof(Prisma.Decimal).nullable(),
+        sl: z.instanceof(Prisma.Decimal).nullable(),
+        ts: z.instanceof(Prisma.Decimal).nullable(),
+        tp_price: z.instanceof(Prisma.Decimal).nullable(),
+        sl_price: z.instanceof(Prisma.Decimal).nullable(),
+      })
+      .transform((data) => {
+        return {
+          id: data.id,
+          name: data.name,
+          symbol: data.symbol,
+          price: data.price.toNumber(),
+          conditions: data.conditions,
+          shouldBuy: data.should_buy,
+          shouldSell: data.should_sell,
+          createdAt: data.created_at,
+          tp: data.tp ? data.tp.toNumber() : null,
+          sl: data.sl ? data.sl.toNumber() : null,
+          ts: data.ts ? data.ts.toNumber() : null,
+          tpPrice: data.tp_price ? data.tp_price.toNumber() : null,
+          slPrice: data.sl_price ? data.sl_price.toNumber() : null,
+        }
+      })
+
+    return prismaReportSchema.parse(prismaStrategyReport)
   }
 
   private toPrisma(
     strategyReport: StrategyReportCreate,
   ): Prisma.StrategyReportCreateInput {
+    strategyReportCreateSchema.parse(strategyReport)
+
     return {
+      name: strategyReport.name,
       symbol: strategyReport.symbol,
       price: strategyReport.price,
-      trend_up: strategyReport.trendUp,
-      golden_cross: strategyReport.goldenCross,
-      strong_trend: strategyReport.strongTrend,
-      bullish_direction: strategyReport.bullishDirection,
-      bullish_momentum: strategyReport.bullishMomentum,
-      not_overextended: strategyReport.notOverextended,
-      favorable_entry_price: strategyReport.favorableEntryPrice,
-      death_cross: strategyReport.deathCross,
-      bearish_momentum: strategyReport.bearishMomentum,
-      bearish_conviction: strategyReport.bearishConviction,
-      trend_weakening: strategyReport.trendWeakening,
-      tp: strategyReport.tp ? new Decimal(strategyReport.tp) : undefined,
-      sl: strategyReport.sl ? new Decimal(strategyReport.sl) : undefined,
-      ts: strategyReport.ts ? new Decimal(strategyReport.ts) : undefined,
+      tp: strategyReport.tp ? new Decimal(strategyReport.tp) : null,
+      sl: strategyReport.sl ? new Decimal(strategyReport.sl) : null,
+      ts: strategyReport.ts ? new Decimal(strategyReport.ts) : null,
       tp_price: strategyReport.tpPrice
         ? new Decimal(strategyReport.tpPrice)
-        : undefined,
+        : null,
       sl_price: strategyReport.slPrice
         ? new Decimal(strategyReport.slPrice)
-        : undefined,
+        : null,
+      conditions: strategyReport.conditions,
       should_buy: strategyReport.shouldBuy,
       should_sell: strategyReport.shouldSell,
     }
