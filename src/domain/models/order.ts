@@ -1,21 +1,26 @@
-import { Side } from '../types/side'
+import { sideSchema } from '../types/side'
+import { z } from 'zod'
 
-export interface Order {
-  id: number
-  orderId: string
-  symbol: string
-  side: Side
-  quantity: number
-  price: number
-  amount: number
-  fees: number
-  createdAt: Date
-}
+export const orderSchema = z.object({
+  id: z.number().int(),
+  orderId: z.string(),
+  symbol: z.string(),
+  side: sideSchema,
+  quantity: z.number(),
+  price: z.number(),
+  amount: z.number(),
+  fees: z.number(),
+  createdAt: z.date(),
+})
 
-export type OrderCreate = Omit<Order, 'id'>
+export const orderCreateSchema = orderSchema.omit({ id: true })
 
-export interface OrderRequest {
-  symbol: string
-  side: Side
-  quantity: number
-}
+export const orderRequestSchema = z.object({
+  symbol: z.string(),
+  side: sideSchema,
+  quantity: z.number(),
+})
+
+export type Order = z.infer<typeof orderSchema>
+export type OrderCreate = z.infer<typeof orderCreateSchema>
+export type OrderRequest = z.infer<typeof orderRequestSchema>

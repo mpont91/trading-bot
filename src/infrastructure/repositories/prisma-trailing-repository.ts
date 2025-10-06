@@ -5,7 +5,12 @@ import {
 } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { TrailingRepository } from '../../domain/repositories/trailing-repository'
-import { Trailing, TrailingCreate } from '../../domain/models/trailing'
+import {
+  Trailing,
+  TrailingCreate,
+  trailingCreateSchema,
+} from '../../domain/models/trailing'
+import { prismaTrailingSchema } from './schemas/prisma-trailing-schema'
 
 export class PrismaTrailingRepository implements TrailingRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -60,22 +65,12 @@ export class PrismaTrailingRepository implements TrailingRepository {
   }
 
   private toDomain(prismaTrailing: PrismaTrailing): Trailing {
-    return {
-      symbol: prismaTrailing.symbol,
-      tp: prismaTrailing.tp.toNumber(),
-      sl: prismaTrailing.sl.toNumber(),
-      ts: prismaTrailing.ts.toNumber(),
-      tpPrice: prismaTrailing.tp_price.toNumber(),
-      slPrice: prismaTrailing.sl_price.toNumber(),
-      tsPrice: prismaTrailing.ts_price
-        ? prismaTrailing.ts_price.toNumber()
-        : undefined,
-      createdAt: prismaTrailing.created_at,
-      updatedAt: prismaTrailing.updated_at,
-    }
+    return prismaTrailingSchema.parse(prismaTrailing)
   }
 
   private toPrisma(trailing: TrailingCreate): Prisma.TrailingCreateInput {
+    trailingCreateSchema.parse(trailing)
+
     return {
       symbol: trailing.symbol,
       tp: new Decimal(trailing.tp),

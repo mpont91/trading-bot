@@ -6,9 +6,11 @@ import {
 import {
   CommissionEquity,
   CommissionEquityCreate,
+  commissionEquityCreateSchema,
 } from '../../domain/models/commission-equity'
 import { CommissionEquityRepository } from '../../domain/repositories/commission-equity-repository'
 import Decimal from 'decimal.js'
+import { prismaCommissionEquitySchema } from './schemas/prisma-commission-equity-schema'
 
 export class PrismaCommissionEquityRepository
   implements CommissionEquityRepository
@@ -42,18 +44,14 @@ export class PrismaCommissionEquityRepository
   private toDomain(
     prismaCommissionEquity: PrismaCommissionEquity,
   ): CommissionEquity {
-    return {
-      id: prismaCommissionEquity.id,
-      currency: prismaCommissionEquity.currency,
-      quantity: prismaCommissionEquity.quantity.toNumber(),
-      amount: prismaCommissionEquity.amount.toNumber(),
-      createdAt: prismaCommissionEquity.created_at,
-    }
+    return prismaCommissionEquitySchema.parse(prismaCommissionEquity)
   }
 
   private toPrisma(
     commissionEquityCreate: CommissionEquityCreate,
   ): Prisma.CommissionEquityCreateInput {
+    commissionEquityCreateSchema.parse(commissionEquityCreate)
+
     return {
       currency: commissionEquityCreate.currency,
       quantity: new Decimal(commissionEquityCreate.quantity),

@@ -1,9 +1,14 @@
 import { Equity as PrismaEquity, Prisma, PrismaClient } from '@prisma/client'
 import { EquityRepository } from '../../domain/repositories/equity-repository'
-import type { Equity, EquityCreate } from '../../domain/models/equity'
+import {
+  Equity,
+  EquityCreate,
+  equityCreateSchema,
+} from '../../domain/models/equity'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 import Decimal from 'decimal.js'
+import { prismaEquitySchema } from './schemas/prisma-equity-schema'
 
 export class PrismaEquityRepository implements EquityRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -34,14 +39,12 @@ export class PrismaEquityRepository implements EquityRepository {
   }
 
   private toDomain(prismaEquity: PrismaEquity): Equity {
-    return {
-      id: prismaEquity.id,
-      amount: prismaEquity.amount.toNumber(),
-      createdAt: prismaEquity.created_at,
-    }
+    return prismaEquitySchema.parse(prismaEquity)
   }
 
   private toPrisma(equityCreate: EquityCreate): Prisma.EquityCreateInput {
+    equityCreateSchema.parse(equityCreate)
+
     return {
       amount: new Decimal(equityCreate.amount),
     }

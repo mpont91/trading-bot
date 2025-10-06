@@ -5,7 +5,8 @@ import {
 } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { PositionRepository } from '../../domain/repositories/position-repository'
-import { Position } from '../../domain/models/position'
+import { Position, positionSchema } from '../../domain/models/position'
+import { prismaPositionSchema } from './schemas/prisma-position-schema'
 
 export class PrismaPositionRepository implements PositionRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -47,17 +48,12 @@ export class PrismaPositionRepository implements PositionRepository {
   }
 
   private toDomain(prismaPosition: PrismaPosition): Position {
-    return {
-      symbol: prismaPosition.symbol,
-      entryOrderId: prismaPosition.entry_order_id,
-      quantity: prismaPosition.quantity.toNumber(),
-      price: prismaPosition.price.toNumber(),
-      amount: prismaPosition.amount.toNumber(),
-      entryAt: prismaPosition.entry_at,
-    }
+    return prismaPositionSchema.parse(prismaPosition)
   }
 
   private toPrisma(position: Position): Prisma.PositionCreateInput {
+    positionSchema.parse(position)
+
     return {
       symbol: position.symbol,
       entry_order_id: position.entryOrderId,
