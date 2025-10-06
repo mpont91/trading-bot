@@ -1,9 +1,14 @@
-import { z } from 'zod/index'
+import { z } from 'zod'
 import { Order as PrismaOrder, Prisma } from '@prisma/client'
 import { sideSchema } from '../../../domain/types/side'
-import { Order } from '../../../domain/models/order'
+import {
+  Order,
+  OrderCreate,
+  orderCreateSchema,
+} from '../../../domain/models/order'
+import Decimal from 'decimal.js'
 
-export const prismaOrderSchema = z
+export const domainOrderSchema = z
   .object({
     id: z.number().int(),
     order_id: z.string(),
@@ -28,3 +33,18 @@ export const prismaOrderSchema = z
       createdAt: prismaOrder.created_at,
     }),
   )
+
+export const prismaOrderSchema = orderCreateSchema.transform(
+  (orderCreate: OrderCreate) => {
+    return {
+      order_id: orderCreate.orderId,
+      symbol: orderCreate.symbol,
+      side: orderCreate.side,
+      quantity: new Decimal(orderCreate.quantity),
+      price: new Decimal(orderCreate.price),
+      amount: new Decimal(orderCreate.amount),
+      fees: new Decimal(orderCreate.fees),
+      created_at: orderCreate.createdAt,
+    }
+  },
+)

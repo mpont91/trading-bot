@@ -1,8 +1,13 @@
-import { z } from 'zod/index'
+import { z } from 'zod'
 import { Trade as PrismaTrade, Prisma } from '@prisma/client'
-import { Trade } from '../../../domain/models/trade'
+import {
+  Trade,
+  TradeCreate,
+  tradeCreateSchema,
+} from '../../../domain/models/trade'
+import Decimal from 'decimal.js'
 
-export const prismaTradeSchema = z
+export const domainTradeSchema = z
   .object({
     id: z.number().int(),
     symbol: z.string(),
@@ -31,3 +36,20 @@ export const prismaTradeSchema = z
       pnl: prismaTrade.pnl.toNumber(),
     }),
   )
+
+export const prismaTradeSchema = tradeCreateSchema.transform(
+  (tradeCreate: TradeCreate) => {
+    return {
+      symbol: tradeCreate.symbol,
+      quantity: new Decimal(tradeCreate.quantity),
+      entry_order_id: tradeCreate.entryOrderId,
+      entry_price: new Decimal(tradeCreate.entryPrice),
+      entry_at: tradeCreate.entryAt,
+      exit_order_id: tradeCreate.exitOrderId,
+      exit_price: new Decimal(tradeCreate.exitPrice),
+      exit_at: tradeCreate.exitAt,
+      fees: new Decimal(tradeCreate.fees),
+      pnl: new Decimal(tradeCreate.pnl),
+    }
+  },
+)

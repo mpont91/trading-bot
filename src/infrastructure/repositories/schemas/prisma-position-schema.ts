@@ -1,8 +1,9 @@
-import { z } from 'zod/index'
+import { z } from 'zod'
 import { Position as PrismaPosition, Prisma } from '@prisma/client'
-import { Position } from '../../../domain/models/position'
+import { Position, positionSchema } from '../../../domain/models/position'
+import Decimal from 'decimal.js'
 
-export const prismaPositionSchema = z
+export const domainPositionSchema = z
   .object({
     symbol: z.string(),
     entry_order_id: z.number().int(),
@@ -21,3 +22,16 @@ export const prismaPositionSchema = z
       entryAt: prismaPosition.entry_at,
     }),
   )
+
+export const prismaPositionSchema = positionSchema.transform(
+  (position: Position) => {
+    return {
+      symbol: position.symbol,
+      entry_order_id: position.entryOrderId,
+      quantity: new Decimal(position.quantity),
+      price: new Decimal(position.price),
+      amount: new Decimal(position.amount),
+      entry_at: position.entryAt,
+    }
+  },
+)

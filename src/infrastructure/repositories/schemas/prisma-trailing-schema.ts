@@ -1,8 +1,13 @@
-import { z } from 'zod/index'
+import { z } from 'zod'
 import { Trailing as PrismaTrailing, Prisma } from '@prisma/client'
-import { Trailing } from '../../../domain/models/trailing'
+import {
+  Trailing,
+  TrailingCreate,
+  trailingCreateSchema,
+} from '../../../domain/models/trailing'
+import Decimal from 'decimal.js'
 
-export const prismaTrailingSchema = z
+export const domainTrailingSchema = z
   .object({
     symbol: z.string(),
     tp: z.instanceof(Prisma.Decimal),
@@ -29,3 +34,16 @@ export const prismaTrailingSchema = z
       updatedAt: prismaTrailing.updated_at,
     }),
   )
+
+export const prismaTrailingSchema = trailingCreateSchema.transform(
+  (trailingCreate: TrailingCreate) => {
+    return {
+      symbol: trailingCreate.symbol,
+      tp: new Decimal(trailingCreate.tp),
+      sl: new Decimal(trailingCreate.sl),
+      ts: new Decimal(trailingCreate.ts),
+      tp_price: new Decimal(trailingCreate.tpPrice),
+      sl_price: new Decimal(trailingCreate.slPrice),
+    }
+  },
+)

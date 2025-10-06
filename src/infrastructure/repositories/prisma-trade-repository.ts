@@ -1,13 +1,12 @@
 import { Trade as PrismaTrade, Prisma, PrismaClient } from '@prisma/client'
 import Decimal from 'decimal.js'
 import { TradeRepository } from '../../domain/repositories/trade-repository'
-import {
-  Trade,
-  TradeCreate,
-  tradeCreateSchema,
-} from '../../domain/models/trade'
+import { Trade, TradeCreate } from '../../domain/models/trade'
 import { Performance } from '../../domain/types/performance'
-import { prismaTradeSchema } from './schemas/prisma-trade-schema'
+import {
+  domainTradeSchema,
+  prismaTradeSchema,
+} from './schemas/prisma-trade-schema'
 
 export class PrismaTradeRepository implements TradeRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -68,24 +67,11 @@ export class PrismaTradeRepository implements TradeRepository {
   }
 
   private toDomain(prismaTrade: PrismaTrade): Trade {
-    return prismaTradeSchema.parse(prismaTrade)
+    return domainTradeSchema.parse(prismaTrade)
   }
 
   private toPrisma(tradeCreate: TradeCreate): Prisma.TradeCreateInput {
-    tradeCreateSchema.parse(tradeCreate)
-
-    return {
-      symbol: tradeCreate.symbol,
-      quantity: new Decimal(tradeCreate.quantity),
-      entry_order_id: tradeCreate.entryOrderId,
-      entry_price: new Decimal(tradeCreate.entryPrice),
-      entry_at: tradeCreate.entryAt,
-      exit_order_id: tradeCreate.exitOrderId,
-      exit_price: new Decimal(tradeCreate.exitPrice),
-      exit_at: tradeCreate.exitAt,
-      fees: new Decimal(tradeCreate.fees),
-      pnl: new Decimal(tradeCreate.pnl),
-    }
+    return prismaTradeSchema.parse(tradeCreate)
   }
 
   private toDomainList(prismaTrades: PrismaTrade[]): Trade[] {
