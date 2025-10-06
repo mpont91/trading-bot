@@ -6,12 +6,12 @@ export class MarketManager implements ManagerInterface {
   constructor(
     private readonly symbols: string[],
     private readonly indicatorService: IndicatorService,
-    private readonly strategyService: StrategyActionService,
+    private readonly strategyActionService: StrategyActionService,
   ) {}
   async start(): Promise<void> {
     for (const symbol of this.symbols) {
       await this.indicatorService.fetchAndCalculateAndCreateAll(symbol)
-      await this.strategyService.calculateAndCreate(symbol)
+      await this.strategyActionService.calculateAndCreate(symbol)
     }
   }
 }

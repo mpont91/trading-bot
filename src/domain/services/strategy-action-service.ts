@@ -8,15 +8,17 @@ import { StrategyReportService } from './strategy-report-service'
 export class StrategyActionService {
   constructor(
     private readonly strategyActionRepository: StrategyActionRepository,
-    private readonly decisionService: StrategyReportService,
+    private readonly strategyReportService: StrategyReportService,
   ) {}
 
   async calculateAndCreate(symbol: string): Promise<StrategyAction> {
-    return this.create(await this.decisionService.fetchAndCalculate(symbol))
+    return this.create(
+      await this.strategyReportService.fetchAndCalculate(symbol),
+    )
   }
 
-  async create(strategy: StrategyActionCreate): Promise<StrategyAction> {
-    return this.strategyActionRepository.create(strategy)
+  async create(strategyAction: StrategyActionCreate): Promise<StrategyAction> {
+    return this.strategyActionRepository.create(strategyAction)
   }
 
   async last(symbol: string): Promise<StrategyAction | null> {

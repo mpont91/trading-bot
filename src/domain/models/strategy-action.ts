@@ -1,14 +1,7 @@
 import { Signal } from '../types/signal'
+import { StrategyStops } from '../types/strategy-stops'
 
-export interface Stops {
-  sl?: number
-  tp?: number
-  ts?: number
-  tpPrice?: number
-  slPrice?: number
-}
-
-export interface StrategyAction extends Stops {
+export interface StrategyAction extends StrategyStops {
   id: number
   symbol: string
   price: number

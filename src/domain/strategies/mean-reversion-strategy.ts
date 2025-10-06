@@ -1,5 +1,4 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
-import { Stops } from '../models/strategy-action'
 import { StrategyMeanReversion } from '../types/settings'
 import { StrategyReportRepository } from '../repositories/strategy-report-repository'
 import {
@@ -10,6 +9,7 @@ import {
 } from '../models/strategy-report'
 import { median } from '../helpers/math-helper'
 import { Strategy } from './strategy'
+import { StrategyStops } from '../types/strategy-stops'
 export class MeanReversionStrategy implements Strategy {
   constructor(
     private readonly settings: StrategyMeanReversion,
@@ -47,7 +47,7 @@ export class MeanReversionStrategy implements Strategy {
       this.evaluateSellConditions(indicators)
     const shouldBuy: boolean = this.evaluateShouldBuy(buyConditions)
     const shouldSell: boolean = this.evaluateShouldSell(sellConditions)
-    let stops: Stops = {
+    let stops: StrategyStops = {
       sl: undefined,
       tp: undefined,
       ts: undefined,
@@ -134,7 +134,7 @@ export class MeanReversionStrategy implements Strategy {
 
   private evaluateStops(
     indicators: IndicatorList | IndicatorListCreate,
-  ): Stops {
+  ): StrategyStops {
     const { bb, atr } = indicators
 
     const price: number = bb.price

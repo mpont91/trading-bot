@@ -8,13 +8,13 @@ import { Position } from '../models/position'
 export class ExecutionService {
   constructor(
     private readonly positionService: PositionService,
-    private readonly strategyService: StrategyActionService,
+    private readonly strategyActionService: StrategyActionService,
     private readonly tradeService: TradeService,
   ) {}
 
   async execute(symbol: string): Promise<void> {
     const strategy: StrategyAction | null =
-      await this.strategyService.last(symbol)
+      await this.strategyActionService.last(symbol)
     const position: Position | null = await this.positionService.get(symbol)
 
     if (position) {

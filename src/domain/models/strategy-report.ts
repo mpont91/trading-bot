@@ -1,4 +1,4 @@
-import { Stops } from './strategy-action'
+import { StrategyStops } from '../types/strategy-stops'
 
 export interface BuyConditions {
   trendUp: boolean
@@ -17,7 +17,10 @@ export interface SellConditions {
   bearishConviction: boolean
 }
 
-export interface StrategyReport extends Stops, BuyConditions, SellConditions {
+export interface StrategyReport
+  extends StrategyStops,
+    BuyConditions,
+    SellConditions {
   id: number
   symbol: string
   price: number

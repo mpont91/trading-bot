@@ -21,9 +21,9 @@ export class StrategyReportService {
       )
     }
 
-    const risk: StrategyReport =
+    const strategyReport: StrategyReport =
       await this.strategy.calculateAndCreate(indicators)
-    return this.calculate(risk)
+    return this.calculate(strategyReport)
   }
 
   evaluate(
@@ -32,32 +32,34 @@ export class StrategyReportService {
     return this.strategy.calculate(indicators)
   }
 
-  calculate(risk: StrategyReport | StrategyReportCreate): StrategyActionCreate {
-    if (risk.shouldBuy && risk.shouldSell) {
+  calculate(
+    strategyReport: StrategyReport | StrategyReportCreate,
+  ): StrategyActionCreate {
+    if (strategyReport.shouldBuy && strategyReport.shouldSell) {
       throw new Error(
-        'Risk evaluated should buy and sell at the same time. Something is broken!',
+        'Strategy report evaluated should buy and sell at the same time. Something is broken!',
       )
     }
 
     let signal: Signal = Signal.HOLD
 
-    if (risk.shouldBuy) {
+    if (strategyReport.shouldBuy) {
       signal = Signal.BUY
     }
 
-    if (risk.shouldSell) {
+    if (strategyReport.shouldSell) {
       signal = Signal.SELL
     }
 
     return {
-      symbol: risk.symbol,
+      symbol: strategyReport.symbol,
       signal,
-      price: risk.price,
-      tp: risk.tp,
-      sl: risk.sl,
-      ts: risk.ts,
-      tpPrice: risk.tpPrice,
-      slPrice: risk.slPrice,
+      price: strategyReport.price,
+      tp: strategyReport.tp,
+      sl: strategyReport.sl,
+      ts: strategyReport.ts,
+      tpPrice: strategyReport.tpPrice,
+      slPrice: strategyReport.slPrice,
     }
   }
 }
