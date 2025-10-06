@@ -9,9 +9,10 @@ export default async function (args: string[]): Promise<void> {
     throw new Error('Missing required argument: symbol')
   }
 
-  const decisionService: StrategyReportService = Container.getDecisionService()
+  const strategyReportService: StrategyReportService =
+    Container.getStrategyReportService()
   const response: StrategyActionCreate =
-    await decisionService.fetchAndCalculate(symbol)
+    await strategyReportService.fetchAndCalculate(symbol)
 
   console.dir(response, { depth: null })
 }

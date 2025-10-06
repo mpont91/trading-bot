@@ -20,12 +20,13 @@ function settings(): BacktestingSettings {
 function initializeBacktesterService(): BacktesterService {
   const backtestingSettings: BacktestingSettings = settings()
   const indicatorService: IndicatorService = Container.getIndicatorService()
-  const decisionService: StrategyReportService = Container.getDecisionService()
+  const strategyReportService: StrategyReportService =
+    Container.getStrategyReportService()
   const investmentService: InvestmentService = Container.getInvestmentService()
 
   return new BacktesterService(
     indicatorService,
-    decisionService,
+    strategyReportService,
     investmentService,
     backtestingSettings,
   )

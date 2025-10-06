@@ -42,9 +42,6 @@ const scripts: Record<string, Fn> = {
       await import('./commission-equity/commission-equity-fetch-create')
     ).default()
   },
-  'decision-fetch-calculate': async (args: string[]) => {
-    await (await import('./decision/decision-fetch-calculate')).default(args)
-  },
   'equity-graph': async (args: string[]) => {
     await (await import('./equity/equity-graph')).default(args)
   },
@@ -90,8 +87,15 @@ const scripts: Record<string, Fn> = {
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)
   },
-  'strategy-calculate-create': async (args: string[]) => {
-    await (await import('./strategy/strategy-calculate-create')).default(args)
+  'strategy-action-calculate-create': async (args: string[]) => {
+    await (
+      await import('./strategy-action/strategy-action-calculate-create')
+    ).default(args)
+  },
+  'strategy-report-fetch-calculate': async (args: string[]) => {
+    await (
+      await import('./strategy-report/strategy-report-fetch-calculate')
+    ).default(args)
   },
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()

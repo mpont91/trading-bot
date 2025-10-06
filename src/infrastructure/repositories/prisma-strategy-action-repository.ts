@@ -18,16 +18,16 @@ export class PrismaStrategyActionRepository
 {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create(strategy: StrategyActionCreate): Promise<StrategyAction> {
+  async create(strategyAction: StrategyActionCreate): Promise<StrategyAction> {
     return this.toDomain(
       await this.prisma.strategyAction.create({
-        data: this.toPrisma(strategy),
+        data: this.toPrisma(strategyAction),
       }),
     )
   }
 
   async last(symbol: string): Promise<StrategyAction | null> {
-    const strategy = await this.prisma.strategyAction.findFirst({
+    const strategyAction = await this.prisma.strategyAction.findFirst({
       where: {
         symbol: symbol,
       },
@@ -36,11 +36,11 @@ export class PrismaStrategyActionRepository
       },
     })
 
-    if (!strategy) {
+    if (!strategyAction) {
       return null
     }
 
-    return this.toDomain(strategy)
+    return this.toDomain(strategyAction)
   }
 
   async list(symbol?: string): Promise<StrategyAction[]> {
@@ -67,9 +67,10 @@ export class PrismaStrategyActionRepository
       }
     }
 
-    const strategies = await this.prisma.strategyAction.findMany(queryOptions)
+    const StrategyActionList =
+      await this.prisma.strategyAction.findMany(queryOptions)
 
-    return this.toDomainList(strategies)
+    return this.toDomainList(StrategyActionList)
   }
 
   async listOpportunities(symbol?: string): Promise<StrategyAction[]> {
@@ -98,9 +99,10 @@ export class PrismaStrategyActionRepository
       }
     }
 
-    const strategies = await this.prisma.strategyAction.findMany(queryOptions)
+    const opportunities =
+      await this.prisma.strategyAction.findMany(queryOptions)
 
-    return this.toDomainList(strategies)
+    return this.toDomainList(opportunities)
   }
 
   async getPriceGraph(
@@ -109,7 +111,7 @@ export class PrismaStrategyActionRepository
   ): Promise<StrategyAction[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const strategies = await this.prisma.strategyAction.findMany({
+    const strategyActionList = await this.prisma.strategyAction.findMany({
       where: {
         symbol: symbol,
         created_at: {
@@ -121,7 +123,7 @@ export class PrismaStrategyActionRepository
       },
     })
 
-    return this.toDomainList(strategies)
+    return this.toDomainList(strategyActionList)
   }
 
   async getOpportunitiesGraph(
@@ -130,7 +132,7 @@ export class PrismaStrategyActionRepository
   ): Promise<StrategyAction[]> {
     const startTime: Date = getStartTimeFromTimeInterval(interval)
 
-    const strategies = await this.prisma.strategyAction.findMany({
+    const opportunities = await this.prisma.strategyAction.findMany({
       where: {
         symbol: symbol,
         signal: { not: Signal.HOLD },
@@ -143,25 +145,31 @@ export class PrismaStrategyActionRepository
       },
     })
 
-    return this.toDomainList(strategies)
+    return this.toDomainList(opportunities)
   }
 
-  private toDomain(prismaStrategy: PrismaStrategyAction): StrategyAction {
+  private toDomain(prismaStrategyAction: PrismaStrategyAction): StrategyAction {
     return {
-      id: prismaStrategy.id,
-      symbol: prismaStrategy.symbol,
-      price: prismaStrategy.price.toNumber(),
-      signal: prismaStrategy.signal,
-      tp: prismaStrategy.tp ? prismaStrategy.tp.toNumber() : undefined,
-      sl: prismaStrategy.sl ? prismaStrategy.sl.toNumber() : undefined,
-      ts: prismaStrategy.ts ? prismaStrategy.ts.toNumber() : undefined,
-      tpPrice: prismaStrategy.tp_price
-        ? prismaStrategy.tp_price.toNumber()
+      id: prismaStrategyAction.id,
+      symbol: prismaStrategyAction.symbol,
+      price: prismaStrategyAction.price.toNumber(),
+      signal: prismaStrategyAction.signal,
+      tp: prismaStrategyAction.tp
+        ? prismaStrategyAction.tp.toNumber()
         : undefined,
-      slPrice: prismaStrategy.sl_price
-        ? prismaStrategy.sl_price.toNumber()
+      sl: prismaStrategyAction.sl
+        ? prismaStrategyAction.sl.toNumber()
         : undefined,
-      createdAt: prismaStrategy.created_at,
+      ts: prismaStrategyAction.ts
+        ? prismaStrategyAction.ts.toNumber()
+        : undefined,
+      tpPrice: prismaStrategyAction.tp_price
+        ? prismaStrategyAction.tp_price.toNumber()
+        : undefined,
+      slPrice: prismaStrategyAction.sl_price
+        ? prismaStrategyAction.sl_price.toNumber()
+        : undefined,
+      createdAt: prismaStrategyAction.created_at,
     }
   }
 

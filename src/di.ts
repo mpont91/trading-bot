@@ -61,9 +61,9 @@ class Container {
   private static positionService: PositionService
   private static performanceService: PerformanceService
   private static indicatorService: IndicatorService
-  private static strategyService: StrategyActionService
+  private static strategyActionService: StrategyActionService
   private static trailingService: TrailingService
-  private static decisionService: StrategyReportService
+  private static strategyReportService: StrategyReportService
   private static executionService: ExecutionService
 
   static initialize(): void {
@@ -150,20 +150,20 @@ class Container {
       smaCrossIndicatorCalculator,
     )
     const meanReversionStrategy: Strategy = new MeanReversionStrategy(
-      settings.risk,
+      settings.strategyMeanReversion,
       strategyReportRepository,
     )
-    this.decisionService = new StrategyReportService(
+    this.strategyReportService = new StrategyReportService(
       this.indicatorService,
       meanReversionStrategy,
     )
-    this.strategyService = new StrategyActionService(
+    this.strategyActionService = new StrategyActionService(
       strategyActionRepository,
-      this.decisionService,
+      this.strategyReportService,
     )
     this.executionService = new ExecutionService(
       this.positionService,
-      this.strategyService,
+      this.strategyActionService,
       this.tradeService,
     )
 
@@ -174,7 +174,7 @@ class Container {
     const marketManager: ManagerInterface = new MarketManager(
       settings.symbols,
       this.indicatorService,
-      this.strategyService,
+      this.strategyActionService,
     )
     const tradingManager: TradingManager = new TradingManager(
       settings.symbols,
@@ -227,14 +227,14 @@ class Container {
   static getIndicatorService(): IndicatorService {
     return this.indicatorService
   }
-  static getStrategyService(): StrategyActionService {
-    return this.strategyService
+  static getStrategyActionService(): StrategyActionService {
+    return this.strategyActionService
   }
   static getTrailingService(): TrailingService {
     return this.trailingService
   }
-  static getDecisionService(): StrategyReportService {
-    return this.decisionService
+  static getStrategyReportService(): StrategyReportService {
+    return this.strategyReportService
   }
 }
 

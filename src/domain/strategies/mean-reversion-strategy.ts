@@ -1,6 +1,6 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { Stops } from '../models/strategy-action'
-import { RiskSettings } from '../types/settings'
+import { StrategyMeanReversion } from '../types/settings'
 import { StrategyReportRepository } from '../repositories/strategy-report-repository'
 import {
   BuyConditions,
@@ -12,7 +12,7 @@ import { median } from '../helpers/math-helper'
 import { Strategy } from './strategy'
 export class MeanReversionStrategy implements Strategy {
   constructor(
-    private readonly settings: RiskSettings,
+    private readonly settings: StrategyMeanReversion,
     private readonly strategyReportRepository: StrategyReportRepository,
   ) {}
 

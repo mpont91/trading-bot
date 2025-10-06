@@ -51,31 +51,37 @@ export const settings: Settings = {
       ),
     },
   },
-  risk: {
-    buyScoreMin: parseNumber(process.env.RISK_MIN_BUY_SCORE, 5),
+  strategyMeanReversion: {
+    buyScoreMin: parseNumber(
+      process.env.STRATEGY_MEAN_REVERSION_MIN_BUY_SCORE,
+      5,
+    ),
     favorableEntryPriceMaxBB: parseNumber(
-      process.env.RISK_FAVORABLE_ENTRY_PRICE_MAX_BB,
+      process.env.STRATEGY_MEAN_REVERSION_FAVORABLE_ENTRY_PRICE_MAX_BB,
       0.5,
     ),
-    strongTrendMinADX: parseNumber(process.env.RISK_STRONG_TREND_MIN_ADX, 25),
+    strongTrendMinADX: parseNumber(
+      process.env.STRATEGY_MEAN_REVERSION_STRONG_TREND_MIN_ADX,
+      25,
+    ),
     bullishMomentumMinRSI: parseNumber(
-      process.env.RISK_BULLISH_MOMENTUM_MIN_RSI,
+      process.env.STRATEGY_MEAN_REVERSION_BULLISH_MOMENTUM_MIN_RSI,
       50,
     ),
     bullishMomentumMaxRSI: parseNumber(
-      process.env.RISK_BULLISH_MOMENTUM_MAX_RSI,
+      process.env.STRATEGY_MEAN_REVERSION_BULLISH_MOMENTUM_MAX_RSI,
       70,
     ),
     bearishMomentumMaxRSI: parseNumber(
-      process.env.RISK_BEARISH_MOMENTUM_MAX_RSI,
+      process.env.STRATEGY_MEAN_REVERSION_BEARISH_MOMENTUM_MAX_RSI,
       45,
     ),
     bearishConvictionMinADX: parseNumber(
-      process.env.RISK_BEARISH_CONVICTION_MIN_ADX,
+      process.env.STRATEGY_MEAN_REVERSION_BEARISH_CONVICTION_MIN_ADX,
       22,
     ),
     trailingStopMultiplier: parseNumber(
-      process.env.RISK_TRAILING_STOP_MULTIPLIER,
+      process.env.STRATEGY_MEAN_REVERSION_TRAILING_STOP_MULTIPLIER,
       1.5,
     ),
   },

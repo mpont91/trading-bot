@@ -10,7 +10,7 @@ export interface Settings {
   safetyCapitalMargin: number
   history: HistorySettings
   indicators: IndicatorsSettings
-  risk: RiskSettings
+  strategyMeanReversion: StrategyMeanReversion
 }
 
 export interface BinanceSettings {
@@ -42,7 +42,7 @@ export interface IndicatorsSettings {
   }
 }
 
-export interface RiskSettings {
+export interface StrategyMeanReversion {
   buyScoreMin: number
   favorableEntryPriceMaxBB: number
   strongTrendMinADX: number
