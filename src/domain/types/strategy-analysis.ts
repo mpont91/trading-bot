@@ -1,13 +1,20 @@
-import type { Signal } from './signal'
+import { signalSchema } from './signal'
+import { z } from 'zod'
 
-export interface StrategyAnalysis {
-  symbol: string
-  prices: {
-    amount: number
-    date: Date
-  }[]
-  opportunities: {
-    signal: Signal
-    date: Date
-  }[]
-}
+export const strategyAnalysisSchema = z.object({
+  symbol: z.string(),
+  prices: z.array(
+    z.object({
+      amount: z.number(),
+      date: z.date(),
+    }),
+  ),
+  opportunities: z.array(
+    z.object({
+      signal: signalSchema,
+      date: z.date(),
+    }),
+  ),
+})
+
+export type StrategyAnalysis = z.infer<typeof strategyAnalysisSchema>

@@ -1,54 +1,61 @@
-import { TimeFrame } from './candle'
+import { timeFrameSchema } from './candle'
+import { z } from 'zod'
 
-export interface Settings {
-  intervalTradingTime: number
-  intervalMarketTime: number
-  intervalAccountTime: number
-  binance: BinanceSettings
-  maxPositionsOpened: number
-  symbols: string[]
-  safetyCapitalMargin: number
-  history: HistorySettings
-  indicators: IndicatorsSettings
-  strategyMeanReversion: StrategyMeanReversion
-}
+export const binanceSettingsSchema = z.object({
+  binanceApiKey: z.string(),
+  binanceApiSecret: z.string(),
+  bottleneckMaxConcurrent: z.number().int(),
+  bottleneckMinTime: z.number().int(),
+  baseCurrency: z.string(),
+  feeCurrency: z.string(),
+})
 
-export interface BinanceSettings {
-  binanceApiKey: string
-  binanceApiSecret: string
-  bottleneckMaxConcurrent: number
-  bottleneckMinTime: number
-  baseCurrency: string
-  feeCurrency: string
-}
+export const historySettingsSchema = z.object({
+  timeFrame: timeFrameSchema,
+  candles: z.number().int(),
+})
 
-export interface HistorySettings {
-  timeFrame: TimeFrame
-  candles: number
-}
+export const indicatorsSettingsSchema = z.object({
+  adx: z.number().int(),
+  atr: z.number().int(),
+  rsi: z.number().int(),
+  sma: z.number().int(),
+  bb: z.object({
+    period: z.number().int(),
+    multiplier: z.number(),
+  }),
+  smaCross: z.object({
+    periodLong: z.number().int(),
+    periodShort: z.number().int(),
+  }),
+})
 
-export interface IndicatorsSettings {
-  adx: number
-  atr: number
-  rsi: number
-  sma: number
-  bb: {
-    period: number
-    multiplier: number
-  }
-  smaCross: {
-    periodLong: number
-    periodShort: number
-  }
-}
+export const strategyMeanReversionSchema = z.object({
+  buyScoreMin: z.number().int(),
+  favorableEntryPriceMaxBB: z.number().int(),
+  strongTrendMinADX: z.number().int(),
+  bullishMomentumMinRSI: z.number().int(),
+  bullishMomentumMaxRSI: z.number().int(),
+  bearishMomentumMaxRSI: z.number().int(),
+  bearishConvictionMinADX: z.number().int(),
+  trailingStopMultiplier: z.number(),
+})
 
-export interface StrategyMeanReversion {
-  buyScoreMin: number
-  favorableEntryPriceMaxBB: number
-  strongTrendMinADX: number
-  bullishMomentumMinRSI: number
-  bullishMomentumMaxRSI: number
-  bearishMomentumMaxRSI: number
-  bearishConvictionMinADX: number
-  trailingStopMultiplier: number
-}
+export const settingsSchema = z.object({
+  intervalTradingTime: z.number().int(),
+  intervalMarketTime: z.number().int(),
+  intervalAccountTime: z.number().int(),
+  binance: binanceSettingsSchema,
+  maxPositionsOpened: z.number().int(),
+  symbols: z.array(z.string()),
+  safetyCapitalMargin: z.number(),
+  history: historySettingsSchema,
+  indicators: indicatorsSettingsSchema,
+  strategyMeanReversion: strategyMeanReversionSchema,
+})
+
+export type BinanceSettings = z.infer<typeof binanceSettingsSchema>
+export type HistorySettings = z.infer<typeof historySettingsSchema>
+export type IndicatorsSettings = z.infer<typeof indicatorsSettingsSchema>
+export type StrategyMeanReversion = z.infer<typeof strategyMeanReversionSchema>
+export type Settings = z.infer<typeof settingsSchema>
