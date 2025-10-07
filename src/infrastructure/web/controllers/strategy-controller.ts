@@ -4,9 +4,14 @@ import { Container } from '../../../di'
 import { StrategyAction } from '../../../domain/models/strategy-action'
 import { StrategyActionService } from '../../../domain/services/strategy-action-service'
 import { StrategyAnalysis } from '../../../domain/types/strategy-analysis'
-import { timeIntervalRule } from '../../../domain/types/time-interval'
+import { TimeInterval } from '../../../domain/types/time-interval'
+import {
+  getLastOpportunitiesSchema,
+  getLastStrategiesSchema,
+  getStrategyAnalysisSchema,
+} from '../validators/strategy-request-schema'
 
-const strategyService: StrategyActionService =
+const strategyActionService: StrategyActionService =
   Container.getStrategyActionService()
 
 export async function getLastStrategies(
@@ -14,11 +19,12 @@ export async function getLastStrategies(
   response: Response,
 ): Promise<void> {
   try {
-    const symbol: string | undefined = request.params.symbol
+    const { params } = getLastStrategiesSchema.parse(request)
 
-    const strategies: StrategyAction[] = await strategyService.list(
-      symbol?.toUpperCase(),
-    )
+    const symbol: string | undefined = params.symbol
+
+    const strategies: StrategyAction[] =
+      await strategyActionService.list(symbol)
 
     response.json({
       data: strategies,
@@ -33,10 +39,12 @@ export async function getLastOpportunities(
   response: Response,
 ): Promise<void> {
   try {
-    const symbol: string | undefined = request.params.symbol
+    const { params } = getLastOpportunitiesSchema.parse(request)
+
+    const symbol: string | undefined = params.symbol
 
     const opportunities: StrategyAction[] =
-      await strategyService.listOpportunities(symbol?.toUpperCase())
+      await strategyActionService.listOpportunities(symbol)
 
     response.json({
       data: opportunities,
@@ -51,18 +59,13 @@ export async function getStrategyAnalysis(
   response: Response,
 ): Promise<void> {
   try {
-    const interval = request.query.interval
+    const { query, params } = getStrategyAnalysisSchema.parse(request)
 
-    if (typeof interval !== 'string') {
-      throw new Error('The "interval" parameter must be a single string.')
-    }
-
-    timeIntervalRule(interval)
-
-    const symbol: string = request.params.symbol.toUpperCase()
+    const interval: TimeInterval = query.interval
+    const symbol: string = params.symbol
 
     const strategyAnalysis: StrategyAnalysis =
-      await strategyService.getStrategyAnalysis(symbol, interval)
+      await strategyActionService.getStrategyAnalysis(symbol, interval)
 
     response.json({
       data: strategyAnalysis,

@@ -7,7 +7,7 @@ import { Performance } from '../../../domain/types/performance'
 const performanceService: PerformanceService = Container.getPerformanceService()
 
 export async function getPerformance(
-  request: Request,
+  _: Request,
   response: Response,
 ): Promise<void> {
   try {

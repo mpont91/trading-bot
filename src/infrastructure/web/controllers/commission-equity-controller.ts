@@ -8,7 +8,7 @@ const commissionEquityService: CommissionEquityService =
   Container.getCommissionEquityService()
 
 export async function getCommissionEquity(
-  request: Request,
+  _: Request,
   response: Response,
 ): Promise<void> {
   try {
