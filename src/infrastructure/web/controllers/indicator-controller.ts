@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { timeIntervalRule } from '../../../domain/types/time-interval'
+import { TimeInterval } from '../../../domain/types/time-interval'
 import { Container } from '../../../di'
 import { createErrorResponse } from '../helpers/response-helper'
 import { IndicatorService } from '../../../domain/services/indicator-service'
@@ -8,11 +8,11 @@ import {
   IndicatorATR,
   IndicatorBB,
   IndicatorName,
-  indicatorNameRule,
   IndicatorRSI,
   IndicatorSMA,
   IndicatorSMACross,
 } from '../../../domain/models/indicator'
+import { getGraphIndicatorSchema } from '../validators/indicator-request-schema'
 
 const indicatorService: IndicatorService = Container.getIndicatorService()
 
@@ -21,18 +21,11 @@ export async function getGraphIndicator(
   response: Response,
 ): Promise<void> {
   try {
-    const interval = request.query.interval
+    const { query, params } = getGraphIndicatorSchema.parse(request)
 
-    if (typeof interval !== 'string') {
-      throw new Error('The "interval" parameter must be a single string.')
-    }
-
-    timeIntervalRule(interval)
-
-    const symbol: string = request.params.symbol.toUpperCase()
-    const indicator: string = request.params.indicator.toLowerCase()
-
-    indicatorNameRule(indicator)
+    const interval: TimeInterval = query.interval
+    const symbol: string = params.symbol
+    const indicator: string = params.indicator
 
     let data:
       | IndicatorSMA[]

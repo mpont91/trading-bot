@@ -1,79 +1,108 @@
-interface Indicator {
-  id: number
-  symbol: string
-  price: number
-  createdAt: Date
-}
+import { z } from 'zod'
 
-export interface IndicatorSMA extends Indicator {
-  period: number
-  sma: number
-}
+const indicatorSchema = z.object({
+  id: z.number().int(),
+  symbol: z.string(),
+  price: z.number(),
+  createdAt: z.date(),
+})
 
-export type IndicatorSMACreate = Omit<IndicatorSMA, 'id' | 'createdAt'>
+export const indicatorSMASchema = z
+  .object({
+    period: z.number().int(),
+    sma: z.number(),
+  })
+  .extend(indicatorSchema.shape)
 
-export interface IndicatorRSI extends Indicator {
-  period: number
-  rsi: number
-}
+export const indicatorSMACreateSchema = indicatorSMASchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export type IndicatorRSICreate = Omit<IndicatorRSI, 'id' | 'createdAt'>
+export const indicatorRSISchema = z
+  .object({
+    period: z.number().int(),
+    rsi: z.number(),
+  })
+  .extend(indicatorSchema.shape)
 
-export interface IndicatorATR extends Indicator {
-  period: number
-  atr: number
-}
+export const indicatorRSICreateSchema = indicatorRSISchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export type IndicatorATRCreate = Omit<IndicatorATR, 'id' | 'createdAt'>
+export const indicatorATRSchema = z
+  .object({
+    period: z.number().int(),
+    atr: z.number(),
+  })
+  .extend(indicatorSchema.shape)
 
-export interface IndicatorADX extends Indicator {
-  period: number
-  adx: number
-  pdi: number
-  mdi: number
-}
+export const indicatorATRCreateSchema = indicatorATRSchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export type IndicatorADXCreate = Omit<IndicatorADX, 'id' | 'createdAt'>
+export const indicatorADXSchema = z
+  .object({
+    period: z.number().int(),
+    adx: z.number(),
+    pdi: z.number(),
+    mdi: z.number(),
+  })
+  .extend(indicatorSchema.shape)
 
-export interface IndicatorBB extends Indicator {
-  period: number
-  upper: number
-  middle: number
-  lower: number
-  pb: number
-}
+export const indicatorADXCreateSchema = indicatorADXSchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export type IndicatorBBCreate = Omit<IndicatorBB, 'id' | 'createdAt'>
+export const indicatorBBSchema = z
+  .object({
+    period: z.number().int(),
+    upper: z.number(),
+    middle: z.number(),
+    lower: z.number(),
+    pb: z.number(),
+  })
+  .extend(indicatorSchema.shape)
 
-export interface IndicatorSMACross extends Indicator {
-  periodLong: number
-  periodShort: number
-  smaLong: number
-  smaShort: number
-}
+export const indicatorBBCreateSchema = indicatorBBSchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export type IndicatorSMACrossCreate = Omit<
-  IndicatorSMACross,
-  'id' | 'createdAt'
->
+export const indicatorSMACrossSchema = z
+  .object({
+    periodLong: z.number().int(),
+    periodShort: z.number().int(),
+    smaLong: z.number(),
+    smaShort: z.number(),
+  })
+  .extend(indicatorSchema.shape)
 
-export interface IndicatorList {
-  sma: IndicatorSMA
-  rsi: IndicatorRSI
-  atr: IndicatorATR
-  adx: IndicatorADX
-  bb: IndicatorBB
-  smaCross: IndicatorSMACross
-}
+export const indicatorSMACrossCreateSchema = indicatorSMACrossSchema.omit({
+  id: true,
+  createdAt: true,
+})
 
-export interface IndicatorListCreate {
-  sma: IndicatorSMACreate
-  rsi: IndicatorRSICreate
-  atr: IndicatorATRCreate
-  adx: IndicatorADXCreate
-  bb: IndicatorBBCreate
-  smaCross: IndicatorSMACrossCreate
-}
+export const indicatorListSchema = z.object({
+  sma: indicatorSMASchema,
+  rsi: indicatorRSISchema,
+  atr: indicatorATRSchema,
+  adx: indicatorADXSchema,
+  bb: indicatorBBSchema,
+  smaCross: indicatorSMACrossSchema,
+})
+
+export const indicatorListCreateSchema = z.object({
+  sma: indicatorSMACreateSchema,
+  rsi: indicatorRSICreateSchema,
+  atr: indicatorATRCreateSchema,
+  adx: indicatorADXCreateSchema,
+  bb: indicatorBBCreateSchema,
+  smaCross: indicatorSMACrossCreateSchema,
+})
 
 export enum IndicatorName {
   SMA = 'sma',
@@ -84,13 +113,21 @@ export enum IndicatorName {
   SMACROSS = 'smacross',
 }
 
-export function indicatorNameRule(
-  value: string,
-): asserts value is IndicatorName {
-  const options: IndicatorName[] = Object.values(IndicatorName)
-  if (!options.includes(value as IndicatorName)) {
-    throw new Error(
-      `Indicator name parameter must be one of the following: [${options.join(', ')}]`,
-    )
-  }
-}
+export const indicatorNameSchema = z.enum(IndicatorName)
+
+export type IndicatorSMA = z.infer<typeof indicatorSMASchema>
+export type IndicatorSMACreate = z.infer<typeof indicatorSMACreateSchema>
+export type IndicatorRSI = z.infer<typeof indicatorRSISchema>
+export type IndicatorRSICreate = z.infer<typeof indicatorRSICreateSchema>
+export type IndicatorATR = z.infer<typeof indicatorATRSchema>
+export type IndicatorATRCreate = z.infer<typeof indicatorATRCreateSchema>
+export type IndicatorADX = z.infer<typeof indicatorADXSchema>
+export type IndicatorADXCreate = z.infer<typeof indicatorADXCreateSchema>
+export type IndicatorBB = z.infer<typeof indicatorBBSchema>
+export type IndicatorBBCreate = z.infer<typeof indicatorBBCreateSchema>
+export type IndicatorSMACross = z.infer<typeof indicatorSMACrossSchema>
+export type IndicatorSMACrossCreate = z.infer<
+  typeof indicatorSMACrossCreateSchema
+>
+export type IndicatorList = z.infer<typeof indicatorListSchema>
+export type IndicatorListCreate = z.infer<typeof indicatorListCreateSchema>

@@ -24,9 +24,22 @@ import {
   IndicatorBB,
   IndicatorSMACross,
 } from '../../domain/models/indicator'
-import Decimal from 'decimal.js'
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
+import {
+  domainIndicatorADXSchema,
+  domainIndicatorATRSchema,
+  domainIndicatorBBSchema,
+  domainIndicatorRSISchema,
+  domainIndicatorSMACrossSchema,
+  domainIndicatorSMASchema,
+  prismaIndicatorADXSchema,
+  prismaIndicatorATRSchema,
+  prismaIndicatorBBSchema,
+  prismaIndicatorRSISchema,
+  prismaIndicatorSMACrossSchema,
+  prismaIndicatorSMASchema,
+} from './schemas/prisma-indicator-schema'
 
 export class PrismaIndicatorRepository implements IndicatorRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -286,151 +299,65 @@ export class PrismaIndicatorRepository implements IndicatorRepository {
   }
 
   private toPrismaSMA(
-    indicator: IndicatorSMACreate,
+    indicatorSMACreate: IndicatorSMACreate,
   ): Prisma.IndicatorSMACreateInput {
-    return {
-      period: indicator.period,
-      symbol: indicator.symbol,
-      price: new Decimal(indicator.price),
-      sma: new Decimal(indicator.sma),
-    }
+    return prismaIndicatorSMASchema.parse(indicatorSMACreate)
   }
 
   private toPrismaRSI(
-    indicator: IndicatorRSICreate,
+    indicatorRSICreate: IndicatorRSICreate,
   ): Prisma.IndicatorRSICreateInput {
-    return {
-      period: indicator.period,
-      symbol: indicator.symbol,
-      price: new Decimal(indicator.price),
-      rsi: new Decimal(indicator.rsi),
-    }
+    return prismaIndicatorRSISchema.parse(indicatorRSICreate)
   }
 
   private toPrismaATR(
-    indicator: IndicatorATRCreate,
+    indicatorATRCreate: IndicatorATRCreate,
   ): Prisma.IndicatorATRCreateInput {
-    return {
-      period: indicator.period,
-      symbol: indicator.symbol,
-      price: new Decimal(indicator.price),
-      atr: new Decimal(indicator.atr),
-    }
+    return prismaIndicatorATRSchema.parse(indicatorATRCreate)
   }
 
   private toPrismaADX(
-    indicator: IndicatorADXCreate,
+    indicatorADXCreate: IndicatorADXCreate,
   ): Prisma.IndicatorADXCreateInput {
-    return {
-      period: indicator.period,
-      symbol: indicator.symbol,
-      price: new Decimal(indicator.price),
-      adx: new Decimal(indicator.adx),
-      pdi: new Decimal(indicator.pdi),
-      mdi: new Decimal(indicator.mdi),
-    }
+    return prismaIndicatorADXSchema.parse(indicatorADXCreate)
   }
 
   private toPrismaBB(
-    indicator: IndicatorBBCreate,
+    indicatorBBCreate: IndicatorBBCreate,
   ): Prisma.IndicatorBBCreateInput {
-    return {
-      period: indicator.period,
-      symbol: indicator.symbol,
-      price: new Decimal(indicator.price),
-      upper: new Decimal(indicator.upper),
-      middle: new Decimal(indicator.middle),
-      lower: new Decimal(indicator.lower),
-      pb: new Decimal(indicator.pb),
-    }
+    return prismaIndicatorBBSchema.parse(indicatorBBCreate)
   }
 
   private toPrismaSMACross(
-    indicator: IndicatorSMACrossCreate,
+    indicatorSMACrossCreate: IndicatorSMACrossCreate,
   ): Prisma.IndicatorSMACrossCreateInput {
-    return {
-      period_long: indicator.periodLong,
-      period_short: indicator.periodShort,
-      symbol: indicator.symbol,
-      price: new Decimal(indicator.price),
-      sma_long: new Decimal(indicator.smaLong),
-      sma_short: new Decimal(indicator.smaShort),
-    }
+    return prismaIndicatorSMACrossSchema.parse(indicatorSMACrossCreate)
   }
 
   private toDomainSMA(prismaIndicatorSMA: PrismaIndicatorSMA): IndicatorSMA {
-    return {
-      id: prismaIndicatorSMA.id,
-      period: prismaIndicatorSMA.period,
-      symbol: prismaIndicatorSMA.symbol,
-      price: prismaIndicatorSMA.price.toNumber(),
-      sma: prismaIndicatorSMA.sma.toNumber(),
-      createdAt: prismaIndicatorSMA.created_at,
-    }
+    return domainIndicatorSMASchema.parse(prismaIndicatorSMA)
   }
 
   private toDomainRSI(prismaIndicatorRSI: PrismaIndicatorRSI): IndicatorRSI {
-    return {
-      id: prismaIndicatorRSI.id,
-      period: prismaIndicatorRSI.period,
-      symbol: prismaIndicatorRSI.symbol,
-      price: prismaIndicatorRSI.price.toNumber(),
-      rsi: prismaIndicatorRSI.rsi.toNumber(),
-      createdAt: prismaIndicatorRSI.created_at,
-    }
+    return domainIndicatorRSISchema.parse(prismaIndicatorRSI)
   }
 
   private toDomainATR(prismaIndicatorATR: PrismaIndicatorATR): IndicatorATR {
-    return {
-      id: prismaIndicatorATR.id,
-      period: prismaIndicatorATR.period,
-      symbol: prismaIndicatorATR.symbol,
-      price: prismaIndicatorATR.price.toNumber(),
-      atr: prismaIndicatorATR.atr.toNumber(),
-      createdAt: prismaIndicatorATR.created_at,
-    }
+    return domainIndicatorATRSchema.parse(prismaIndicatorATR)
   }
 
   private toDomainADX(prismaIndicatorADX: PrismaIndicatorADX): IndicatorADX {
-    return {
-      id: prismaIndicatorADX.id,
-      period: prismaIndicatorADX.period,
-      symbol: prismaIndicatorADX.symbol,
-      price: prismaIndicatorADX.price.toNumber(),
-      adx: prismaIndicatorADX.adx.toNumber(),
-      pdi: prismaIndicatorADX.pdi.toNumber(),
-      mdi: prismaIndicatorADX.mdi.toNumber(),
-      createdAt: prismaIndicatorADX.created_at,
-    }
+    return domainIndicatorADXSchema.parse(prismaIndicatorADX)
   }
 
   private toDomainBB(prismaIndicatorBB: PrismaIndicatorBB): IndicatorBB {
-    return {
-      id: prismaIndicatorBB.id,
-      period: prismaIndicatorBB.period,
-      symbol: prismaIndicatorBB.symbol,
-      price: prismaIndicatorBB.price.toNumber(),
-      upper: prismaIndicatorBB.upper.toNumber(),
-      middle: prismaIndicatorBB.middle.toNumber(),
-      lower: prismaIndicatorBB.lower.toNumber(),
-      pb: prismaIndicatorBB.pb.toNumber(),
-      createdAt: prismaIndicatorBB.created_at,
-    }
+    return domainIndicatorBBSchema.parse(prismaIndicatorBB)
   }
 
   private toDomainSMACross(
     prismaIndicatorSMACross: PrismaIndicatorSMACross,
   ): IndicatorSMACross {
-    return {
-      id: prismaIndicatorSMACross.id,
-      periodLong: prismaIndicatorSMACross.period_long,
-      periodShort: prismaIndicatorSMACross.period_short,
-      symbol: prismaIndicatorSMACross.symbol,
-      price: prismaIndicatorSMACross.price.toNumber(),
-      smaLong: prismaIndicatorSMACross.sma_long.toNumber(),
-      smaShort: prismaIndicatorSMACross.sma_short.toNumber(),
-      createdAt: prismaIndicatorSMACross.created_at,
-    }
+    return domainIndicatorSMACrossSchema.parse(prismaIndicatorSMACross)
   }
 
   private toDomainListSMA(prismaSMA: PrismaIndicatorSMA[]): IndicatorSMA[] {

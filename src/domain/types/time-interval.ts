@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 export enum TimeInterval {
   DAY = 'day',
   WEEK = 'week',
@@ -5,6 +7,8 @@ export enum TimeInterval {
   YEAR = 'year',
   ALL = 'all',
 }
+
+export const timeIntervalSchema = z.enum(TimeInterval)
 
 export function timeIntervalRule(value: string): asserts value is TimeInterval {
   const options: TimeInterval[] = Object.values(TimeInterval)
