@@ -1,7 +1,6 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { StrategyMeanReversion } from '../types/settings'
-import { StrategyReportRepository } from '../repositories/strategy-report-repository'
-import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
+import { StrategyReportCreate } from '../models/strategy-report'
 import { median } from '../helpers/math-helper'
 import { Strategy } from './strategy'
 import { StrategyStops } from '../types/strategy-stops'
@@ -10,20 +9,7 @@ import {
   StrategySellConditions,
 } from '../types/strategy-conditions'
 export class MeanReversionStrategy implements Strategy {
-  constructor(
-    private readonly settings: StrategyMeanReversion,
-    private readonly strategyReportRepository: StrategyReportRepository,
-  ) {}
-
-  async calculateAndCreate(
-    indicators: IndicatorList | IndicatorListCreate,
-  ): Promise<StrategyReport> {
-    return await this.create(this.calculate(indicators))
-  }
-
-  async create(strategyReport: StrategyReportCreate): Promise<StrategyReport> {
-    return await this.strategyReportRepository.create(strategyReport)
-  }
+  constructor(private readonly settings: StrategyMeanReversion) {}
 
   calculate(
     indicators: IndicatorList | IndicatorListCreate,

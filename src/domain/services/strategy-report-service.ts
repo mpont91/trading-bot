@@ -4,10 +4,12 @@ import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { IndicatorService } from './indicator-service'
 import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
 import { Strategy } from '../strategies/strategy'
+import { StrategyReportRepository } from '../repositories/strategy-report-repository'
 
 export class StrategyReportService {
   constructor(
     private readonly indicatorService: IndicatorService,
+    private readonly strategyReportRepository: StrategyReportRepository,
     private readonly strategy: Strategy,
   ) {}
 
@@ -21,8 +23,9 @@ export class StrategyReportService {
       )
     }
 
-    const strategyReport: StrategyReport =
-      await this.strategy.calculateAndCreate(indicators)
+    const strategyReport: StrategyReportCreate =
+      this.strategy.calculate(indicators)
+    await this.strategyReportRepository.create(strategyReport)
     return this.calculate(strategyReport)
   }
 

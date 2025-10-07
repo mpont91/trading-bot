@@ -151,10 +151,10 @@ class Container {
     )
     const meanReversionStrategy: Strategy = new MeanReversionStrategy(
       settings.strategyMeanReversion,
-      strategyReportRepository,
     )
     this.strategyReportService = new StrategyReportService(
       this.indicatorService,
+      strategyReportRepository,
       meanReversionStrategy,
     )
     this.strategyActionService = new StrategyActionService(

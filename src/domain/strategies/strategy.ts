@@ -5,7 +5,4 @@ export interface Strategy {
   calculate(
     indicators: IndicatorList | IndicatorListCreate,
   ): StrategyReport | StrategyReportCreate
-  calculateAndCreate(
-    indicators: IndicatorList | IndicatorListCreate,
-  ): Promise<StrategyReport>
 }
