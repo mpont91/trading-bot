@@ -3,7 +3,6 @@ import {
   Prisma,
   PrismaClient,
 } from '@prisma/client'
-import Decimal from 'decimal.js'
 import { StrategyActionRepository } from '../../domain/repositories/strategy-action-repository'
 import {
   StrategyAction,
@@ -12,6 +11,10 @@ import {
 import { TimeInterval } from '../../domain/types/time-interval'
 import { getStartTimeFromTimeInterval } from '../../domain/helpers/time-interval-helper'
 import { Signal } from '../../domain/types/signal'
+import {
+  domainStrategyActionSchema,
+  prismaStrategyActionSchema,
+} from './schemas/prisma-strategy-action-schema'
 
 export class PrismaStrategyActionRepository
   implements StrategyActionRepository
@@ -149,41 +152,13 @@ export class PrismaStrategyActionRepository
   }
 
   private toDomain(prismaStrategyAction: PrismaStrategyAction): StrategyAction {
-    return {
-      id: prismaStrategyAction.id,
-      symbol: prismaStrategyAction.symbol,
-      price: prismaStrategyAction.price.toNumber(),
-      signal: prismaStrategyAction.signal,
-      tp: prismaStrategyAction.tp ? prismaStrategyAction.tp.toNumber() : null,
-      sl: prismaStrategyAction.sl ? prismaStrategyAction.sl.toNumber() : null,
-      ts: prismaStrategyAction.ts ? prismaStrategyAction.ts.toNumber() : null,
-      tpPrice: prismaStrategyAction.tp_price
-        ? prismaStrategyAction.tp_price.toNumber()
-        : null,
-      slPrice: prismaStrategyAction.sl_price
-        ? prismaStrategyAction.sl_price.toNumber()
-        : null,
-      createdAt: prismaStrategyAction.created_at,
-    }
+    return domainStrategyActionSchema.parse(prismaStrategyAction)
   }
 
   private toPrisma(
-    strategyAction: StrategyActionCreate,
+    strategyActionCreate: StrategyActionCreate,
   ): Prisma.StrategyActionCreateInput {
-    return {
-      symbol: strategyAction.symbol,
-      price: new Decimal(strategyAction.price),
-      signal: strategyAction.signal,
-      tp: strategyAction.tp ? new Decimal(strategyAction.tp) : undefined,
-      sl: strategyAction.sl ? new Decimal(strategyAction.sl) : undefined,
-      ts: strategyAction.ts ? new Decimal(strategyAction.ts) : undefined,
-      tp_price: strategyAction.tpPrice
-        ? new Decimal(strategyAction.tpPrice)
-        : undefined,
-      sl_price: strategyAction.slPrice
-        ? new Decimal(strategyAction.slPrice)
-        : undefined,
-    }
+    return prismaStrategyActionSchema.parse(strategyActionCreate)
   }
 
   private toDomainList(

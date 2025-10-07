@@ -181,19 +181,10 @@ CREATE TABLE "StrategyAction" (
 -- CreateTable
 CREATE TABLE "StrategyReport" (
     "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
-    "trend_up" BOOLEAN NOT NULL,
-    "golden_cross" BOOLEAN NOT NULL,
-    "strong_trend" BOOLEAN NOT NULL,
-    "bullish_direction" BOOLEAN NOT NULL,
-    "bullish_momentum" BOOLEAN NOT NULL,
-    "not_overextended" BOOLEAN NOT NULL,
-    "favorable_entry_price" BOOLEAN NOT NULL,
-    "death_cross" BOOLEAN NOT NULL,
-    "bearish_momentum" BOOLEAN NOT NULL,
-    "bearish_conviction" BOOLEAN NOT NULL,
-    "trend_weakening" BOOLEAN NOT NULL,
+    "conditions" JSONB NOT NULL,
     "sl" DECIMAL(65,30),
     "tp" DECIMAL(65,30),
     "ts" DECIMAL(65,30),
@@ -226,3 +217,6 @@ CREATE INDEX "StrategyAction_symbol_idx" ON "StrategyAction"("symbol");
 
 -- CreateIndex
 CREATE INDEX "StrategyAction_signal_idx" ON "StrategyAction"("signal");
+
+-- CreateIndex
+CREATE INDEX "StrategyReport_symbol_idx" ON "StrategyReport"("symbol");

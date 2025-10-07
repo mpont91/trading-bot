@@ -180,4 +180,6 @@ model StrategyReport {
   should_buy  Boolean
   should_sell Boolean
   created_at  DateTime @default(now())
+
+  @@index([symbol])
 }

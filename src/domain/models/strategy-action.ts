@@ -1,12 +1,21 @@
-import { Signal } from '../types/signal'
-import { StrategyStops } from '../types/strategy-stops'
+import { signalSchema } from '../types/signal'
+import { strategyStopsSchema } from '../types/strategy-stops'
+import { z } from 'zod'
 
-export interface StrategyAction extends StrategyStops {
-  id: number
-  symbol: string
-  price: number
-  signal: Signal
-  createdAt: Date
-}
+export const strategyActionSchema = z
+  .object({
+    id: z.number().int(),
+    symbol: z.string(),
+    price: z.number(),
+    signal: signalSchema,
+    createdAt: z.date(),
+  })
+  .extend(strategyStopsSchema.shape)
 
-export type StrategyActionCreate = Omit<StrategyAction, 'id' | 'createdAt'>
+export const strategyActionCreateSchema = strategyActionSchema.omit({
+  id: true,
+  createdAt: true,
+})
+
+export type StrategyAction = z.infer<typeof strategyActionSchema>
+export type StrategyActionCreate = z.infer<typeof strategyActionCreateSchema>
