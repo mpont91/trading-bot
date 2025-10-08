@@ -12,7 +12,6 @@ import { InvestmentService } from './investment-service'
 import { Balance } from '../types/balance'
 import { StrategyReportService } from './strategy-report-service'
 import { StrategyActionCreate } from '../models/strategy-action'
-import { settings } from '../../application/settings'
 import { Strategy } from '../strategies/strategy'
 
 export class BacktesterService {
@@ -49,7 +48,7 @@ export class BacktesterService {
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
-    this.candles = settings.history.candles
+    this.candles = this.strategy.getCandles()
     this.cash = this.backtestingSettings.initialEquity
   }
 

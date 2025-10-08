@@ -1,15 +1,17 @@
 import { z } from 'zod'
 
-export const timeFrameOptions = [
-  1, 3, 5, 15, 30, 60, 120, 240, 360, 720, 1440, 4320, 10080,
-] as const
+export enum TimeFrame {
+  '1m' = 1,
+  '3m' = 3,
+  '5m' = 5,
+  '15m' = 15,
+  '30m' = 30,
+  '60m' = 60,
+  '120m' = 120,
+  '240m' = 240,
+}
 
-const literalSchemas = timeFrameOptions.map((value) => z.literal(value))
-const [first, ...rest] = literalSchemas
-
-export const timeFrameSchema = z.union([first, ...rest])
-
-export type TimeFrame = z.infer<typeof timeFrameSchema>
+export const timeFrameSchema = z.enum(TimeFrame)
 
 export const candleSchema = z.object({
   time: z.date(),

@@ -1,4 +1,3 @@
-import { timeFrameSchema } from './candle'
 import { z } from 'zod'
 
 export const binanceSettingsSchema = z.object({
@@ -8,11 +7,6 @@ export const binanceSettingsSchema = z.object({
   bottleneckMinTime: z.number().int(),
   baseCurrency: z.string(),
   feeCurrency: z.string(),
-})
-
-export const historySettingsSchema = z.object({
-  timeFrame: timeFrameSchema,
-  candles: z.number().int(),
 })
 
 export const indicatorsSettingsSchema = z.object({
@@ -49,13 +43,11 @@ export const settingsSchema = z.object({
   maxPositionsOpened: z.number().int(),
   symbols: z.array(z.string()),
   safetyCapitalMargin: z.number(),
-  history: historySettingsSchema,
   indicators: indicatorsSettingsSchema,
   strategyMeanReversion: strategyMeanReversionSchema,
 })
 
 export type BinanceSettings = z.infer<typeof binanceSettingsSchema>
-export type HistorySettings = z.infer<typeof historySettingsSchema>
 export type IndicatorsSettings = z.infer<typeof indicatorsSettingsSchema>
 export type StrategyMeanReversion = z.infer<typeof strategyMeanReversionSchema>
 export type Settings = z.infer<typeof settingsSchema>

@@ -4,6 +4,7 @@ import { StrategyActionService } from './strategy-action-service'
 import { StrategyReportService } from './strategy-report-service'
 import { Strategy } from '../strategies/strategy'
 import { StrategyReport } from '../models/strategy-report'
+import { TimeFrame } from '../types/candle'
 
 export class MarketService {
   constructor(
@@ -14,8 +15,15 @@ export class MarketService {
   ) {}
 
   async execute(symbol: string): Promise<void> {
+    const timeFrame: TimeFrame = this.strategy.getTimeFrame()
+    const candles: number = this.strategy.getCandles()
+
     const indicators: IndicatorList =
-      await this.indicatorService.fetchAndCalculateAndCreateAll(symbol)
+      await this.indicatorService.fetchAndCalculateAndCreateAll(
+        symbol,
+        timeFrame,
+        candles,
+      )
 
     const strategyReport: StrategyReport =
       await this.strategyReportService.create(

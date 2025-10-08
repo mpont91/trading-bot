@@ -8,8 +8,18 @@ import {
   StrategyBuyConditions,
   StrategySellConditions,
 } from '../types/strategy-conditions'
+import { TimeFrame } from '../types/candle'
+
 export class MeanReversionStrategy implements Strategy {
   constructor(private readonly settings: StrategyMeanReversion) {}
+
+  getTimeFrame(): TimeFrame {
+    return TimeFrame['5m']
+  }
+
+  getCandles(): number {
+    return 240
+  }
 
   calculate(
     indicators: IndicatorList | IndicatorListCreate,

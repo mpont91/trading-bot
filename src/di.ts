@@ -117,7 +117,7 @@ class Container {
       settings.strategyMeanReversion,
     )
 
-    this.apiService = new ApiService(settings.history, api)
+    this.apiService = new ApiService(api)
     this.equityService = new EquityService(equityRepository, this.apiService)
     this.commissionEquityService = new CommissionEquityService(
       commissionEquityRepository,

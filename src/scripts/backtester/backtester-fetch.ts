@@ -1,21 +1,26 @@
 import fs from 'fs'
 import { Container } from '../../di'
 import { ApiService } from '../../domain/services/api-service'
-import { Candle, TimeFrame } from '../../domain/types/candle'
-import { settings } from '../../application/settings'
+import { Candle, timeFrameSchema } from '../../domain/types/candle'
+import { z } from 'zod'
+
+const requestSchema = z.object({
+  symbol: z.string(),
+  timeFrame: z.coerce.number().pipe(timeFrameSchema),
+})
 
 export default async function (args: string[]): Promise<void> {
-  const [symbol] = args
+  const [symbolRequest, timeFrameRequest] = args
 
-  if (!symbol) {
-    throw new Error('Missing required argument: symbol')
-  }
+  const { symbol, timeFrame } = requestSchema.parse({
+    symbol: symbolRequest,
+    timeFrame: timeFrameRequest,
+  })
 
   const apiService: ApiService = Container.getApiService()
 
   const start: Date = new Date('2024-01-01T00:00:00Z')
   const end: Date = new Date('2024-01-07T23:59:59Z')
-  const timeFrame: TimeFrame = settings.history.timeFrame
 
   const response: Candle[] = await apiService.getCandlesHistorical(
     symbol,

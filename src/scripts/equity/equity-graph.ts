@@ -5,7 +5,7 @@ import {
   timeIntervalSchema,
 } from '../../domain/types/time-interval'
 import { Equity } from '../../domain/models/equity'
-import { z } from 'zod/index'
+import { z } from 'zod'
 
 const requestSchema = z.tuple([timeIntervalSchema])
 

@@ -15,20 +15,15 @@ export function mapBinanceToDomainCandle(
 }
 
 export function mapDomainToBinanceTimeFrame(timeFrame: TimeFrame): Interval {
-  const mapping: { [key in TimeFrame]: Interval } = {
-    1: '1m' as Interval,
-    3: '3m' as Interval,
-    5: '5m' as Interval,
-    15: '15m' as Interval,
-    30: '30m' as Interval,
-    60: '1h' as Interval,
-    120: '2h' as Interval,
-    240: '4h' as Interval,
-    360: '6h' as Interval,
-    720: '12h' as Interval,
-    1440: '1d' as Interval,
-    4320: '3d' as Interval,
-    10080: '1w' as Interval,
+  const mapping: Record<TimeFrame, Interval> = {
+    [TimeFrame['1m']]: Interval['1m'],
+    [TimeFrame['3m']]: Interval['3m'],
+    [TimeFrame['5m']]: Interval['5m'],
+    [TimeFrame['15m']]: Interval['15m'],
+    [TimeFrame['30m']]: Interval['30m'],
+    [TimeFrame['60m']]: Interval['1h'],
+    [TimeFrame['120m']]: Interval['2h'],
+    [TimeFrame['240m']]: Interval['4h'],
   }
   return mapping[timeFrame]
 }

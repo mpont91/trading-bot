@@ -1,7 +1,7 @@
 import { SmaIndicatorCalculator } from '../indicators/sma-indicator-calculator'
 import { RsiIndicatorCalculator } from '../indicators/rsi-indicator-calculator'
 import { AtrIndicatorCalculator } from '../indicators/atr-indicator-calculator'
-import { Candle } from '../types/candle'
+import { Candle, TimeFrame } from '../types/candle'
 import { AdxIndicatorCalculator } from '../indicators/adx-indicator-calculator'
 import { BbIndicatorCalculator } from '../indicators/bb-indicator-calculator'
 import { IndicatorRepository } from '../repositories/indicator-repository'
@@ -49,8 +49,16 @@ export class IndicatorService {
     }
   }
 
-  async fetchAndCalculateAndCreateAll(symbol: string): Promise<IndicatorList> {
-    const candles: Candle[] = await this.apiService.getCandles(symbol)
+  async fetchAndCalculateAndCreateAll(
+    symbol: string,
+    timeFrame: TimeFrame,
+    candlesLimit: number,
+  ): Promise<IndicatorList> {
+    const candles: Candle[] = await this.apiService.getCandles(
+      symbol,
+      timeFrame,
+      candlesLimit,
+    )
     return {
       sma: await this.calculateAndCreateSMA(symbol, candles),
       rsi: await this.calculateAndCreateRSI(symbol, candles),

@@ -4,16 +4,12 @@ import { Symbol } from '../types/symbol'
 import { OrderRequest } from '../models/order'
 import { OrderCreate } from '../models/order'
 import { Candle, TimeFrame } from '../types/candle'
-import { HistorySettings } from '../types/settings'
 import { CommissionEquityCreate } from '../models/commission-equity'
 import { EquityCreate } from '../models/equity'
 import { Coin } from '../types/coin'
 
 export class ApiService {
-  constructor(
-    private readonly settings: HistorySettings,
-    private readonly api: Api,
-  ) {}
+  constructor(private readonly api: Api) {}
 
   async getCoins(): Promise<Coin[]> {
     return this.api.getCoins()
@@ -35,9 +31,11 @@ export class ApiService {
     return this.api.getPrice(symbol)
   }
 
-  async getCandles(symbol: string): Promise<Candle[]> {
-    const timeFrame: TimeFrame = this.settings.timeFrame
-    const candles: number = this.settings.candles
+  async getCandles(
+    symbol: string,
+    timeFrame: TimeFrame,
+    candles: number,
+  ): Promise<Candle[]> {
     const end: Date = new Date()
     const start: Date = new Date(
       end.getTime() - candles * timeFrame * 60 * 1000,
