@@ -10,6 +10,7 @@ import {
 import { InvestmentService } from '../../domain/services/investment-service'
 import { StrategyReportService } from '../../domain/services/strategy-report-service'
 import { Strategy } from '../../domain/strategies/strategy'
+import { z } from 'zod'
 
 function settings(): BacktestingSettings {
   return {
@@ -35,14 +36,18 @@ function initializeBacktesterService(): BacktesterService {
   )
 }
 
+const requestSchema = z.object({
+  symbol: z.string().transform((s) => s.toLowerCase()),
+})
+
 export default async function (args: string[]): Promise<void> {
-  const [symbol] = args
+  const [symbolRequest] = args
 
-  if (!symbol) {
-    throw new Error('Missing required argument: symbol')
-  }
+  const { symbol } = requestSchema.parse({
+    symbol: symbolRequest,
+  })
 
-  const file: string = `./data/${symbol.toLowerCase()}.json`
+  const file: string = `./data/${symbol}.json`
 
   if (!fs.existsSync(file)) {
     throw new Error(
@@ -51,7 +56,7 @@ export default async function (args: string[]): Promise<void> {
   }
 
   const candles: Candle[] = JSON.parse(
-    fs.readFileSync(`./data/${symbol.toLowerCase()}.json`, 'utf-8'),
+    fs.readFileSync(`./data/${symbol}.json`, 'utf-8'),
   )
 
   const backtesterService: BacktesterService = initializeBacktesterService()

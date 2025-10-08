@@ -5,7 +5,7 @@ import { Candle, timeFrameSchema } from '../../domain/types/candle'
 import { z } from 'zod'
 
 const requestSchema = z.object({
-  symbol: z.string(),
+  symbol: z.string().transform((s) => s.toLowerCase()),
   timeFrame: z.coerce.number().pipe(timeFrameSchema),
 })
 
@@ -29,7 +29,7 @@ export default async function (args: string[]): Promise<void> {
     end,
   )
 
-  const filename = `./data/${symbol.toLowerCase()}.json`
+  const filename = `./data/${symbol}.json`
   fs.writeFileSync(filename, JSON.stringify(response))
 
   console.log(`${response.length} candles saved to ${filename}`)
