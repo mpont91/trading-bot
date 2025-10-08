@@ -9,7 +9,7 @@ export const binanceSettingsSchema = z.object({
   feeCurrency: z.string(),
 })
 
-export const indicatorsSettingsSchema = z.object({
+export const indicatorSettingsSchema = z.object({
   adx: z.number().int(),
   atr: z.number().int(),
   rsi: z.number().int(),
@@ -35,6 +35,8 @@ export const strategyMeanReversionSchema = z.object({
   trailingStopMultiplier: z.number(),
 })
 
+export const strategySlowSwingSchema = z.object({})
+
 export const settingsSchema = z.object({
   intervalTradingTime: z.number().int(),
   intervalMarketTime: z.number().int(),
@@ -43,11 +45,16 @@ export const settingsSchema = z.object({
   maxPositionsOpened: z.number().int(),
   symbols: z.array(z.string()),
   safetyCapitalMargin: z.number(),
-  indicators: indicatorsSettingsSchema,
-  strategyMeanReversion: strategyMeanReversionSchema,
+  strategies: z.object({
+    meanReversion: strategyMeanReversionSchema,
+    slowSwing: strategySlowSwingSchema,
+  }),
 })
 
 export type BinanceSettings = z.infer<typeof binanceSettingsSchema>
-export type IndicatorsSettings = z.infer<typeof indicatorsSettingsSchema>
-export type StrategyMeanReversion = z.infer<typeof strategyMeanReversionSchema>
+export type IndicatorSettings = z.infer<typeof indicatorSettingsSchema>
+export type StrategyMeanReversionSettings = z.infer<
+  typeof strategyMeanReversionSchema
+>
+export type StrategySlowSwingSettings = z.infer<typeof strategySlowSwingSchema>
 export type Settings = z.infer<typeof settingsSchema>

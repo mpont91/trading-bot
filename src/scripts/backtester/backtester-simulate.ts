@@ -25,7 +25,7 @@ function initializeBacktesterService(): BacktesterService {
   const strategyReportService: StrategyReportService =
     Container.getStrategyReportService()
   const investmentService: InvestmentService = Container.getInvestmentService()
-  const strategy: Strategy = Container.getMeanReversionStrategy()
+  const strategy: Strategy = Container.getStrategy()
 
   return new BacktesterService(
     indicatorService,

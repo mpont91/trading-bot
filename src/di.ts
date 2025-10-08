@@ -48,6 +48,7 @@ import { PrismaStrategyReportRepository } from './infrastructure/repositories/pr
 import { Strategy } from './domain/strategies/strategy'
 import { MeanReversionStrategy } from './domain/strategies/mean-reversion-strategy'
 import { MarketService } from './domain/services/market-service'
+import { IndicatorSettings } from './domain/types/settings'
 
 class Container {
   private static launcherMarket: Launcher
@@ -67,7 +68,7 @@ class Container {
   private static strategyReportService: StrategyReportService
   private static executionService: ExecutionService
   private static marketService: MarketService
-  private static meanReversionStrategy: Strategy
+  private static strategy: Strategy
 
   static initialize(): void {
     const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
@@ -94,28 +95,29 @@ class Container {
     const strategyReportRepository: StrategyReportRepository =
       new PrismaStrategyReportRepository(prisma)
 
+    this.strategy = new MeanReversionStrategy(settings.strategies.meanReversion)
+
+    const indicatorSettings: IndicatorSettings =
+      this.strategy.getIndicatorSettings()
+
     const adxIndicatorCalculator: AdxIndicatorCalculator =
-      new AdxIndicatorCalculator(settings.indicators.adx)
+      new AdxIndicatorCalculator(indicatorSettings.adx)
     const atrIndicatorCalculator: AtrIndicatorCalculator =
-      new AtrIndicatorCalculator(settings.indicators.atr)
+      new AtrIndicatorCalculator(indicatorSettings.atr)
     const rsiIndicatorCalculator: RsiIndicatorCalculator =
-      new RsiIndicatorCalculator(settings.indicators.rsi)
+      new RsiIndicatorCalculator(indicatorSettings.rsi)
     const smaIndicatorCalculator: SmaIndicatorCalculator =
-      new SmaIndicatorCalculator(settings.indicators.sma)
+      new SmaIndicatorCalculator(indicatorSettings.sma)
     const bbIndicatorCalculator: BbIndicatorCalculator =
       new BbIndicatorCalculator(
-        settings.indicators.bb.period,
-        settings.indicators.bb.multiplier,
+        indicatorSettings.bb.period,
+        indicatorSettings.bb.multiplier,
       )
     const smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator =
       new SmaCrossIndicatorCalculator(
-        settings.indicators.smaCross.periodLong,
-        settings.indicators.smaCross.periodShort,
+        indicatorSettings.smaCross.periodLong,
+        indicatorSettings.smaCross.periodShort,
       )
-
-    this.meanReversionStrategy = new MeanReversionStrategy(
-      settings.strategyMeanReversion,
-    )
 
     this.apiService = new ApiService(api)
     this.equityService = new EquityService(equityRepository, this.apiService)
@@ -171,7 +173,7 @@ class Container {
       this.indicatorService,
       this.strategyActionService,
       this.strategyReportService,
-      this.meanReversionStrategy,
+      this.strategy,
     )
 
     const accountManager: ManagerInterface = new AccountManager(
@@ -245,8 +247,8 @@ class Container {
   static getMarketService(): MarketService {
     return this.marketService
   }
-  static getMeanReversionStrategy(): Strategy {
-    return this.meanReversionStrategy
+  static getStrategy(): Strategy {
+    return this.strategy
   }
 }
 

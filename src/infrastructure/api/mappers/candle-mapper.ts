@@ -21,9 +21,16 @@ export function mapDomainToBinanceTimeFrame(timeFrame: TimeFrame): Interval {
     [TimeFrame['5m']]: Interval['5m'],
     [TimeFrame['15m']]: Interval['15m'],
     [TimeFrame['30m']]: Interval['30m'],
-    [TimeFrame['60m']]: Interval['1h'],
-    [TimeFrame['120m']]: Interval['2h'],
-    [TimeFrame['240m']]: Interval['4h'],
+    [TimeFrame['1h']]: Interval['1h'],
+    [TimeFrame['2h']]: Interval['2h'],
+    [TimeFrame['4h']]: Interval['4h'],
+    [TimeFrame['6h']]: Interval['6h'],
+    [TimeFrame['8h']]: Interval['8h'],
+    [TimeFrame['12h']]: Interval['12h'],
+    [TimeFrame['1d']]: Interval['1d'],
+    [TimeFrame['3d']]: Interval['3d'],
+    [TimeFrame['1w']]: Interval['1w'],
   }
+
   return mapping[timeFrame]
 }

@@ -1,22 +1,19 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
-import {
-  IndicatorSettings,
-  StrategyMeanReversionSettings,
-} from '../types/settings'
+import { IndicatorSettings, StrategySlowSwingSettings } from '../types/settings'
 import { Strategy } from './strategy'
-import { StrategyStops } from '../types/strategy-stops'
+import { TimeFrame } from '../types/candle'
 import {
   StrategyBuyConditions,
   StrategySellConditions,
 } from '../types/strategy-conditions'
-import { TimeFrame } from '../types/candle'
+import { StrategyStops } from '../types/strategy-stops'
 
-export class MeanReversionStrategy extends Strategy {
-  constructor(private readonly settings: StrategyMeanReversionSettings) {
+export class SlowSwingStrategy extends Strategy {
+  constructor(private readonly settings: StrategySlowSwingSettings) {
     super()
   }
 
-  name = 'Mean reversion strategy'
+  name = 'Slow swing strategy'
 
   getIndicatorSettings(): IndicatorSettings {
     return {
@@ -36,11 +33,11 @@ export class MeanReversionStrategy extends Strategy {
   }
 
   getTimeFrame(): TimeFrame {
-    return TimeFrame['5m']
+    return TimeFrame['1d']
   }
 
   getCandles(): number {
-    return 240
+    return 250
   }
 
   evaluateBuyConditions(
@@ -89,6 +86,22 @@ export class MeanReversionStrategy extends Strategy {
     return this.calculateBuyScore(buyConditions) >= this.settings.buyScoreMin
   }
 
+  private calculateBuyScore(buyConditions: StrategyBuyConditions): number {
+    if (!buyConditions.goldenCross || !buyConditions.favorableEntryPrice) {
+      return 0
+    }
+
+    let score: number = 0
+
+    if (buyConditions.favorableEntryPrice) score += 3
+    if (buyConditions.goldenCross) score += 2
+    if (buyConditions.bullishDirection) score += 1
+    if (buyConditions.bullishMomentum) score += 1
+    if (buyConditions.strongTrend) score += 1
+
+    return score
+  }
+
   calculateStops(
     indicators: IndicatorList | IndicatorListCreate,
   ): StrategyStops {
@@ -115,21 +128,5 @@ export class MeanReversionStrategy extends Strategy {
       tpPrice,
       slPrice,
     }
-  }
-
-  private calculateBuyScore(buyConditions: StrategyBuyConditions): number {
-    if (!buyConditions.goldenCross || !buyConditions.favorableEntryPrice) {
-      return 0
-    }
-
-    let score: number = 0
-
-    if (buyConditions.favorableEntryPrice) score += 3
-    if (buyConditions.goldenCross) score += 2
-    if (buyConditions.bullishDirection) score += 1
-    if (buyConditions.bullishMomentum) score += 1
-    if (buyConditions.strongTrend) score += 1
-
-    return score
   }
 }
