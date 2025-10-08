@@ -29,17 +29,8 @@ export const backtestingSummarySchema = z.object({
   signalHold: z.number().int(),
   signalBuy: z.number().int(),
   signalSell: z.number().int(),
-  trendUp: z.number().int(),
-  goldenCross: z.number().int(),
-  strongTrend: z.number().int(),
-  bullishDirection: z.number().int(),
-  bullishMomentum: z.number().int(),
-  notOverextended: z.number().int(),
-  favorableEntryPrice: z.number().int(),
-  deathCross: z.number().int(),
-  bearishMomentum: z.number().int(),
-  trendWeakening: z.number().int(),
-  bearishConviction: z.number().int(),
+  buyConditions: z.record(z.string(), z.number()),
+  sellConditions: z.record(z.string(), z.number()),
 })
 
 export type BacktestingSettings = z.infer<typeof backtestingSettingsSchema>

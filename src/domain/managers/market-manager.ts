@@ -1,17 +1,14 @@
 import { ManagerInterface } from './manager-interface'
-import { StrategyActionService } from '../services/strategy-action-service'
-import { IndicatorService } from '../services/indicator-service'
+import { MarketService } from '../services/market-service'
 
 export class MarketManager implements ManagerInterface {
   constructor(
     private readonly symbols: string[],
-    private readonly indicatorService: IndicatorService,
-    private readonly strategyActionService: StrategyActionService,
+    private readonly marketService: MarketService,
   ) {}
   async start(): Promise<void> {
     for (const symbol of this.symbols) {
-      await this.indicatorService.fetchAndCalculateAndCreateAll(symbol)
-      await this.strategyActionService.calculateAndCreate(symbol)
+      await this.marketService.execute(symbol)
     }
   }
 }

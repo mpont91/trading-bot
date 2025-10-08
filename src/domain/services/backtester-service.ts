@@ -13,6 +13,7 @@ import { Balance } from '../types/balance'
 import { StrategyReportService } from './strategy-report-service'
 import { StrategyActionCreate } from '../models/strategy-action'
 import { settings } from '../../application/settings'
+import { Strategy } from '../strategies/strategy'
 
 export class BacktesterService {
   summary: BacktestingSummary
@@ -24,6 +25,7 @@ export class BacktesterService {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly strategyReportService: StrategyReportService,
+    private readonly strategy: Strategy,
     private readonly investmentService: InvestmentService,
     private readonly backtestingSettings: BacktestingSettings,
   ) {
@@ -42,17 +44,8 @@ export class BacktesterService {
       signalHold: 0,
       signalBuy: 0,
       signalSell: 0,
-      trendUp: 0,
-      goldenCross: 0,
-      strongTrend: 0,
-      bullishDirection: 0,
-      bullishMomentum: 0,
-      notOverextended: 0,
-      favorableEntryPrice: 0,
-      deathCross: 0,
-      bearishMomentum: 0,
-      trendWeakening: 0,
-      bearishConviction: 0,
+      buyConditions: {},
+      sellConditions: {},
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
@@ -66,13 +59,15 @@ export class BacktesterService {
       const indicators: IndicatorListCreate =
         this.indicatorService.calculateAll(symbol, currentCandles)
 
-      const risk: StrategyReportCreate =
-        this.strategyReportService.evaluate(indicators)
+      const strategyReport: StrategyReportCreate =
+        this.strategy.calculate(indicators)
 
-      const strategy: StrategyActionCreate =
-        this.strategyReportService.calculate(risk)
+      this.countConditions(strategyReport)
 
-      switch (strategy.signal) {
+      const strategyAction: StrategyActionCreate =
+        this.strategyReportService.calculateStrategyAction(strategyReport)
+
+      switch (strategyAction.signal) {
         case 'HOLD':
           this.summary.signalHold++
           break
@@ -85,7 +80,7 @@ export class BacktesterService {
       }
 
       if (this.position) {
-        if (strategy.signal === 'SELL') {
+        if (strategyAction.signal === 'SELL') {
           this.summary.sell++
           this.sell(candles[i].closePrice)
           continue
@@ -108,8 +103,8 @@ export class BacktesterService {
 
         this.trailing(candles[i].highPrice)
       } else {
-        if (strategy.signal === 'BUY') {
-          this.buy(strategy)
+        if (strategyAction.signal === 'BUY') {
+          this.buy(strategyAction)
         }
       }
     }
@@ -185,6 +180,24 @@ export class BacktesterService {
       const potentialNewTsPrice = calculateSL(price, this.position.ts)
       if (potentialNewTsPrice > this.position.tsPrice) {
         this.position.tsPrice = potentialNewTsPrice
+      }
+    }
+  }
+
+  private countConditions(report: StrategyReportCreate): void {
+    const { buy, sell } = report.conditions
+
+    for (const [key, value] of Object.entries(buy)) {
+      if (value) {
+        this.summary.buyConditions[key] =
+          (this.summary.buyConditions[key] || 0) + 1
+      }
+    }
+
+    for (const [key, value] of Object.entries(sell)) {
+      if (value) {
+        this.summary.sellConditions[key] =
+          (this.summary.sellConditions[key] || 0) + 1
       }
     }
   }

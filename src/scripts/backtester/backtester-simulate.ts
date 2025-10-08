@@ -9,6 +9,7 @@ import {
 } from '../../domain/types/backtesting'
 import { InvestmentService } from '../../domain/services/investment-service'
 import { StrategyReportService } from '../../domain/services/strategy-report-service'
+import { Strategy } from '../../domain/strategies/strategy'
 
 function settings(): BacktestingSettings {
   return {
@@ -23,10 +24,12 @@ function initializeBacktesterService(): BacktesterService {
   const strategyReportService: StrategyReportService =
     Container.getStrategyReportService()
   const investmentService: InvestmentService = Container.getInvestmentService()
+  const strategy: Strategy = Container.getMeanReversionStrategy()
 
   return new BacktesterService(
     indicatorService,
     strategyReportService,
+    strategy,
     investmentService,
     backtestingSettings,
   )

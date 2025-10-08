@@ -47,6 +47,7 @@ import { StrategyReportRepository } from './domain/repositories/strategy-report-
 import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
 import { Strategy } from './domain/strategies/strategy'
 import { MeanReversionStrategy } from './domain/strategies/mean-reversion-strategy'
+import { MarketService } from './domain/services/market-service'
 
 class Container {
   private static launcherMarket: Launcher
@@ -65,6 +66,8 @@ class Container {
   private static trailingService: TrailingService
   private static strategyReportService: StrategyReportService
   private static executionService: ExecutionService
+  private static marketService: MarketService
+  private static meanReversionStrategy: Strategy
 
   static initialize(): void {
     const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
@@ -110,6 +113,10 @@ class Container {
         settings.indicators.smaCross.periodShort,
       )
 
+    this.meanReversionStrategy = new MeanReversionStrategy(
+      settings.strategyMeanReversion,
+    )
+
     this.apiService = new ApiService(settings.history, api)
     this.equityService = new EquityService(equityRepository, this.apiService)
     this.commissionEquityService = new CommissionEquityService(
@@ -149,22 +156,22 @@ class Container {
       bbIndicatorCalculator,
       smaCrossIndicatorCalculator,
     )
-    const meanReversionStrategy: Strategy = new MeanReversionStrategy(
-      settings.strategyMeanReversion,
-    )
     this.strategyReportService = new StrategyReportService(
-      this.indicatorService,
       strategyReportRepository,
-      meanReversionStrategy,
     )
     this.strategyActionService = new StrategyActionService(
       strategyActionRepository,
-      this.strategyReportService,
     )
     this.executionService = new ExecutionService(
       this.positionService,
       this.strategyActionService,
       this.tradeService,
+    )
+    this.marketService = new MarketService(
+      this.indicatorService,
+      this.strategyActionService,
+      this.strategyReportService,
+      this.meanReversionStrategy,
     )
 
     const accountManager: ManagerInterface = new AccountManager(
@@ -173,8 +180,7 @@ class Container {
     )
     const marketManager: ManagerInterface = new MarketManager(
       settings.symbols,
-      this.indicatorService,
-      this.strategyActionService,
+      this.marketService,
     )
     const tradingManager: TradingManager = new TradingManager(
       settings.symbols,
@@ -235,6 +241,12 @@ class Container {
   }
   static getStrategyReportService(): StrategyReportService {
     return this.strategyReportService
+  }
+  static getMarketService(): MarketService {
+    return this.marketService
+  }
+  static getMeanReversionStrategy(): Strategy {
+    return this.meanReversionStrategy
   }
 }
 

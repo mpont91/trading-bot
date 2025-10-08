@@ -3,19 +3,11 @@ import { StrategyAction, StrategyActionCreate } from '../models/strategy-action'
 import { StrategyAnalysis } from '../types/strategy-analysis'
 import { TimeInterval } from '../types/time-interval'
 import { reduceRecordsData } from '../helpers/graph-helper'
-import { StrategyReportService } from './strategy-report-service'
 
 export class StrategyActionService {
   constructor(
     private readonly strategyActionRepository: StrategyActionRepository,
-    private readonly strategyReportService: StrategyReportService,
   ) {}
-
-  async calculateAndCreate(symbol: string): Promise<StrategyAction> {
-    return this.create(
-      await this.strategyReportService.fetchAndCalculate(symbol),
-    )
-  }
 
   async create(strategyAction: StrategyActionCreate): Promise<StrategyAction> {
     return this.strategyActionRepository.create(strategyAction)

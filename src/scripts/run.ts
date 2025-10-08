@@ -87,16 +87,6 @@ const scripts: Record<string, Fn> = {
   'position-open': async (args: string[]) => {
     await (await import('./position/position-open')).default(args)
   },
-  'strategy-action-calculate-create': async (args: string[]) => {
-    await (
-      await import('./strategy-action/strategy-action-calculate-create')
-    ).default(args)
-  },
-  'strategy-report-fetch-calculate': async (args: string[]) => {
-    await (
-      await import('./strategy-report/strategy-report-fetch-calculate')
-    ).default(args)
-  },
   'trailing-list': async () => {
     await (await import('./trailing/trailing-list')).default()
   },

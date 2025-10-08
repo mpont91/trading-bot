@@ -1,41 +1,18 @@
 import { Signal } from '../types/signal'
 import { StrategyActionCreate } from '../models/strategy-action'
-import { IndicatorList, IndicatorListCreate } from '../models/indicator'
-import { IndicatorService } from './indicator-service'
 import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
-import { Strategy } from '../strategies/strategy'
 import { StrategyReportRepository } from '../repositories/strategy-report-repository'
 
 export class StrategyReportService {
   constructor(
-    private readonly indicatorService: IndicatorService,
     private readonly strategyReportRepository: StrategyReportRepository,
-    private readonly strategy: Strategy,
   ) {}
 
-  async fetchAndCalculate(symbol: string): Promise<StrategyActionCreate> {
-    const indicators: IndicatorList | null =
-      await this.indicatorService.getAll(symbol)
-
-    if (!indicators) {
-      throw new Error(
-        `There are no indicators for this symbol to evaluate a decision! Symbol: ${symbol}`,
-      )
-    }
-
-    const strategyReport: StrategyReportCreate =
-      this.strategy.calculate(indicators)
-    await this.strategyReportRepository.create(strategyReport)
-    return this.calculate(strategyReport)
+  async create(strategyReport: StrategyReportCreate): Promise<StrategyReport> {
+    return this.strategyReportRepository.create(strategyReport)
   }
 
-  evaluate(
-    indicators: IndicatorList | IndicatorListCreate,
-  ): StrategyReport | StrategyReportCreate {
-    return this.strategy.calculate(indicators)
-  }
-
-  calculate(
+  calculateStrategyAction(
     strategyReport: StrategyReport | StrategyReportCreate,
   ): StrategyActionCreate {
     if (strategyReport.shouldBuy && strategyReport.shouldSell) {
