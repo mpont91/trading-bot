@@ -22,20 +22,41 @@ function parseNumber(
 
 const meanReversionStrategySettings: StrategyMeanReversionSettings = {
   timeFrame: TimeFrame['5m'],
-  candles: 240,
+  candles: parseNumber(process.env.STRATEGY_MEAN_REVERSION_CANDLES, 240),
   indicators: {
-    sma: parseNumber(process.env.INDICATOR_SMA_PERIOD, 20),
-    rsi: parseNumber(process.env.INDICATOR_RSI_PERIOD, 14),
-    adx: parseNumber(process.env.INDICATOR_ADX_PERIOD, 14),
-    atr: parseNumber(process.env.INDICATOR_ATR_PERIOD, 14),
+    sma: parseNumber(
+      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_SMA_PERIOD,
+      20,
+    ),
+    rsi: parseNumber(
+      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_RSI_PERIOD,
+      14,
+    ),
+    adx: parseNumber(
+      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_ADX_PERIOD,
+      14,
+    ),
+    atr: parseNumber(
+      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_ATR_PERIOD,
+      14,
+    ),
     bb: {
-      period: parseNumber(process.env.INDICATOR_BB_PERIOD, 20),
-      multiplier: parseNumber(process.env.INDICATOR_BB_MULTIPLIER, 2.5),
+      period: parseNumber(
+        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      multiplier: parseNumber(
+        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_BB_MULTIPLIER,
+        2.5,
+      ),
     },
     smaCross: {
-      periodLong: parseNumber(process.env.INDICATOR_SMA_CROSS_PERIOD_LONG, 50),
+      periodLong: parseNumber(
+        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_SMA_CROSS_PERIOD_LONG,
+        50,
+      ),
       periodShort: parseNumber(
-        process.env.INDICATOR_SMA_CROSS_PERIOD_SHORT,
+        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_SMA_CROSS_PERIOD_SHORT,
         20,
       ),
     },
@@ -77,20 +98,29 @@ const meanReversionStrategySettings: StrategyMeanReversionSettings = {
 
 const slowSwingStrategy: StrategySlowSwingSettings = {
   timeFrame: TimeFrame['1d'],
-  candles: 250,
+  candles: parseNumber(process.env.STRATEGY_SLOW_SWING_CANDLES, 250),
   indicators: {
-    sma: parseNumber(process.env.INDICATOR_SMA_PERIOD, 20),
-    rsi: parseNumber(process.env.INDICATOR_RSI_PERIOD, 14),
-    adx: parseNumber(process.env.INDICATOR_ADX_PERIOD, 14),
-    atr: parseNumber(process.env.INDICATOR_ATR_PERIOD, 14),
+    sma: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_SMA_PERIOD, 20),
+    rsi: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_RSI_PERIOD, 14),
+    adx: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_ADX_PERIOD, 14),
+    atr: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_ATR_PERIOD, 14),
     bb: {
-      period: parseNumber(process.env.INDICATOR_BB_PERIOD, 20),
-      multiplier: parseNumber(process.env.INDICATOR_BB_MULTIPLIER, 2.5),
+      period: parseNumber(
+        process.env.STRATEGY_SLOW_SWING_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      multiplier: parseNumber(
+        process.env.STRATEGY_SLOW_SWING_INDICATOR_BB_MULTIPLIER,
+        2.5,
+      ),
     },
     smaCross: {
-      periodLong: parseNumber(process.env.INDICATOR_SMA_CROSS_PERIOD_LONG, 200),
+      periodLong: parseNumber(
+        process.env.STRATEGY_SLOW_SWING_INDICATOR_SMA_CROSS_PERIOD_LONG,
+        200,
+      ),
       periodShort: parseNumber(
-        process.env.INDICATOR_SMA_CROSS_PERIOD_SHORT,
+        process.env.STRATEGY_SLOW_SWING_INDICATOR_SMA_CROSS_PERIOD_SHORT,
         50,
       ),
     },
@@ -132,6 +162,7 @@ export const settings: Settings = {
   symbols: ['BTCUSDC', 'ETHUSDC', 'XRPUSDC', 'SOLUSDC', 'ADAUSDC'],
   maxPositionsOpened: parseNumber(process.env.MAX_POSITIONS_OPENED, 5),
   safetyCapitalMargin: parseNumber(process.env.SAFETY_CAPITAL_MARGIN, 0.3),
+  strategy: process.env.STRATEGY || 'mean-reversion',
   strategies: {
     meanReversion: meanReversionStrategySettings,
     slowSwing: slowSwingStrategy,

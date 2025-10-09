@@ -8,9 +8,7 @@ import {
 import { StrategyStops } from '../types/strategy-stops'
 
 export class SlowSwingStrategy extends Strategy {
-  protected constructor(
-    protected readonly settings: StrategySlowSwingSettings,
-  ) {
+  constructor(protected readonly settings: StrategySlowSwingSettings) {
     super(settings)
   }
 

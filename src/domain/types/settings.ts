@@ -58,6 +58,7 @@ export const settingsSchema = z.object({
   maxPositionsOpened: z.number().int(),
   symbols: z.array(z.string()),
   safetyCapitalMargin: z.number(),
+  strategy: z.string(),
   strategies: z.object({
     meanReversion: strategyMeanReversionSchema,
     slowSwing: strategySlowSwingSchema,

@@ -46,9 +46,9 @@ import { ExecutionService } from './domain/services/execution-service'
 import { StrategyReportRepository } from './domain/repositories/strategy-report-repository'
 import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
 import { Strategy } from './domain/strategies/strategy'
-import { MeanReversionStrategy } from './domain/strategies/mean-reversion-strategy'
 import { MarketService } from './domain/services/market-service'
 import { IndicatorSettings } from './domain/types/settings'
+import { createStrategy } from './domain/strategies/strategy-factory'
 
 class Container {
   private static launcherMarket: Launcher
@@ -95,7 +95,7 @@ class Container {
     const strategyReportRepository: StrategyReportRepository =
       new PrismaStrategyReportRepository(prisma)
 
-    this.strategy = new MeanReversionStrategy(settings.strategies.meanReversion)
+    this.strategy = createStrategy(settings)
 
     const indicatorSettings: IndicatorSettings =
       this.strategy.getIndicatorSettings()
