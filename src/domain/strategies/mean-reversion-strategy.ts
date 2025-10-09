@@ -1,47 +1,18 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
-import {
-  IndicatorSettings,
-  StrategyMeanReversionSettings,
-} from '../types/settings'
+import { StrategyMeanReversionSettings } from '../types/settings'
 import { Strategy } from './strategy'
 import { StrategyStops } from '../types/strategy-stops'
 import {
   StrategyBuyConditions,
   StrategySellConditions,
 } from '../types/strategy-conditions'
-import { TimeFrame } from '../types/candle'
 
 export class MeanReversionStrategy extends Strategy {
-  constructor(private readonly settings: StrategyMeanReversionSettings) {
-    super()
+  constructor(protected readonly settings: StrategyMeanReversionSettings) {
+    super(settings)
   }
 
   name = 'Mean reversion strategy'
-
-  getIndicatorSettings(): IndicatorSettings {
-    return {
-      sma: 20,
-      rsi: 14,
-      adx: 14,
-      atr: 14,
-      bb: {
-        period: 20,
-        multiplier: 2.5,
-      },
-      smaCross: {
-        periodLong: 50,
-        periodShort: 20,
-      },
-    }
-  }
-
-  getTimeFrame(): TimeFrame {
-    return TimeFrame['5m']
-  }
-
-  getCandles(): number {
-    return 240
-  }
 
   evaluateBuyConditions(
     indicators: IndicatorList | IndicatorListCreate,

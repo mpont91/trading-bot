@@ -2,7 +2,9 @@ import { config } from 'dotenv-safe'
 import {
   Settings,
   StrategyMeanReversionSettings,
+  StrategySlowSwingSettings,
 } from '../domain/types/settings'
+import { TimeFrame } from '../domain/types/candle'
 
 config()
 
@@ -19,6 +21,26 @@ function parseNumber(
 }
 
 const meanReversionStrategySettings: StrategyMeanReversionSettings = {
+  timeFrame: TimeFrame['5m'],
+  candles: 240,
+  indicators: {
+    sma: parseNumber(process.env.INDICATOR_SMA_PERIOD, 20),
+    rsi: parseNumber(process.env.INDICATOR_RSI_PERIOD, 14),
+    adx: parseNumber(process.env.INDICATOR_ADX_PERIOD, 14),
+    atr: parseNumber(process.env.INDICATOR_ATR_PERIOD, 14),
+    bb: {
+      period: parseNumber(process.env.INDICATOR_BB_PERIOD, 20),
+      multiplier: parseNumber(process.env.INDICATOR_BB_MULTIPLIER, 2.5),
+    },
+    smaCross: {
+      periodLong: parseNumber(process.env.INDICATOR_SMA_CROSS_PERIOD_LONG, 50),
+      periodShort: parseNumber(
+        process.env.INDICATOR_SMA_CROSS_PERIOD_SHORT,
+        20,
+      ),
+    },
+  },
+
   buyScoreMin: parseNumber(
     process.env.STRATEGY_MEAN_REVERSION_MIN_BUY_SCORE,
     5,
@@ -53,6 +75,48 @@ const meanReversionStrategySettings: StrategyMeanReversionSettings = {
   ),
 }
 
+const slowSwingStrategy: StrategySlowSwingSettings = {
+  timeFrame: TimeFrame['1d'],
+  candles: 250,
+  indicators: {
+    sma: parseNumber(process.env.INDICATOR_SMA_PERIOD, 20),
+    rsi: parseNumber(process.env.INDICATOR_RSI_PERIOD, 14),
+    adx: parseNumber(process.env.INDICATOR_ADX_PERIOD, 14),
+    atr: parseNumber(process.env.INDICATOR_ATR_PERIOD, 14),
+    bb: {
+      period: parseNumber(process.env.INDICATOR_BB_PERIOD, 20),
+      multiplier: parseNumber(process.env.INDICATOR_BB_MULTIPLIER, 2.5),
+    },
+    smaCross: {
+      periodLong: parseNumber(process.env.INDICATOR_SMA_CROSS_PERIOD_LONG, 200),
+      periodShort: parseNumber(
+        process.env.INDICATOR_SMA_CROSS_PERIOD_SHORT,
+        50,
+      ),
+    },
+  },
+  healthyDipMinRSI: parseNumber(
+    process.env.STRATEGY_SLOW_SWING_HEALTHY_DIP_MIN_RSI,
+    45,
+  ),
+  healthyDipMaxRSI: parseNumber(
+    process.env.STRATEGY_SLOW_SWING_HEALTHY_DIP_MAX_RSI,
+    55,
+  ),
+  trendStrengthMinADX: parseNumber(
+    process.env.STRATEGY_SLOW_SWING_TREND_STRENGTH_MIN_ADX,
+    20,
+  ),
+  stopsMultiplier: parseNumber(
+    process.env.STRATEGY_SLOW_SWING_STOPS_MULTIPLIER,
+    2.5,
+  ),
+  trailingStopMultiplier: parseNumber(
+    process.env.STRATEGY_SLOW_SWING_TRAILING_STOP_MULTIPLIER,
+    2,
+  ),
+}
+
 export const settings: Settings = {
   intervalTradingTime: parseNumber(process.env.INTERVAL_TRADING_TIME, 90000),
   intervalMarketTime: parseNumber(process.env.INTERVAL_MARKET_TIME, 90000),
@@ -70,6 +134,6 @@ export const settings: Settings = {
   safetyCapitalMargin: parseNumber(process.env.SAFETY_CAPITAL_MARGIN, 0.3),
   strategies: {
     meanReversion: meanReversionStrategySettings,
-    slowSwing: {},
+    slowSwing: slowSwingStrategy,
   },
 }

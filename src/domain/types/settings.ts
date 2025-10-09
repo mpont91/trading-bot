@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { timeFrameSchema } from './candle'
 
 export const binanceSettingsSchema = z.object({
   binanceApiKey: z.string(),
@@ -24,18 +25,30 @@ export const indicatorSettingsSchema = z.object({
   }),
 })
 
-export const strategyMeanReversionSchema = z.object({
+export const strategySettingsSchema = z.object({
+  indicators: indicatorSettingsSchema,
+  candles: z.number().int(),
+  timeFrame: timeFrameSchema,
+})
+
+export const strategyMeanReversionSchema = strategySettingsSchema.extend({
   buyScoreMin: z.number().int(),
-  favorableEntryPriceMaxBB: z.number().int(),
+  trailingStopMultiplier: z.number(),
+  favorableEntryPriceMaxBB: z.number(),
   strongTrendMinADX: z.number().int(),
   bullishMomentumMinRSI: z.number().int(),
   bullishMomentumMaxRSI: z.number().int(),
   bearishMomentumMaxRSI: z.number().int(),
   bearishConvictionMinADX: z.number().int(),
-  trailingStopMultiplier: z.number(),
 })
 
-export const strategySlowSwingSchema = z.object({})
+export const strategySlowSwingSchema = strategySettingsSchema.extend({
+  healthyDipMinRSI: z.number().int(),
+  healthyDipMaxRSI: z.number().int(),
+  trendStrengthMinADX: z.number().int(),
+  stopsMultiplier: z.number(),
+  trailingStopMultiplier: z.number(),
+})
 
 export const settingsSchema = z.object({
   intervalTradingTime: z.number().int(),
@@ -53,6 +66,7 @@ export const settingsSchema = z.object({
 
 export type BinanceSettings = z.infer<typeof binanceSettingsSchema>
 export type IndicatorSettings = z.infer<typeof indicatorSettingsSchema>
+export type StrategySettings = z.infer<typeof strategySettingsSchema>
 export type StrategyMeanReversionSettings = z.infer<
   typeof strategyMeanReversionSchema
 >

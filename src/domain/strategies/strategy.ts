@@ -1,7 +1,7 @@
 import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
 import { TimeFrame } from '../types/candle'
-import { IndicatorSettings } from '../types/settings'
+import { IndicatorSettings, StrategySettings } from '../types/settings'
 import { StrategyStops } from '../types/strategy-stops'
 import { median } from '../helpers/math-helper'
 import {
@@ -10,10 +10,13 @@ import {
 } from '../types/strategy-conditions'
 
 export abstract class Strategy {
-  protected abstract name: string
-  abstract getIndicatorSettings(): IndicatorSettings
-  abstract getTimeFrame(): TimeFrame
-  abstract getCandles(): number
+  protected readonly settings: StrategySettings
+
+  protected constructor(settings: StrategySettings) {
+    this.settings = settings
+  }
+
+  abstract name: string
   abstract calculateStops(
     indicators: IndicatorList | IndicatorListCreate,
   ): StrategyStops
@@ -25,6 +28,18 @@ export abstract class Strategy {
   ): StrategySellConditions
   abstract evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean
   abstract evaluateShouldSell(sellConditions: StrategySellConditions): boolean
+
+  getIndicatorSettings(): IndicatorSettings {
+    return this.settings.indicators
+  }
+
+  getTimeFrame(): TimeFrame {
+    return this.settings.timeFrame
+  }
+
+  getCandles(): number {
+    return this.settings.candles
+  }
 
   calculate(
     indicators: IndicatorList | IndicatorListCreate,
