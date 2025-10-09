@@ -1,8 +1,7 @@
 import { config } from 'dotenv-safe'
 import {
   Settings,
-  StrategyMeanReversionSettings,
-  StrategySlowSwingSettings,
+  StrategySMACrossSimpleSettings,
 } from '../domain/types/settings'
 import { TimeFrame } from '../domain/types/candle'
 
@@ -20,131 +19,50 @@ function parseNumber(
   return isNaN(parsedValue) ? defaultValue : parsedValue
 }
 
-const meanReversionStrategySettings: StrategyMeanReversionSettings = {
-  timeFrame: TimeFrame['5m'],
-  candles: parseNumber(process.env.STRATEGY_MEAN_REVERSION_CANDLES, 240),
+const smaCrossSimpleStrategySettings: StrategySMACrossSimpleSettings = {
+  timeFrame: TimeFrame['1h'],
+  candles: parseNumber(process.env.STRATEGY_SMA_CROSS_SIMPLE_CANDLES, 240),
   indicators: {
     sma: parseNumber(
-      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_SMA_PERIOD,
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_PERIOD,
       20,
     ),
     rsi: parseNumber(
-      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_RSI_PERIOD,
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_RSI_PERIOD,
       14,
     ),
     adx: parseNumber(
-      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_ADX_PERIOD,
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_ADX_PERIOD,
       14,
     ),
     atr: parseNumber(
-      process.env.STRATEGY_MEAN_REVERSION_INDICATOR_ATR_PERIOD,
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_ATR_PERIOD,
       14,
     ),
     bb: {
       period: parseNumber(
-        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_BB_PERIOD,
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
         20,
       ),
       multiplier: parseNumber(
-        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_BB_MULTIPLIER,
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_MULTIPLIER,
         2.5,
       ),
     },
     smaCross: {
       periodLong: parseNumber(
-        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_SMA_CROSS_PERIOD_LONG,
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_CROSS_PERIOD_LONG,
         50,
       ),
       periodShort: parseNumber(
-        process.env.STRATEGY_MEAN_REVERSION_INDICATOR_SMA_CROSS_PERIOD_SHORT,
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_CROSS_PERIOD_SHORT,
         20,
       ),
     },
   },
-
-  buyScoreMin: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_MIN_BUY_SCORE,
-    5,
-  ),
-  favorableEntryPriceMaxBB: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_FAVORABLE_ENTRY_PRICE_MAX_BB,
-    0.5,
-  ),
-  strongTrendMinADX: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_STRONG_TREND_MIN_ADX,
-    25,
-  ),
-  bullishMomentumMinRSI: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_BULLISH_MOMENTUM_MIN_RSI,
-    50,
-  ),
-  bullishMomentumMaxRSI: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_BULLISH_MOMENTUM_MAX_RSI,
-    70,
-  ),
-  bearishMomentumMaxRSI: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_BEARISH_MOMENTUM_MAX_RSI,
-    45,
-  ),
-  bearishConvictionMinADX: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_BEARISH_CONVICTION_MIN_ADX,
-    22,
-  ),
-  trailingStopMultiplier: parseNumber(
-    process.env.STRATEGY_MEAN_REVERSION_TRAILING_STOP_MULTIPLIER,
-    1.5,
-  ),
-}
-
-const slowSwingStrategy: StrategySlowSwingSettings = {
-  timeFrame: TimeFrame['1d'],
-  candles: parseNumber(process.env.STRATEGY_SLOW_SWING_CANDLES, 250),
-  indicators: {
-    sma: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_SMA_PERIOD, 20),
-    rsi: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_RSI_PERIOD, 14),
-    adx: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_ADX_PERIOD, 14),
-    atr: parseNumber(process.env.STRATEGY_SLOW_SWING_INDICATOR_ATR_PERIOD, 14),
-    bb: {
-      period: parseNumber(
-        process.env.STRATEGY_SLOW_SWING_INDICATOR_BB_PERIOD,
-        20,
-      ),
-      multiplier: parseNumber(
-        process.env.STRATEGY_SLOW_SWING_INDICATOR_BB_MULTIPLIER,
-        2.5,
-      ),
-    },
-    smaCross: {
-      periodLong: parseNumber(
-        process.env.STRATEGY_SLOW_SWING_INDICATOR_SMA_CROSS_PERIOD_LONG,
-        200,
-      ),
-      periodShort: parseNumber(
-        process.env.STRATEGY_SLOW_SWING_INDICATOR_SMA_CROSS_PERIOD_SHORT,
-        50,
-      ),
-    },
-  },
-  healthyDipMinRSI: parseNumber(
-    process.env.STRATEGY_SLOW_SWING_HEALTHY_DIP_MIN_RSI,
-    45,
-  ),
-  healthyDipMaxRSI: parseNumber(
-    process.env.STRATEGY_SLOW_SWING_HEALTHY_DIP_MAX_RSI,
-    55,
-  ),
-  trendStrengthMinADX: parseNumber(
-    process.env.STRATEGY_SLOW_SWING_TREND_STRENGTH_MIN_ADX,
-    20,
-  ),
-  stopsMultiplier: parseNumber(
-    process.env.STRATEGY_SLOW_SWING_STOPS_MULTIPLIER,
-    2.5,
-  ),
-  trailingStopMultiplier: parseNumber(
-    process.env.STRATEGY_SLOW_SWING_TRAILING_STOP_MULTIPLIER,
-    2,
-  ),
+  tp: parseNumber(process.env.STRATEGY_SMA_CROSS_SIMPLE_TP, 0.05),
+  sl: parseNumber(process.env.STRATEGY_SMA_CROSS_SIMPLE_SL, 0.02),
+  ts: parseNumber(process.env.STRATEGY_SMA_CROSS_SIMPLE_TS, 0.01),
 }
 
 export const settings: Settings = {
@@ -162,9 +80,8 @@ export const settings: Settings = {
   symbols: ['BTCUSDC', 'ETHUSDC', 'XRPUSDC', 'SOLUSDC', 'ADAUSDC'],
   maxPositionsOpened: parseNumber(process.env.MAX_POSITIONS_OPENED, 5),
   safetyCapitalMargin: parseNumber(process.env.SAFETY_CAPITAL_MARGIN, 0.3),
-  strategy: process.env.STRATEGY || 'mean-reversion',
+  strategy: process.env.STRATEGY || 'sma-cross-simple',
   strategies: {
-    meanReversion: meanReversionStrategySettings,
-    slowSwing: slowSwingStrategy,
+    smaCrossSimple: smaCrossSimpleStrategySettings,
   },
 }

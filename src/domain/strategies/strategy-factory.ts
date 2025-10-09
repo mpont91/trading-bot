@@ -1,16 +1,13 @@
 import { Strategy } from './strategy'
-import { MeanReversionStrategy } from './mean-reversion-strategy'
-import { SlowSwingStrategy } from './slow-swing-strategy'
+import { SmaCrossSimpleStrategy } from './sma-cross-simple-strategy'
 import { Settings } from '../types/settings'
 
 export function createStrategy(settings: Settings): Strategy {
-  const strategyName: string = settings.strategy || 'mean-reversion'
+  const strategyName: string = settings.strategy || 'sma-cross-simple'
 
   switch (strategyName) {
-    case 'mean-reversion':
-      return new MeanReversionStrategy(settings.strategies.meanReversion)
-    case 'slow-swing':
-      return new SlowSwingStrategy(settings.strategies.slowSwing)
+    case 'sma-cross-simple':
+      return new SmaCrossSimpleStrategy(settings.strategies.smaCrossSimple)
     default:
       throw new Error(
         `[StrategyFactory] Unknown strategy name: '${strategyName}'`,

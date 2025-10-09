@@ -11,6 +11,7 @@ import {
 
 export abstract class Strategy {
   protected readonly settings: StrategySettings
+  protected medianPrice: number | null = null
 
   protected constructor(settings: StrategySettings) {
     this.settings = settings
@@ -48,7 +49,7 @@ export abstract class Strategy {
 
     const symbol: string = bb.symbol
 
-    const price: number = median([
+    this.medianPrice = median([
       bb.price,
       sma.price,
       rsi.price,
@@ -79,7 +80,7 @@ export abstract class Strategy {
     return {
       name: this.name,
       symbol,
-      price,
+      price: this.medianPrice,
       conditions: {
         buy: buyConditions,
         sell: sellConditions,
