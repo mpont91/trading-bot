@@ -44,8 +44,8 @@ const smaCrossSimpleStrategySettings: StrategySMACrossSimpleSettings = {
         process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
         20,
       ),
-      multiplier: parseNumber(
-        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_MULTIPLIER,
+      stdDev: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_STD_DEV,
         2.5,
       ),
     },

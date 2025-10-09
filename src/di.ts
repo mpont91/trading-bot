@@ -111,7 +111,7 @@ class Container {
     const bbIndicatorCalculator: BbIndicatorCalculator =
       new BbIndicatorCalculator(
         indicatorSettings.bb.period,
-        indicatorSettings.bb.multiplier,
+        indicatorSettings.bb.stdDev,
       )
     const smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator =
       new SmaCrossIndicatorCalculator(

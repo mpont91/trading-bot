@@ -17,7 +17,7 @@ export const indicatorSettingsSchema = z.object({
   sma: z.number().int(),
   bb: z.object({
     period: z.number().int(),
-    multiplier: z.number(),
+    stdDev: z.number(),
   }),
   smaCross: z.object({
     periodLong: z.number().int(),

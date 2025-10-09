@@ -10,14 +10,14 @@ import {
 export class BbIndicatorCalculator {
   constructor(
     private readonly period: number,
-    private readonly multiplier: number,
+    private readonly stdDev: number,
   ) {}
 
   calculate(symbol: string, candles: Candle[]): IndicatorBBCreate {
     validateIndicatorCandles(this.period, candles.length)
     const values: BollingerBandsOutput[] = BollingerBands.calculate({
       period: this.period,
-      stdDev: this.multiplier,
+      stdDev: this.stdDev,
       values: candles.map((k: Candle) => k.closePrice),
     })
 
