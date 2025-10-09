@@ -49,6 +49,24 @@ const smaCrossSimpleStrategySettings: StrategySMACrossSimpleSettings = {
         2.5,
       ),
     },
+    bbDouble: {
+      periodInner: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      stdDevInner: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_STD_DEV,
+        2.5,
+      ),
+      periodOuter: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      stdDevOuter: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_STD_DEV,
+        2.5,
+      ),
+    },
     smaCross: {
       periodLong: parseNumber(
         process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_CROSS_PERIOD_LONG,

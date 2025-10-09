@@ -49,6 +49,7 @@ import { Strategy } from './domain/strategies/strategy'
 import { MarketService } from './domain/services/market-service'
 import { IndicatorSettings } from './domain/types/settings'
 import { createStrategy } from './domain/strategies/strategy-factory'
+import { BbDoubleIndicatorCalculator } from './domain/indicators/bb-double-indicator-calculator'
 
 class Container {
   private static launcherMarket: Launcher
@@ -113,6 +114,13 @@ class Container {
         indicatorSettings.bb.period,
         indicatorSettings.bb.stdDev,
       )
+    const bbDoubleIndicatorCalculator: BbDoubleIndicatorCalculator =
+      new BbDoubleIndicatorCalculator(
+        indicatorSettings.bbDouble.periodInner,
+        indicatorSettings.bbDouble.stdDevInner,
+        indicatorSettings.bbDouble.periodOuter,
+        indicatorSettings.bbDouble.stdDevOuter,
+      )
     const smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator =
       new SmaCrossIndicatorCalculator(
         indicatorSettings.smaCross.periodLong,
@@ -156,6 +164,7 @@ class Container {
       adxIndicatorCalculator,
       atrIndicatorCalculator,
       bbIndicatorCalculator,
+      bbDoubleIndicatorCalculator,
       smaCrossIndicatorCalculator,
     )
     this.strategyReportService = new StrategyReportService(

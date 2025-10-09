@@ -9,6 +9,9 @@ import {
   IndicatorBB,
   IndicatorBBCreate,
   indicatorBBCreateSchema,
+  IndicatorBBDouble,
+  IndicatorBBDoubleCreate,
+  indicatorBBDoubleCreateSchema,
   IndicatorRSI,
   IndicatorRSICreate,
   indicatorRSICreateSchema,
@@ -27,6 +30,7 @@ import {
   IndicatorADX as PrismaIndicatorADX,
   IndicatorATR as PrismaIndicatorATR,
   IndicatorBB as PrismaIndicatorBB,
+  IndicatorBBDouble as PrismaIndicatorBBDouble,
   IndicatorSMACross as PrismaIndicatorSMACross,
 } from '@prisma/client'
 
@@ -80,6 +84,7 @@ export const prismaIndicatorBBSchema = indicatorBBCreateSchema.transform(
   (indicatorBBCreate: IndicatorBBCreate) => {
     return {
       period: indicatorBBCreate.period,
+      std_dev: indicatorBBCreate.stdDev,
       symbol: indicatorBBCreate.symbol,
       price: new Decimal(indicatorBBCreate.price),
       upper: new Decimal(indicatorBBCreate.upper),
@@ -89,6 +94,28 @@ export const prismaIndicatorBBSchema = indicatorBBCreateSchema.transform(
     }
   },
 )
+
+export const prismaIndicatorBBDoubleSchema =
+  indicatorBBDoubleCreateSchema.transform(
+    (indicatorBBDoubleCreate: IndicatorBBDoubleCreate) => {
+      return {
+        symbol: indicatorBBDoubleCreate.symbol,
+        price: new Decimal(indicatorBBDoubleCreate.price),
+        period_inner: indicatorBBDoubleCreate.periodInner,
+        std_dev_inner: new Decimal(indicatorBBDoubleCreate.stdDevInner),
+        upper_inner: new Decimal(indicatorBBDoubleCreate.upperInner),
+        middle_inner: new Decimal(indicatorBBDoubleCreate.middleInner),
+        lower_inner: new Decimal(indicatorBBDoubleCreate.lowerInner),
+        pb_inner: new Decimal(indicatorBBDoubleCreate.pbInner),
+        period_outer: indicatorBBDoubleCreate.periodOuter,
+        std_dev_outer: new Decimal(indicatorBBDoubleCreate.stdDevOuter),
+        upper_outer: new Decimal(indicatorBBDoubleCreate.upperOuter),
+        middle_outer: new Decimal(indicatorBBDoubleCreate.middleOuter),
+        lower_outer: new Decimal(indicatorBBDoubleCreate.lowerOuter),
+        pb_outer: new Decimal(indicatorBBDoubleCreate.pbOuter),
+      }
+    },
+  )
 
 export const prismaIndicatorSMACrossSchema =
   indicatorSMACrossCreateSchema.transform(
@@ -192,6 +219,7 @@ export const domainIndicatorBBSchema = z
   .object({
     id: z.number().int(),
     period: z.number().int(),
+    std_dev: z.instanceof(Prisma.Decimal),
     symbol: z.string(),
     price: z.instanceof(Prisma.Decimal),
     upper: z.instanceof(Prisma.Decimal),
@@ -204,6 +232,7 @@ export const domainIndicatorBBSchema = z
     (prismaIndicatorBB: PrismaIndicatorBB): IndicatorBB => ({
       id: prismaIndicatorBB.id,
       period: prismaIndicatorBB.period,
+      stdDev: prismaIndicatorBB.std_dev.toNumber(),
       symbol: prismaIndicatorBB.symbol,
       price: prismaIndicatorBB.price.toNumber(),
       upper: prismaIndicatorBB.upper.toNumber(),
@@ -211,6 +240,46 @@ export const domainIndicatorBBSchema = z
       lower: prismaIndicatorBB.lower.toNumber(),
       pb: prismaIndicatorBB.pb.toNumber(),
       createdAt: prismaIndicatorBB.created_at,
+    }),
+  )
+
+export const domainIndicatorBBDoubleSchema = z
+  .object({
+    id: z.number().int(),
+    symbol: z.string(),
+    price: z.instanceof(Prisma.Decimal),
+    period_inner: z.number().int(),
+    std_dev_inner: z.instanceof(Prisma.Decimal),
+    upper_inner: z.instanceof(Prisma.Decimal),
+    middle_inner: z.instanceof(Prisma.Decimal),
+    lower_inner: z.instanceof(Prisma.Decimal),
+    pb_inner: z.instanceof(Prisma.Decimal),
+    period_outer: z.number().int(),
+    std_dev_outer: z.instanceof(Prisma.Decimal),
+    upper_outer: z.instanceof(Prisma.Decimal),
+    middle_outer: z.instanceof(Prisma.Decimal),
+    lower_outer: z.instanceof(Prisma.Decimal),
+    pb_outer: z.instanceof(Prisma.Decimal),
+    created_at: z.date(),
+  })
+  .transform(
+    (prismaIndicatorBBDouble: PrismaIndicatorBBDouble): IndicatorBBDouble => ({
+      id: prismaIndicatorBBDouble.id,
+      symbol: prismaIndicatorBBDouble.symbol,
+      price: prismaIndicatorBBDouble.price.toNumber(),
+      periodInner: prismaIndicatorBBDouble.period_inner,
+      stdDevInner: prismaIndicatorBBDouble.std_dev_inner.toNumber(),
+      upperInner: prismaIndicatorBBDouble.upper_inner.toNumber(),
+      middleInner: prismaIndicatorBBDouble.middle_inner.toNumber(),
+      lowerInner: prismaIndicatorBBDouble.lower_inner.toNumber(),
+      pbInner: prismaIndicatorBBDouble.pb_inner.toNumber(),
+      periodOuter: prismaIndicatorBBDouble.period_outer,
+      stdDevOuter: prismaIndicatorBBDouble.std_dev_outer.toNumber(),
+      upperOuter: prismaIndicatorBBDouble.upper_outer.toNumber(),
+      middleOuter: prismaIndicatorBBDouble.middle_outer.toNumber(),
+      lowerOuter: prismaIndicatorBBDouble.lower_outer.toNumber(),
+      pbOuter: prismaIndicatorBBDouble.pb_outer.toNumber(),
+      createdAt: prismaIndicatorBBDouble.created_at,
     }),
   )
 

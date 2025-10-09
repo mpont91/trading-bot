@@ -110,6 +110,7 @@ CREATE TABLE "IndicatorADX" (
 CREATE TABLE "IndicatorBB" (
     "id" SERIAL NOT NULL,
     "period" INTEGER NOT NULL,
+    "std_dev" DECIMAL(65,30) NOT NULL,
     "symbol" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "upper" DECIMAL(65,30) NOT NULL,
@@ -119,6 +120,28 @@ CREATE TABLE "IndicatorBB" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "IndicatorBB_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "IndicatorBBDouble" (
+    "id" SERIAL NOT NULL,
+    "symbol" TEXT NOT NULL,
+    "price" DECIMAL(65,30) NOT NULL,
+    "period_inner" INTEGER NOT NULL,
+    "std_dev_inner" DECIMAL(65,30) NOT NULL,
+    "upper_inner" DECIMAL(65,30) NOT NULL,
+    "middle_inner" DECIMAL(65,30) NOT NULL,
+    "lower_inner" DECIMAL(65,30) NOT NULL,
+    "pb_inner" DECIMAL(65,30) NOT NULL,
+    "period_outer" INTEGER NOT NULL,
+    "std_dev_outer" DECIMAL(65,30) NOT NULL,
+    "upper_outer" DECIMAL(65,30) NOT NULL,
+    "middle_outer" DECIMAL(65,30) NOT NULL,
+    "lower_outer" DECIMAL(65,30) NOT NULL,
+    "pb_outer" DECIMAL(65,30) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "IndicatorBBDouble_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable

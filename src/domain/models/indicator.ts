@@ -60,6 +60,7 @@ export const indicatorADXCreateSchema = indicatorADXSchema.omit({
 export const indicatorBBSchema = z
   .object({
     period: z.number().int(),
+    stdDev: z.number(),
     upper: z.number(),
     middle: z.number(),
     lower: z.number(),
@@ -114,6 +115,7 @@ export const indicatorListSchema = z.object({
   atr: indicatorATRSchema,
   adx: indicatorADXSchema,
   bb: indicatorBBSchema,
+  bbDouble: indicatorBBDoubleSchema,
   smaCross: indicatorSMACrossSchema,
 })
 
@@ -123,6 +125,7 @@ export const indicatorListCreateSchema = z.object({
   atr: indicatorATRCreateSchema,
   adx: indicatorADXCreateSchema,
   bb: indicatorBBCreateSchema,
+  bbDouble: indicatorBBDoubleCreateSchema,
   smaCross: indicatorSMACrossCreateSchema,
 })
 
@@ -132,6 +135,7 @@ export enum IndicatorName {
   ATR = 'atr',
   ADX = 'adx',
   BB = 'bb',
+  BBDOUBLE = 'bbdouble',
   SMACROSS = 'smacross',
 }
 

@@ -20,11 +20,14 @@ import {
   IndicatorATRCreate,
   IndicatorADXCreate,
   IndicatorRSICreate,
+  IndicatorBBDouble,
+  IndicatorBBDoubleCreate,
 } from '../models/indicator'
 import { SmaCrossIndicatorCalculator } from '../indicators/sma-cross-indicator-calculator'
 import { ApiService } from './api-service'
 import { TimeInterval } from '../types/time-interval'
 import { reduceRecordsData } from '../helpers/graph-helper'
+import { BbDoubleIndicatorCalculator } from '../indicators/bb-double-indicator-calculator'
 
 export class IndicatorService {
   constructor(
@@ -35,6 +38,7 @@ export class IndicatorService {
     private readonly adxIndicatorCalculator: AdxIndicatorCalculator,
     private readonly atrIndicatorCalculator: AtrIndicatorCalculator,
     private readonly bbIndicatorCalculator: BbIndicatorCalculator,
+    private readonly bbDoubleIndicatorCalculator: BbDoubleIndicatorCalculator,
     private readonly smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator,
   ) {}
 
@@ -45,6 +49,7 @@ export class IndicatorService {
       adx: this.adxIndicatorCalculator.calculate(symbol, candles),
       atr: this.atrIndicatorCalculator.calculate(symbol, candles),
       bb: this.bbIndicatorCalculator.calculate(symbol, candles),
+      bbDouble: this.bbDoubleIndicatorCalculator.calculate(symbol, candles),
       smaCross: this.smaCrossIndicatorCalculator.calculate(symbol, candles),
     }
   }
@@ -65,6 +70,7 @@ export class IndicatorService {
       adx: await this.calculateAndCreateADX(symbol, candles),
       atr: await this.calculateAndCreateATR(symbol, candles),
       bb: await this.calculateAndCreateBB(symbol, candles),
+      bbDouble: await this.calculateAndCreateBBDouble(symbol, candles),
       smaCross: await this.calculateAndCreateSMACross(symbol, candles),
     }
   }
@@ -75,9 +81,10 @@ export class IndicatorService {
     const sma: IndicatorSMA | null = await this.getSMA(symbol)
     const rsi: IndicatorRSI | null = await this.getRSI(symbol)
     const bb: IndicatorBB | null = await this.getBB(symbol)
+    const bbDouble: IndicatorBBDouble | null = await this.getBBDouble(symbol)
     const smaCross: IndicatorSMACross | null = await this.getSMACross(symbol)
 
-    if (!bb || !sma || !rsi || !atr || !adx || !smaCross) {
+    if (!bb || !bbDouble || !sma || !rsi || !atr || !adx || !smaCross) {
       return null
     }
 
@@ -87,6 +94,7 @@ export class IndicatorService {
       sma,
       rsi,
       bb,
+      bbDouble,
       smaCross,
     }
   }
@@ -151,6 +159,16 @@ export class IndicatorService {
     return reduceRecordsData(bb)
   }
 
+  async getGraphBBDouble(
+    symbol: string,
+    interval: TimeInterval,
+  ): Promise<IndicatorBBDouble[]> {
+    const bbDouble: IndicatorBBDouble[] =
+      await this.indicatorRepository.getGraphBBDouble(symbol, interval)
+
+    return reduceRecordsData(bbDouble)
+  }
+
   async getGraphSMACross(
     symbol: string,
     interval: TimeInterval,
@@ -199,6 +217,14 @@ export class IndicatorService {
   ): Promise<IndicatorBB> {
     return this.createBB(this.bbIndicatorCalculator.calculate(symbol, candles))
   }
+  private async calculateAndCreateBBDouble(
+    symbol: string,
+    candles: Candle[],
+  ): Promise<IndicatorBBDouble> {
+    return this.createBBDouble(
+      this.bbDoubleIndicatorCalculator.calculate(symbol, candles),
+    )
+  }
   private async calculateAndCreateSMACross(
     symbol: string,
     candles: Candle[],
@@ -223,6 +249,11 @@ export class IndicatorService {
   private async createBB(bb: IndicatorBBCreate): Promise<IndicatorBB> {
     return this.indicatorRepository.createBB(bb)
   }
+  private async createBBDouble(
+    bbDouble: IndicatorBBDoubleCreate,
+  ): Promise<IndicatorBBDouble> {
+    return this.indicatorRepository.createBBDouble(bbDouble)
+  }
   private async createSMACross(
     smaCross: IndicatorSMACrossCreate,
   ): Promise<IndicatorSMACross> {
@@ -243,6 +274,9 @@ export class IndicatorService {
   }
   private async getBB(symbol: string): Promise<IndicatorBB | null> {
     return this.indicatorRepository.getBB(symbol)
+  }
+  private async getBBDouble(symbol: string): Promise<IndicatorBBDouble | null> {
+    return this.indicatorRepository.getBBDouble(symbol)
   }
   private async getSMACross(symbol: string): Promise<IndicatorSMACross | null> {
     return this.indicatorRepository.getSMACross(symbol)

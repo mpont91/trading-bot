@@ -108,6 +108,7 @@ model IndicatorADX {
 model IndicatorBB {
   id         Int      @id @default(autoincrement())
   period     Int
+  std_dev    Decimal
   symbol     String
   price      Decimal
   upper      Decimal
@@ -115,6 +116,25 @@ model IndicatorBB {
   lower      Decimal
   pb         Decimal
   created_at DateTime @default(now())
+}
+
+model IndicatorBBDouble {
+  id            Int      @id @default(autoincrement())
+  symbol        String
+  price         Decimal
+  period_inner  Int
+  std_dev_inner Decimal
+  upper_inner   Decimal
+  middle_inner  Decimal
+  lower_inner   Decimal
+  pb_inner      Decimal
+  period_outer  Int
+  std_dev_outer Decimal
+  upper_outer   Decimal
+  middle_outer  Decimal
+  lower_outer   Decimal
+  pb_outer      Decimal
+  created_at    DateTime @default(now())
 }
 
 model IndicatorSMACross {

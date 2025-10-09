@@ -19,6 +19,12 @@ export const indicatorSettingsSchema = z.object({
     period: z.number().int(),
     stdDev: z.number(),
   }),
+  bbDouble: z.object({
+    periodInner: z.number().int(),
+    stdDevInner: z.number(),
+    periodOuter: z.number().int(),
+    stdDevOuter: z.number(),
+  }),
   smaCross: z.object({
     periodLong: z.number().int(),
     periodShort: z.number().int(),

@@ -27,6 +27,7 @@ export class BbIndicatorCalculator {
 
     return {
       period: this.period,
+      stdDev: this.stdDev,
       symbol: symbol,
       price: candles[candles.length - 1].closePrice,
       upper: value.upper,
