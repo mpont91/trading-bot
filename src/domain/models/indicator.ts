@@ -72,6 +72,28 @@ export const indicatorBBCreateSchema = indicatorBBSchema.omit({
   createdAt: true,
 })
 
+export const indicatorBBDoubleSchema = z
+  .object({
+    periodInner: z.number().int(),
+    periodOuter: z.number().int(),
+    stdDevInner: z.number(),
+    stdDevOuter: z.number(),
+    upperInner: z.number(),
+    middleInner: z.number(),
+    lowerInner: z.number(),
+    pbInner: z.number(),
+    upperOuter: z.number(),
+    middleOuter: z.number(),
+    lowerOuter: z.number(),
+    pbOuter: z.number(),
+  })
+  .extend(indicatorSchema.shape)
+
+export const indicatorBBDoubleCreateSchema = indicatorBBDoubleSchema.omit({
+  id: true,
+  createdAt: true,
+})
+
 export const indicatorSMACrossSchema = z
   .object({
     periodLong: z.number().int(),
@@ -125,6 +147,10 @@ export type IndicatorADX = z.infer<typeof indicatorADXSchema>
 export type IndicatorADXCreate = z.infer<typeof indicatorADXCreateSchema>
 export type IndicatorBB = z.infer<typeof indicatorBBSchema>
 export type IndicatorBBCreate = z.infer<typeof indicatorBBCreateSchema>
+export type IndicatorBBDouble = z.infer<typeof indicatorBBDoubleSchema>
+export type IndicatorBBDoubleCreate = z.infer<
+  typeof indicatorBBDoubleCreateSchema
+>
 export type IndicatorSMACross = z.infer<typeof indicatorSMACrossSchema>
 export type IndicatorSMACrossCreate = z.infer<
   typeof indicatorSMACrossCreateSchema
