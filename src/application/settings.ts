@@ -1,6 +1,7 @@
 import { config } from 'dotenv-safe'
 import {
   Settings,
+  StrategySettings,
   StrategySMACrossSimpleSettings,
 } from '../domain/types/settings'
 import { TimeFrame } from '../domain/types/candle'
@@ -83,6 +84,67 @@ const smaCrossSimpleStrategySettings: StrategySMACrossSimpleSettings = {
   ts: parseNumber(process.env.STRATEGY_SMA_CROSS_SIMPLE_TS, 0.01),
 }
 
+const doubleBBStrategySettings: StrategySettings = {
+  timeFrame: TimeFrame['4h'],
+  candles: parseNumber(process.env.STRATEGY_SMA_CROSS_SIMPLE_CANDLES, 200),
+  indicators: {
+    sma: parseNumber(
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_PERIOD,
+      20,
+    ),
+    rsi: parseNumber(
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_RSI_PERIOD,
+      14,
+    ),
+    adx: parseNumber(
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_ADX_PERIOD,
+      14,
+    ),
+    atr: parseNumber(
+      process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_ATR_PERIOD,
+      14,
+    ),
+    bb: {
+      period: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      stdDev: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_STD_DEV,
+        2.5,
+      ),
+    },
+    bbDouble: {
+      periodInner: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      stdDevInner: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_STD_DEV,
+        1,
+      ),
+      periodOuter: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_PERIOD,
+        20,
+      ),
+      stdDevOuter: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_BB_STD_DEV,
+        2,
+      ),
+    },
+    smaCross: {
+      periodLong: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_CROSS_PERIOD_LONG,
+        50,
+      ),
+      periodShort: parseNumber(
+        process.env.STRATEGY_SMA_CROSS_SIMPLE_INDICATOR_SMA_CROSS_PERIOD_SHORT,
+        20,
+      ),
+    },
+  },
+}
+
 export const settings: Settings = {
   intervalTradingTime: parseNumber(process.env.INTERVAL_TRADING_TIME, 90000),
   intervalMarketTime: parseNumber(process.env.INTERVAL_MARKET_TIME, 90000),
@@ -101,5 +163,6 @@ export const settings: Settings = {
   strategy: process.env.STRATEGY || 'sma-cross-simple',
   strategies: {
     smaCrossSimple: smaCrossSimpleStrategySettings,
+    doubleBB: doubleBBStrategySettings,
   },
 }

@@ -8,13 +8,24 @@ export const strategySMACrossSimpleSellConditionsSchema = z.object({
   bearMarket: z.boolean().optional(),
 })
 
+export const strategyBBDoubleBuyConditionsSchema = z.object({
+  buyZone: z.boolean().optional(),
+  trendStrength: z.boolean().optional(),
+})
+
+export const strategyBBDoubleSellConditionsSchema = z.object({
+  momentumLost: z.boolean().optional(),
+})
+
 export const strategyBuyConditionsSchema = z
   .object({})
   .extend(strategySMACrossSimpleBuyConditionsSchema.shape)
+  .extend(strategyBBDoubleBuyConditionsSchema.shape)
 
 export const strategySellConditionsSchema = z
   .object({})
   .extend(strategySMACrossSimpleSellConditionsSchema.shape)
+  .extend(strategyBBDoubleSellConditionsSchema.shape)
 
 export const strategyConditionsSchema = z.object({
   buy: strategyBuyConditionsSchema,

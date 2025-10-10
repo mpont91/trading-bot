@@ -54,6 +54,7 @@ export const settingsSchema = z.object({
   strategy: z.string(),
   strategies: z.object({
     smaCrossSimple: strategySMACrossSimpleSchema,
+    doubleBB: strategySettingsSchema,
   }),
 })
 

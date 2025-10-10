@@ -5,15 +5,11 @@ import {
   StrategyBuyConditions,
   StrategySellConditions,
 } from '../types/strategy-conditions'
-import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { StrategySMACrossSimpleSettings } from '../types/settings'
-import { BbDoubleIndicatorCalculator } from '../indicators/bb-double-indicator-calculator'
+import { StrategySettings } from '../types/settings'
 
 export class DoubleBollingerBandsStrategy extends Strategy {
-  bbDouble: BbDoubleIndicatorCalculator
-  constructor(protected readonly settings: StrategySMACrossSimpleSettings) {
+  constructor(protected readonly settings: StrategySettings) {
     super(settings)
-    this.bbDouble = new BbDoubleIndicatorCalculator(20, 1, 20, 2)
   }
 
   name = 'Double bollinger bands strategy'
@@ -21,41 +17,45 @@ export class DoubleBollingerBandsStrategy extends Strategy {
   evaluateBuyConditions(
     indicators: IndicatorList | IndicatorListCreate,
   ): StrategyBuyConditions {
-    const { smaCross } = indicators
+    const { bbDouble, adx } = indicators
+
     return {
-      bullMarket: smaCross.smaShort > smaCross.smaLong,
+      buyZone:
+        bbDouble.price < bbDouble.upperOuter &&
+        bbDouble.price > bbDouble.upperInner,
+      trendStrength: adx.adx > 25,
     }
   }
 
   evaluateSellConditions(
     indicators: IndicatorList | IndicatorListCreate,
   ): StrategySellConditions {
-    const { smaCross } = indicators
+    const { bbDouble } = indicators
     return {
-      bearMarket: smaCross.smaShort < smaCross.smaLong,
+      momentumLost: bbDouble.price < bbDouble.lowerOuter,
     }
   }
 
   evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.bearMarket
+    return !!sellConditions.momentumLost
   }
 
   evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.bullMarket
+    return !!buyConditions.buyZone && !!buyConditions.trendStrength
   }
 
-  calculateStops(): StrategyStops {
-    if (!this.medianPrice) {
-      throw new Error(
-        'Median price is not calculated. Needed for calculate stops.',
-      )
-    }
-    const tp: number = this.settings.tp
-    const sl: number = this.settings.sl
-    const ts: number = this.settings.ts
+  calculateStops(
+    indicators: IndicatorList | IndicatorListCreate,
+  ): StrategyStops {
+    const { bbDouble, atr } = indicators
 
-    const tpPrice: number = calculateTP(this.medianPrice, tp)
-    const slPrice: number = calculateSL(this.medianPrice, sl)
+    const slPrice: number = bbDouble.middleInner - atr.atr * 0.5
+    const risk: number = bbDouble.price - slPrice
+    const tpPrice: number = bbDouble.price + risk * 2
+
+    const ts: number = 0.02
+    const sl: number = (bbDouble.price - slPrice) / bbDouble.price
+    const tp: number = (tpPrice - bbDouble.price) / bbDouble.price
 
     return {
       tp,
