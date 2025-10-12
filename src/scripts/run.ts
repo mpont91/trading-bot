@@ -48,14 +48,6 @@ const scripts: Record<string, Fn> = {
   'equity-fetch-create': async () => {
     await (await import('./equity/equity-fetch-create')).default()
   },
-  'indicator-get-all': async (args: string[]) => {
-    await (await import('./indicator/indicator-get-all')).default(args)
-  },
-  'indicator-fetch-calculate-create-all': async (args: string[]) => {
-    await (
-      await import('./indicator/indicator-fetch-calculate-create-all')
-    ).default(args)
-  },
   'investment-fetch-calculate-amount': async () => {
     await (
       await import('./investment/investment-fetch-calculate-amount')

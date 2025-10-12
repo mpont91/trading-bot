@@ -57,108 +57,6 @@ CREATE TABLE "Trade" (
 );
 
 -- CreateTable
-CREATE TABLE "IndicatorSMA" (
-    "id" SERIAL NOT NULL,
-    "period" INTEGER NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "sma" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorSMA_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "IndicatorRSI" (
-    "id" SERIAL NOT NULL,
-    "period" INTEGER NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "rsi" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorRSI_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "IndicatorATR" (
-    "id" SERIAL NOT NULL,
-    "period" INTEGER NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "atr" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorATR_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "IndicatorADX" (
-    "id" SERIAL NOT NULL,
-    "period" INTEGER NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "adx" DECIMAL(65,30) NOT NULL,
-    "pdi" DECIMAL(65,30) NOT NULL,
-    "mdi" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorADX_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "IndicatorBB" (
-    "id" SERIAL NOT NULL,
-    "period" INTEGER NOT NULL,
-    "std_dev" DECIMAL(65,30) NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "upper" DECIMAL(65,30) NOT NULL,
-    "middle" DECIMAL(65,30) NOT NULL,
-    "lower" DECIMAL(65,30) NOT NULL,
-    "pb" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorBB_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "IndicatorBBDouble" (
-    "id" SERIAL NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "period_inner" INTEGER NOT NULL,
-    "std_dev_inner" DECIMAL(65,30) NOT NULL,
-    "upper_inner" DECIMAL(65,30) NOT NULL,
-    "middle_inner" DECIMAL(65,30) NOT NULL,
-    "lower_inner" DECIMAL(65,30) NOT NULL,
-    "pb_inner" DECIMAL(65,30) NOT NULL,
-    "period_outer" INTEGER NOT NULL,
-    "std_dev_outer" DECIMAL(65,30) NOT NULL,
-    "upper_outer" DECIMAL(65,30) NOT NULL,
-    "middle_outer" DECIMAL(65,30) NOT NULL,
-    "lower_outer" DECIMAL(65,30) NOT NULL,
-    "pb_outer" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorBBDouble_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "IndicatorSMACross" (
-    "id" SERIAL NOT NULL,
-    "period_long" INTEGER NOT NULL,
-    "period_short" INTEGER NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "price" DECIMAL(65,30) NOT NULL,
-    "sma_long" DECIMAL(65,30) NOT NULL,
-    "sma_short" DECIMAL(65,30) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "IndicatorSMACross_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Position" (
     "symbol" TEXT NOT NULL,
     "entry_order_id" INTEGER NOT NULL,
@@ -204,7 +102,6 @@ CREATE TABLE "StrategyAction" (
 -- CreateTable
 CREATE TABLE "StrategyReport" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "conditions" JSONB NOT NULL,

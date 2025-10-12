@@ -5,7 +5,6 @@ import { z } from 'zod'
 export const strategyReportSchema = z
   .object({
     id: z.number().int(),
-    name: z.string(),
     symbol: z.string(),
     price: z.number(),
     conditions: strategyConditionsSchema,

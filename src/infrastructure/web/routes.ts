@@ -8,7 +8,6 @@ import {
   getLastStrategies,
   getStrategyAnalysis,
 } from './controllers/strategy-controller'
-import { getGraphIndicator } from './controllers/indicator-controller'
 
 const router: Router = Router()
 
@@ -30,6 +29,5 @@ router.get('/market/last-strategies/:symbol', getLastStrategies)
 router.get('/market/last-opportunities', getLastOpportunities)
 router.get('/market/last-opportunities/:symbol', getLastOpportunities)
 router.get('/market/graph/strategy-analysis/:symbol', getStrategyAnalysis)
-router.get('/market/graph/indicator/:indicator/:symbol', getGraphIndicator)
 
 export default router

@@ -67,87 +67,6 @@ model Trade {
   @@index([symbol])
 }
 
-model IndicatorSMA {
-  id         Int      @id @default(autoincrement())
-  period     Int
-  symbol     String
-  price      Decimal
-  sma        Decimal
-  created_at DateTime @default(now())
-}
-
-model IndicatorRSI {
-  id         Int      @id @default(autoincrement())
-  period     Int
-  symbol     String
-  price      Decimal
-  rsi        Decimal
-  created_at DateTime @default(now())
-}
-
-model IndicatorATR {
-  id         Int      @id @default(autoincrement())
-  period     Int
-  symbol     String
-  price      Decimal
-  atr        Decimal
-  created_at DateTime @default(now())
-}
-
-model IndicatorADX {
-  id         Int      @id @default(autoincrement())
-  period     Int
-  symbol     String
-  price      Decimal
-  adx        Decimal
-  pdi        Decimal
-  mdi        Decimal
-  created_at DateTime @default(now())
-}
-
-model IndicatorBB {
-  id         Int      @id @default(autoincrement())
-  period     Int
-  std_dev    Decimal
-  symbol     String
-  price      Decimal
-  upper      Decimal
-  middle     Decimal
-  lower      Decimal
-  pb         Decimal
-  created_at DateTime @default(now())
-}
-
-model IndicatorBBDouble {
-  id            Int      @id @default(autoincrement())
-  symbol        String
-  price         Decimal
-  period_inner  Int
-  std_dev_inner Decimal
-  upper_inner   Decimal
-  middle_inner  Decimal
-  lower_inner   Decimal
-  pb_inner      Decimal
-  period_outer  Int
-  std_dev_outer Decimal
-  upper_outer   Decimal
-  middle_outer  Decimal
-  lower_outer   Decimal
-  pb_outer      Decimal
-  created_at    DateTime @default(now())
-}
-
-model IndicatorSMACross {
-  id           Int      @id @default(autoincrement())
-  period_long  Int
-  period_short Int
-  symbol       String
-  price        Decimal
-  sma_long     Decimal
-  sma_short    Decimal
-  created_at   DateTime @default(now())
-}
-
 model Position {
   symbol         String   @id
   entry_order_id Int
@@ -188,7 +107,6 @@ model StrategyAction {
 
 model StrategyReport {
   id          Int      @id @default(autoincrement())
-  name        String
   symbol      String
   price       Decimal
   conditions  Json

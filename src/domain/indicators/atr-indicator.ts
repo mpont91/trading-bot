@@ -1,15 +1,25 @@
 import { ATR } from 'technicalindicators'
 import { Candle } from '../types/candle'
-import { IndicatorATRCreate } from '../models/indicator'
 import {
   validateIndicatorCandles,
   validateIndicatorValues,
 } from '../helpers/indicator-helper'
+import { Indicator, indicatorResultSchema } from './indicator'
+import { z } from 'zod'
 
-export class AtrIndicatorCalculator {
+export const atrIndicatorResultSchema = z
+  .object({
+    period: z.number().int(),
+    atr: z.number(),
+  })
+  .extend(indicatorResultSchema.shape)
+
+export type AtrIndicatorResult = z.infer<typeof atrIndicatorResultSchema>
+
+export class AtrIndicatorCalculator implements Indicator {
   constructor(private readonly period: number) {}
 
-  calculate(symbol: string, candles: Candle[]): IndicatorATRCreate {
+  calculate(symbol: string, candles: Candle[]): AtrIndicatorResult {
     validateIndicatorCandles(this.period, candles.length)
     const values: number[] = ATR.calculate({
       period: this.period,

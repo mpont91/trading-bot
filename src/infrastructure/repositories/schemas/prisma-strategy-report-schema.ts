@@ -11,7 +11,6 @@ import { strategyConditionsSchema } from '../../../domain/types/strategy-conditi
 export const domainStrategyReportSchema = z
   .object({
     id: z.number(),
-    name: z.string(),
     symbol: z.string(),
     price: z.instanceof(Prisma.Decimal),
     conditions: z.any(),
@@ -31,7 +30,6 @@ export const domainStrategyReportSchema = z
 
     return {
       id: prismaStrategyReport.id,
-      name: prismaStrategyReport.name,
       symbol: prismaStrategyReport.symbol,
       price: prismaStrategyReport.price.toNumber(),
       conditions: prismaStrategyConditions,
@@ -53,7 +51,6 @@ export const domainStrategyReportSchema = z
 export const prismaStrategyReportSchema = strategyReportCreateSchema.transform(
   (strategyReportCreate: StrategyReportCreate) => {
     return {
-      name: strategyReportCreate.name,
       symbol: strategyReportCreate.symbol,
       price: strategyReportCreate.price,
       tp: strategyReportCreate.tp ? new Decimal(strategyReportCreate.tp) : null,

@@ -1,67 +1,105 @@
-import { IndicatorList, IndicatorListCreate } from '../models/indicator'
 import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
-import { TimeFrame } from '../types/candle'
-import { IndicatorSettings, StrategySettings } from '../types/settings'
+import { Candle, TimeFrame } from '../types/candle'
 import { StrategyStops } from '../types/strategy-stops'
-import { median } from '../helpers/math-helper'
 import {
   StrategyBuyConditions,
   StrategySellConditions,
 } from '../types/strategy-conditions'
+import { IndicatorService } from '../services/indicator-service'
+import { calculateSL, calculateTP } from '../helpers/stops-helper'
+import { SmaIndicatorResult } from '../indicators/sma-indicator'
 
-export abstract class Strategy {
-  protected readonly settings: StrategySettings
-  protected medianPrice: number | null = null
+export class Strategy {
+  price: number | null = null
+  constructor(private readonly indicatorService: IndicatorService) {}
 
-  protected constructor(settings: StrategySettings) {
-    this.settings = settings
+  evaluateBuyConditions(
+    symbol: string,
+    candles: Candle[],
+  ): StrategyBuyConditions {
+    const smaShort: SmaIndicatorResult = this.indicatorService.sma(
+      symbol,
+      candles,
+      20,
+    )
+    const smaLong: SmaIndicatorResult = this.indicatorService.sma(
+      symbol,
+      candles,
+      50,
+    )
+    return {
+      bullMarket: smaShort.sma > smaLong.sma,
+    }
   }
 
-  abstract name: string
-  abstract calculateStops(
-    indicators: IndicatorList | IndicatorListCreate,
-  ): StrategyStops
-  abstract evaluateBuyConditions(
-    indicators: IndicatorList | IndicatorListCreate,
-  ): StrategyBuyConditions
-  abstract evaluateSellConditions(
-    indicators: IndicatorList | IndicatorListCreate,
-  ): StrategySellConditions
-  abstract evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean
-  abstract evaluateShouldSell(sellConditions: StrategySellConditions): boolean
+  evaluateSellConditions(
+    symbol: string,
+    candles: Candle[],
+  ): StrategySellConditions {
+    const smaShort: SmaIndicatorResult = this.indicatorService.sma(
+      symbol,
+      candles,
+      20,
+    )
+    const smaLong: SmaIndicatorResult = this.indicatorService.sma(
+      symbol,
+      candles,
+      50,
+    )
+    return {
+      bearMarket: smaShort.sma < smaLong.sma,
+    }
+  }
 
-  getIndicatorSettings(): IndicatorSettings {
-    return this.settings.indicators
+  evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
+    return !!sellConditions.bearMarket
+  }
+
+  evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
+    return !!buyConditions.bullMarket
+  }
+
+  calculateStops(): StrategyStops {
+    if (!this.price) {
+      throw new Error('Price is not calculated. Needed for calculate stops.')
+    }
+    const tp: number = 0.05
+    const sl: number = 0.02
+    const ts: number = 0.01
+
+    const tpPrice: number = calculateTP(this.price, tp)
+    const slPrice: number = calculateSL(this.price, sl)
+
+    return {
+      tp,
+      sl,
+      ts,
+      tpPrice,
+      slPrice,
+    }
   }
 
   getTimeFrame(): TimeFrame {
-    return this.settings.timeFrame
+    return TimeFrame['1h']
   }
 
   getCandles(): number {
-    return this.settings.candles
+    return 240
   }
 
   calculate(
-    indicators: IndicatorList | IndicatorListCreate,
+    symbol: string,
+    candles: Candle[],
   ): StrategyReport | StrategyReportCreate {
-    const { bb, sma, rsi, adx, atr, smaCross } = indicators
-
-    const symbol: string = bb.symbol
-
-    this.medianPrice = median([
-      bb.price,
-      sma.price,
-      rsi.price,
-      atr.price,
-      adx.price,
-      smaCross.price,
-    ])
-
-    const buyConditions: StrategyBuyConditions =
-      this.evaluateBuyConditions(indicators)
-    const sellConditions: StrategySellConditions =
-      this.evaluateSellConditions(indicators)
+    this.price = candles[candles.length - 1].closePrice
+    const buyConditions: StrategyBuyConditions = this.evaluateBuyConditions(
+      symbol,
+      candles,
+    )
+    const sellConditions: StrategySellConditions = this.evaluateSellConditions(
+      symbol,
+      candles,
+    )
     const shouldBuy: boolean = this.evaluateShouldBuy(buyConditions)
     const shouldSell: boolean = this.evaluateShouldSell(sellConditions)
 
@@ -74,13 +112,12 @@ export abstract class Strategy {
     }
 
     if (shouldBuy) {
-      stops = this.calculateStops(indicators)
+      stops = this.calculateStops()
     }
 
     return {
-      name: this.name,
       symbol,
-      price: this.medianPrice,
+      price: this.price,
       conditions: {
         buy: buyConditions,
         sell: sellConditions,

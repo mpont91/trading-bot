@@ -1,5 +1,4 @@
 import { Candle } from '../types/candle'
-import { IndicatorListCreate } from '../models/indicator'
 import { StrategyReportCreate } from '../models/strategy-report'
 import { calculateSL } from '../helpers/stops-helper'
 import {
@@ -55,11 +54,10 @@ export class BacktesterService {
   simulate(symbol: string, candles: Candle[]): BacktestingSummary {
     for (let i: number = this.candles; i < candles.length; i++) {
       const currentCandles: Candle[] = candles.slice(i - this.candles, i + 1)
-      const indicators: IndicatorListCreate =
-        this.indicatorService.calculateAll(symbol, currentCandles)
-
-      const strategyReport: StrategyReportCreate =
-        this.strategy.calculate(indicators)
+      const strategyReport: StrategyReportCreate = this.strategy.calculate(
+        symbol,
+        currentCandles,
+      )
 
       this.countConditions(strategyReport)
 

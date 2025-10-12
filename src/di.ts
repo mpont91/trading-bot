@@ -28,16 +28,8 @@ import { PrismaStrategyActionRepository } from './infrastructure/repositories/pr
 import { TrailingService } from './domain/services/trailing-service'
 import { TrailingRepository } from './domain/repositories/trailing-repository'
 import { PrismaTrailingRepository } from './infrastructure/repositories/prisma-trailing-repository'
-import { AdxIndicatorCalculator } from './domain/indicators/adx-indicator-calculator'
-import { AtrIndicatorCalculator } from './domain/indicators/atr-indicator-calculator'
-import { RsiIndicatorCalculator } from './domain/indicators/rsi-indicator-calculator'
-import { SmaIndicatorCalculator } from './domain/indicators/sma-indicator-calculator'
-import { BbIndicatorCalculator } from './domain/indicators/bb-indicator-calculator'
 import { IndicatorService } from './domain/services/indicator-service'
-import { IndicatorRepository } from './domain/repositories/indicator-repository'
-import { PrismaIndicatorRepository } from './infrastructure/repositories/prisma-indicator-repository'
 import { TradingManager } from './domain/managers/trading-manager'
-import { SmaCrossIndicatorCalculator } from './domain/indicators/sma-cross-indicator-calculator'
 import { BinanceSpotApi } from './infrastructure/api/binance-spot-api'
 import { PositionRepository } from './domain/repositories/position-repository'
 import { PrismaPositionRepository } from './infrastructure/repositories/prisma-position-repository'
@@ -47,9 +39,6 @@ import { StrategyReportRepository } from './domain/repositories/strategy-report-
 import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
 import { Strategy } from './domain/strategies/strategy'
 import { MarketService } from './domain/services/market-service'
-import { IndicatorSettings } from './domain/types/settings'
-import { createStrategy } from './domain/strategies/strategy-factory'
-import { BbDoubleIndicatorCalculator } from './domain/indicators/bb-double-indicator-calculator'
 
 class Container {
   private static launcherMarket: Launcher
@@ -83,8 +72,6 @@ class Container {
       new PrismaCommissionEquityRepository(prisma)
     const orderRepository: OrderRepository = new PrismaOrderRepository(prisma)
     const tradeRepository: TradeRepository = new PrismaTradeRepository(prisma)
-    const indicatorRepository: IndicatorRepository =
-      new PrismaIndicatorRepository(prisma)
     const strategyActionRepository: StrategyActionRepository =
       new PrismaStrategyActionRepository(prisma)
     const positionRepository: PositionRepository = new PrismaPositionRepository(
@@ -95,37 +82,6 @@ class Container {
     )
     const strategyReportRepository: StrategyReportRepository =
       new PrismaStrategyReportRepository(prisma)
-
-    this.strategy = createStrategy(settings)
-
-    const indicatorSettings: IndicatorSettings =
-      this.strategy.getIndicatorSettings()
-
-    const adxIndicatorCalculator: AdxIndicatorCalculator =
-      new AdxIndicatorCalculator(indicatorSettings.adx)
-    const atrIndicatorCalculator: AtrIndicatorCalculator =
-      new AtrIndicatorCalculator(indicatorSettings.atr)
-    const rsiIndicatorCalculator: RsiIndicatorCalculator =
-      new RsiIndicatorCalculator(indicatorSettings.rsi)
-    const smaIndicatorCalculator: SmaIndicatorCalculator =
-      new SmaIndicatorCalculator(indicatorSettings.sma)
-    const bbIndicatorCalculator: BbIndicatorCalculator =
-      new BbIndicatorCalculator(
-        indicatorSettings.bb.period,
-        indicatorSettings.bb.stdDev,
-      )
-    const bbDoubleIndicatorCalculator: BbDoubleIndicatorCalculator =
-      new BbDoubleIndicatorCalculator(
-        indicatorSettings.bbDouble.periodInner,
-        indicatorSettings.bbDouble.stdDevInner,
-        indicatorSettings.bbDouble.periodOuter,
-        indicatorSettings.bbDouble.stdDevOuter,
-      )
-    const smaCrossIndicatorCalculator: SmaCrossIndicatorCalculator =
-      new SmaCrossIndicatorCalculator(
-        indicatorSettings.smaCross.periodLong,
-        indicatorSettings.smaCross.periodShort,
-      )
 
     this.apiService = new ApiService(api)
     this.equityService = new EquityService(equityRepository, this.apiService)
@@ -156,17 +112,7 @@ class Container {
       this.investmentService,
       this.orderService,
     )
-    this.indicatorService = new IndicatorService(
-      this.apiService,
-      indicatorRepository,
-      smaIndicatorCalculator,
-      rsiIndicatorCalculator,
-      adxIndicatorCalculator,
-      atrIndicatorCalculator,
-      bbIndicatorCalculator,
-      bbDoubleIndicatorCalculator,
-      smaCrossIndicatorCalculator,
-    )
+    this.indicatorService = new IndicatorService(this.apiService)
     this.strategyReportService = new StrategyReportService(
       strategyReportRepository,
     )
@@ -178,11 +124,12 @@ class Container {
       this.strategyActionService,
       this.tradeService,
     )
+    this.strategy = new Strategy(this.indicatorService)
     this.marketService = new MarketService(
-      this.indicatorService,
       this.strategyActionService,
       this.strategyReportService,
       this.strategy,
+      this.apiService,
     )
 
     const accountManager: ManagerInterface = new AccountManager(
