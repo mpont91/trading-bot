@@ -3,7 +3,7 @@ import { StrategyReportService } from './strategy-report-service'
 import { Strategy } from '../strategies/strategy'
 import { StrategyReport } from '../models/strategy-report'
 import { ApiService } from './api-service'
-import { Candle, TimeFrame } from '../types/candle'
+import { Candle } from '../types/candle'
 
 export class MarketService {
   constructor(
@@ -16,12 +16,15 @@ export class MarketService {
   async execute(symbol: string): Promise<void> {
     const candles: Candle[] = await this.apiService.getCandles(
       symbol,
-      TimeFrame['1h'],
-      240,
+      this.strategy.getTimeFrame(),
+      this.strategy.getCandles(),
     )
+
+    const closedCandles: Candle[] = candles.slice(0, -1)
+
     const strategyReport: StrategyReport =
       await this.strategyReportService.create(
-        this.strategy.calculate(symbol, candles),
+        this.strategy.calculate(symbol, closedCandles),
       )
 
     await this.strategyActionService.create(

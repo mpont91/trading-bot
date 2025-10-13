@@ -3,105 +3,55 @@ import { Candle, TimeFrame } from '../types/candle'
 import { StrategyStops } from '../types/strategy-stops'
 import {
   StrategyBuyConditions,
+  StrategyConditions,
   StrategySellConditions,
 } from '../types/strategy-conditions'
 import { IndicatorService } from '../services/indicator-service'
+import { MovingAverageCrossoverStrategy } from './moving-average-crossover-strategy'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { SmaIndicatorResult } from '../indicators/sma-indicator'
+import { MomentumOscillatorStrategy } from './momentum-oscillator-strategy'
 
 export class Strategy {
-  price: number | null = null
   constructor(private readonly indicatorService: IndicatorService) {}
 
-  evaluateBuyConditions(
-    symbol: string,
-    candles: Candle[],
-  ): StrategyBuyConditions {
-    const smaShort: SmaIndicatorResult = this.indicatorService.sma(
-      symbol,
-      candles,
-      20,
-    )
-    const smaLong: SmaIndicatorResult = this.indicatorService.sma(
-      symbol,
-      candles,
-      50,
-    )
-    return {
-      bullMarket: smaShort.sma > smaLong.sma,
-    }
-  }
-
-  evaluateSellConditions(
-    symbol: string,
-    candles: Candle[],
-  ): StrategySellConditions {
-    const smaShort: SmaIndicatorResult = this.indicatorService.sma(
-      symbol,
-      candles,
-      20,
-    )
-    const smaLong: SmaIndicatorResult = this.indicatorService.sma(
-      symbol,
-      candles,
-      50,
-    )
-    return {
-      bearMarket: smaShort.sma < smaLong.sma,
-    }
-  }
-
-  evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.bearMarket
-  }
-
-  evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.bullMarket
-  }
-
-  calculateStops(): StrategyStops {
-    if (!this.price) {
-      throw new Error('Price is not calculated. Needed for calculate stops.')
-    }
-    const tp: number = 0.05
-    const sl: number = 0.02
-    const ts: number = 0.01
-
-    const tpPrice: number = calculateTP(this.price, tp)
-    const slPrice: number = calculateSL(this.price, sl)
-
-    return {
-      tp,
-      sl,
-      ts,
-      tpPrice,
-      slPrice,
-    }
-  }
-
   getTimeFrame(): TimeFrame {
-    return TimeFrame['1h']
+    return TimeFrame['4h']
   }
 
   getCandles(): number {
-    return 240
+    return 500
   }
 
   calculate(
     symbol: string,
     candles: Candle[],
   ): StrategyReport | StrategyReportCreate {
-    this.price = candles[candles.length - 1].closePrice
-    const buyConditions: StrategyBuyConditions = this.evaluateBuyConditions(
-      symbol,
-      candles,
-    )
-    const sellConditions: StrategySellConditions = this.evaluateSellConditions(
-      symbol,
-      candles,
-    )
-    const shouldBuy: boolean = this.evaluateShouldBuy(buyConditions)
-    const shouldSell: boolean = this.evaluateShouldSell(sellConditions)
+    const price: number = candles[candles.length - 1].closePrice
+
+    const movingAverageCrossoverStrategy: MovingAverageCrossoverStrategy =
+      new MovingAverageCrossoverStrategy(this.indicatorService, symbol, candles)
+
+    const momentumOscillatorStrategy: MomentumOscillatorStrategy =
+      new MomentumOscillatorStrategy(this.indicatorService, symbol, candles)
+
+    const movingAverageCrossoverStrategyConditions: StrategyConditions =
+      movingAverageCrossoverStrategy.evaluateStrategyConditions()
+    const momentumOscillatorStrategyConditions: StrategyConditions =
+      momentumOscillatorStrategy.evaluateStrategyConditions()
+
+    const strategyConditions: StrategyConditions = {
+      buy: {
+        ...movingAverageCrossoverStrategyConditions.buy,
+        ...momentumOscillatorStrategyConditions.buy,
+      },
+      sell: {
+        ...movingAverageCrossoverStrategyConditions.sell,
+        ...momentumOscillatorStrategyConditions.sell,
+      },
+    }
+
+    const shouldBuy: boolean = this.evaluateShouldBuy(strategyConditions.buy)
+    const shouldSell: boolean = this.evaluateShouldSell(strategyConditions.sell)
 
     let stops: StrategyStops = {
       sl: null,
@@ -112,19 +62,44 @@ export class Strategy {
     }
 
     if (shouldBuy) {
-      stops = this.calculateStops()
+      stops = this.calculateStops(price)
     }
 
     return {
       symbol,
-      price: this.price,
+      price,
       conditions: {
-        buy: buyConditions,
-        sell: sellConditions,
+        buy: strategyConditions.buy,
+        sell: strategyConditions.sell,
       },
       ...stops,
       shouldBuy,
       shouldSell,
+    }
+  }
+
+  evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
+    return !!sellConditions.deathCross && !!sellConditions.overbought
+  }
+
+  evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
+    return !!buyConditions.goldenCross && !!buyConditions.oversold
+  }
+
+  calculateStops(price: number): StrategyStops {
+    const tp: number = 0.05
+    const sl: number = 0.03
+    const ts: number = 0.02
+
+    const tpPrice: number = calculateTP(price, tp)
+    const slPrice: number = calculateSL(price, sl)
+
+    return {
+      tp,
+      sl,
+      ts,
+      tpPrice,
+      slPrice,
     }
   }
 }
