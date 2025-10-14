@@ -171,7 +171,7 @@ export class BacktesterService {
     if (!this.position.tsPrice && price >= this.position.tpPrice) {
       this.position.tsPrice = calculateSL(
         this.position.tpPrice,
-        this.position.ts / 100,
+        this.position.ts,
       )
     } else if (this.position.tsPrice) {
       const potentialNewTsPrice = calculateSL(price, this.position.ts)
