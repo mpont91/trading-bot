@@ -15,7 +15,7 @@ export class Strategy {
   constructor(private readonly indicatorService: IndicatorService) {}
 
   getTimeFrame(): TimeFrame {
-    return TimeFrame['4h']
+    return TimeFrame['30m']
   }
 
   getCandles(): number {
@@ -79,11 +79,11 @@ export class Strategy {
   }
 
   evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.deathCross && !!sellConditions.overbought
+    return !!sellConditions.deathCross
   }
 
   evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.goldenCross && !!buyConditions.oversold
+    return !!buyConditions.goldenCross
   }
 
   calculateStops(price: number): StrategyStops {
