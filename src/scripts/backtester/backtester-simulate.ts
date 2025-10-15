@@ -9,7 +9,7 @@ import {
 } from '../../domain/types/backtesting'
 import { InvestmentService } from '../../domain/services/investment-service'
 import { StrategyReportService } from '../../domain/services/strategy-report-service'
-import { Strategy } from '../../domain/strategies/strategy'
+import { StrategyBTCUSDC } from '../../domain/strategies/strategy-btcusdc'
 import { z } from 'zod'
 
 function settings(): BacktestingSettings {
@@ -25,7 +25,7 @@ function initializeBacktesterService(): BacktesterService {
   const strategyReportService: StrategyReportService =
     Container.getStrategyReportService()
   const investmentService: InvestmentService = Container.getInvestmentService()
-  const strategy: Strategy = Container.getStrategy()
+  const strategy: StrategyBTCUSDC = Container.getStrategyBTCUSDC()
 
   return new BacktesterService(
     indicatorService,

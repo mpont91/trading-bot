@@ -37,7 +37,7 @@ import { StrategyReportService } from './domain/services/strategy-report-service
 import { ExecutionService } from './domain/services/execution-service'
 import { StrategyReportRepository } from './domain/repositories/strategy-report-repository'
 import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
-import { Strategy } from './domain/strategies/strategy'
+import { StrategyBTCUSDC } from './domain/strategies/strategy-btcusdc'
 import { MarketService } from './domain/services/market-service'
 
 class Container {
@@ -58,7 +58,7 @@ class Container {
   private static strategyReportService: StrategyReportService
   private static executionService: ExecutionService
   private static marketService: MarketService
-  private static strategy: Strategy
+  private static strategyBTCUSDC: StrategyBTCUSDC
 
   static initialize(): void {
     const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
@@ -124,12 +124,12 @@ class Container {
       this.strategyActionService,
       this.tradeService,
     )
-    this.strategy = new Strategy(this.indicatorService)
+    this.strategyBTCUSDC = new StrategyBTCUSDC(this.indicatorService)
     this.marketService = new MarketService(
       this.strategyActionService,
       this.strategyReportService,
-      this.strategy,
       this.apiService,
+      [this.strategyBTCUSDC],
     )
 
     const accountManager: ManagerInterface = new AccountManager(
@@ -203,8 +203,8 @@ class Container {
   static getMarketService(): MarketService {
     return this.marketService
   }
-  static getStrategy(): Strategy {
-    return this.strategy
+  static getStrategyBTCUSDC(): StrategyBTCUSDC {
+    return this.strategyBTCUSDC
   }
 }
 
