@@ -19,8 +19,13 @@ export default async function (args: string[]): Promise<void> {
 
   const apiService: ApiService = Container.getApiService()
 
-  const start: Date = new Date('2024-01-01T00:00:00Z')
-  const end: Date = new Date('2024-12-31T23:59:59Z')
+  const end = new Date()
+  end.setUTCDate(end.getUTCDate() - 1)
+  end.setUTCHours(23, 59, 59, 999)
+
+  const start = new Date(end)
+  start.setUTCFullYear(start.getUTCFullYear() - 1)
+  start.setUTCHours(0, 0, 0, 0)
 
   const response: Candle[] = await apiService.getCandlesHistorical(
     symbol,
