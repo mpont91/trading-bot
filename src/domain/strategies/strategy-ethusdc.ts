@@ -9,10 +9,11 @@ import {
 import { IndicatorService } from '../services/indicator-service'
 import { MovingAverageCrossoverStrategy } from './moving-average-crossover-strategy'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
+import { MomentumOscillatorStrategy } from './momentum-oscillator-strategy'
 import { Strategy } from './strategy'
 
-export class StrategyBTCUSDC implements Strategy {
-  private readonly symbol: string = 'BTCUSDC'
+export class StrategyETHUSDC implements Strategy {
+  private readonly symbol: string = 'ETHUSDC'
 
   constructor(private readonly indicatorService: IndicatorService) {}
 
@@ -38,15 +39,26 @@ export class StrategyBTCUSDC implements Strategy {
         candles,
       )
 
+    const momentumOscillatorStrategy: MomentumOscillatorStrategy =
+      new MomentumOscillatorStrategy(
+        this.indicatorService,
+        this.symbol,
+        candles,
+      )
+
     const movingAverageCrossoverStrategyConditions: StrategyConditions =
       movingAverageCrossoverStrategy.evaluateStrategyConditions()
+    const momentumOscillatorStrategyConditions: StrategyConditions =
+      momentumOscillatorStrategy.evaluateStrategyConditions()
 
     const strategyConditions: StrategyConditions = {
       buy: {
         ...movingAverageCrossoverStrategyConditions.buy,
+        ...momentumOscillatorStrategyConditions.buy,
       },
       sell: {
         ...movingAverageCrossoverStrategyConditions.sell,
+        ...momentumOscillatorStrategyConditions.sell,
       },
     }
 
