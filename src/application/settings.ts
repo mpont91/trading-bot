@@ -27,7 +27,7 @@ export const settings: Settings = {
     baseCurrency: 'USDC',
     feeCurrency: 'BNB',
   },
-  symbols: ['BTCUSDC'],
+  symbols: ['BTCUSDC', 'ETHUSDC'],
   maxPositionsOpened: parseNumber(process.env.MAX_POSITIONS_OPENED, 1),
   safetyCapitalMargin: parseNumber(process.env.SAFETY_CAPITAL_MARGIN, 0.1),
 }

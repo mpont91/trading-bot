@@ -213,6 +213,16 @@ class Container {
   static getEthusdcPlan(): Plan {
     return this.ethusdcPlan
   }
+  static getPlan(symbol: string): Plan {
+    switch (symbol) {
+      case 'BTCUSDC':
+        return this.btcusdcPlan
+      case 'ETHUSDC':
+        return this.ethusdcPlan
+      default:
+        throw new Error('Plan not found')
+    }
+  }
 }
 
 Container.initialize()

@@ -7,10 +7,10 @@ import {
   StrategySellConditions,
 } from '../types/strategy-conditions'
 import { IndicatorService } from '../services/indicator-service'
-import { MovingAverageCrossoverStrategy } from '../strategies/moving-average-crossover-strategy'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { MomentumOscillatorStrategy } from '../strategies/momentum-oscillator-strategy'
 import { Plan } from './plan'
+import { BollingerBandStrategy } from '../strategies/bollinger-band-strategy'
+import { MovingAverageCrossoverStrategy } from '../strategies/moving-average-crossover-strategy'
 
 export class EthusdcPlan implements Plan {
   private readonly symbol: string = 'ETHUSDC'
@@ -32,6 +32,12 @@ export class EthusdcPlan implements Plan {
   calculate(candles: Candle[]): StrategyReport | StrategyReportCreate {
     const price: number = candles[candles.length - 1].closePrice
 
+    const bollingerBandStrategy: BollingerBandStrategy =
+      new BollingerBandStrategy(this.indicatorService, this.symbol, candles)
+
+    const bollingerBandStrategyConditions: StrategyConditions =
+      bollingerBandStrategy.evaluateStrategyConditions()
+
     const movingAverageCrossoverStrategy: MovingAverageCrossoverStrategy =
       new MovingAverageCrossoverStrategy(
         this.indicatorService,
@@ -39,26 +45,17 @@ export class EthusdcPlan implements Plan {
         candles,
       )
 
-    const momentumOscillatorStrategy: MomentumOscillatorStrategy =
-      new MomentumOscillatorStrategy(
-        this.indicatorService,
-        this.symbol,
-        candles,
-      )
-
     const movingAverageCrossoverStrategyConditions: StrategyConditions =
       movingAverageCrossoverStrategy.evaluateStrategyConditions()
-    const momentumOscillatorStrategyConditions: StrategyConditions =
-      momentumOscillatorStrategy.evaluateStrategyConditions()
 
     const strategyConditions: StrategyConditions = {
       buy: {
+        ...bollingerBandStrategyConditions.buy,
         ...movingAverageCrossoverStrategyConditions.buy,
-        ...momentumOscillatorStrategyConditions.buy,
       },
       sell: {
+        ...bollingerBandStrategyConditions.sell,
         ...movingAverageCrossoverStrategyConditions.sell,
-        ...momentumOscillatorStrategyConditions.sell,
       },
     }
 
@@ -91,16 +88,19 @@ export class EthusdcPlan implements Plan {
   }
 
   evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.MovingAverageCrossoverDeathCross
+    return (
+      !!sellConditions.bollingerBandLowerSell &&
+      !!sellConditions.movingAverageCrossoverDeathCross
+    )
   }
 
   evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.MovingAverageCrossoverGoldenCross
+    return !!buyConditions.bollingerBandMomentumBuy
   }
 
   calculateStops(price: number): StrategyStops {
-    const tp: number = 0.095
-    const sl: number = 0.11
+    const tp: number = 0.09
+    const sl: number = 0.09
     const ts: number = 0
 
     const tpPrice: number = calculateTP(price, tp)

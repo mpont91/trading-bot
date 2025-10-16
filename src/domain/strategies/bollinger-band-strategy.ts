@@ -25,7 +25,7 @@ export class BollingerBandStrategy implements Strategy {
       periodInner: 20,
       stdDevInner: 1,
       periodOuter: 20,
-      stdDevOuter: 1,
+      stdDevOuter: 2,
       squeezeWidthThreshold: 0.05,
     },
   ) {}
@@ -55,32 +55,35 @@ export class BollingerBandStrategy implements Strategy {
     const price: number = currentCandle.closePrice
     const lowPrice: number = currentCandle.lowPrice
 
-    const DoubleBollingerBandBuyZone: boolean =
+    const doubleBollingerBandBuyZone: boolean =
       price > bbInner.upper && price < bbOuter.upper
-    const BollingerBandDoubleBollingerBandBuy: boolean =
-      DoubleBollingerBandBuyZone && lowPrice <= bbInner.upper
-    const BollingerBandDoubleBollingerBandSell: boolean = price < bbInner.upper
+    const bollingerBandDoubleBollingerBandBuy: boolean =
+      doubleBollingerBandBuyZone && lowPrice <= bbInner.upper
+    const bollingerBandDoubleBollingerBandSell: boolean = price < bbInner.lower
 
-    const BollingerBandMomentumBuy: boolean = price > bb.upper
-    const BollingerBandMomentumSell: boolean = price < bb.middle
+    const bollingerBandMomentumBuy: boolean = price > bb.upper
 
-    const BollingerBandSqueezeWidth: number = (bb.upper - bb.lower) / bb.middle
-    const BollingerBandSqueeze: boolean =
-      BollingerBandSqueezeWidth < this.settings.squeezeWidthThreshold
-    const BollingerBandSqueezeBuy: boolean =
-      BollingerBandSqueeze && price > bb.upper
-    const BollingerBandSqueezeSell: boolean = price < bb.upper
+    const bollingerBandSqueezeWidth: number = (bb.upper - bb.lower) / bb.middle
+    const bollingerBandSqueeze: boolean =
+      bollingerBandSqueezeWidth < this.settings.squeezeWidthThreshold
+    const bollingerBandSqueezeBuy: boolean =
+      bollingerBandSqueeze && price > bb.upper
+
+    const bollingerBandUpperSell: boolean = price < bb.upper
+    const bollingerBandMiddleSell: boolean = price < bb.middle
+    const bollingerBandLowerSell: boolean = price < bb.lower
 
     return {
       buy: {
-        BollingerBandDoubleBollingerBandBuy,
-        BollingerBandMomentumBuy,
-        BollingerBandSqueezeBuy,
+        bollingerBandDoubleBollingerBandBuy,
+        bollingerBandMomentumBuy,
+        bollingerBandSqueezeBuy,
       },
       sell: {
-        BollingerBandDoubleBollingerBandSell,
-        BollingerBandMomentumSell,
-        BollingerBandSqueezeSell,
+        bollingerBandDoubleBollingerBandSell,
+        bollingerBandUpperSell,
+        bollingerBandMiddleSell,
+        bollingerBandLowerSell,
       },
     }
   }

@@ -79,11 +79,11 @@ export class BtcusdcPlan implements Plan {
   }
 
   evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.MovingAverageCrossoverDeathCross
+    return !!sellConditions.movingAverageCrossoverDeathCross
   }
 
   evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.MovingAverageCrossoverGoldenCross
+    return !!buyConditions.movingAverageCrossoverGoldenCross
   }
 
   calculateStops(price: number): StrategyStops {

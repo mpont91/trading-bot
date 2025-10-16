@@ -18,12 +18,11 @@ function settings(): BacktestingSettings {
   }
 }
 
-function initializeBacktesterService(): BacktesterService {
+function initializeBacktesterService(plan: Plan): BacktesterService {
   const backtestingSettings: BacktestingSettings = settings()
   const strategyReportService: StrategyReportService =
     Container.getStrategyReportService()
   const investmentService: InvestmentService = Container.getInvestmentService()
-  const plan: Plan = Container.getBtcusdcPlan()
 
   return new BacktesterService(
     plan,
@@ -34,7 +33,7 @@ function initializeBacktesterService(): BacktesterService {
 }
 
 const requestSchema = z.object({
-  symbol: z.string().transform((s) => s.toLowerCase()),
+  symbol: z.string().transform((s) => s.toUpperCase()),
 })
 
 export default async function (args: string[]): Promise<void> {
@@ -44,7 +43,9 @@ export default async function (args: string[]): Promise<void> {
     symbol: symbolRequest,
   })
 
-  const file: string = `./data/${symbol}.json`
+  const plan: Plan = Container.getPlan(symbol)
+
+  const file: string = `./data/${symbol}-${plan.getTimeFrame()}.json`
 
   if (!fs.existsSync(file)) {
     throw new Error(
@@ -52,11 +53,9 @@ export default async function (args: string[]): Promise<void> {
     )
   }
 
-  const candles: Candle[] = JSON.parse(
-    fs.readFileSync(`./data/${symbol}.json`, 'utf-8'),
-  )
+  const candles: Candle[] = JSON.parse(fs.readFileSync(file, 'utf-8'))
 
-  const backtesterService: BacktesterService = initializeBacktesterService()
+  const backtesterService: BacktesterService = initializeBacktesterService(plan)
 
   const response: BacktestingSummary = backtesterService.simulate(
     symbol,

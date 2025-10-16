@@ -33,12 +33,12 @@ export class MovingAverageCrossoverStrategy implements Strategy {
     )
     return {
       buy: {
-        MovingAverageCrossoverGoldenCross: smaShort.sma > smaLong.sma,
-        MovingAverageCrossoverBullishTrend: smaShort.price > smaShort.sma,
+        movingAverageCrossoverGoldenCross: smaShort.sma > smaLong.sma,
+        movingAverageCrossoverBullishTrend: smaShort.price > smaShort.sma,
       },
       sell: {
-        MovingAverageCrossoverDeathCross: smaShort.sma < smaLong.sma,
-        MovingAverageCrossoverBearishTrend: smaShort.price < smaShort.sma,
+        movingAverageCrossoverDeathCross: smaShort.sma < smaLong.sma,
+        movingAverageCrossoverBearishTrend: smaShort.price < smaShort.sma,
       },
     }
   }
