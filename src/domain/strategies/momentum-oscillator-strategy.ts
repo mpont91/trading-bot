@@ -37,22 +37,23 @@ export class MomentumOscillatorStrategy {
     )
     return {
       buy: {
-        oversold:
+        MomentumOscillatorOversold:
           rsi.rsi <= this.settings.oversoldThreshold &&
           rsi.rsi > this.settings.stronglyOversoldThreshold,
-        stronglyOversold:
+        MomentumOscillatorStronglyOversold:
           rsi.rsi <= this.settings.stronglyOversoldThreshold &&
           rsi.rsi > this.settings.extremelyOversoldThreshold,
-        extremelyOversold: rsi.rsi <= this.settings.extremelyOversoldThreshold,
+        MomentumOscillatorExtremelyOversold:
+          rsi.rsi <= this.settings.extremelyOversoldThreshold,
       },
       sell: {
-        overbought:
+        MomentumOscillatorOverbought:
           rsi.rsi >= this.settings.overboughtThreshold &&
           rsi.rsi < this.settings.stronglyOverboughtThreshold,
-        stronglyOverbought:
+        MomentumOscillatorStronglyOverbought:
           rsi.rsi >= this.settings.stronglyOverboughtThreshold &&
           rsi.rsi < this.settings.extremelyOverboughtThreshold,
-        extremelyOverbought:
+        MomentumOscillatorExtremelyOverbought:
           rsi.rsi >= this.settings.extremelyOverboughtThreshold,
       },
     }

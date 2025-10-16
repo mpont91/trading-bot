@@ -1,19 +1,25 @@
 import { z } from 'zod'
 
 export const strategyBuyConditionsSchema = z.object({
-  goldenCross: z.boolean().optional(),
-  bullishTrend: z.boolean().optional(),
-  oversold: z.boolean().optional(),
-  stronglyOversold: z.boolean().optional(),
-  extremelyOversold: z.boolean().optional(),
+  MovingAverageCrossoverGoldenCross: z.boolean().optional(),
+  MovingAverageCrossoverBullishTrend: z.boolean().optional(),
+  MomentumOscillatorOversold: z.boolean().optional(),
+  MomentumOscillatorStronglyOversold: z.boolean().optional(),
+  MomentumOscillatorExtremelyOversold: z.boolean().optional(),
+  BollingerBandDoubleBollingerBandBuy: z.boolean().optional(),
+  BollingerBandMomentumBuy: z.boolean().optional(),
+  BollingerBandSqueezeBuy: z.boolean().optional(),
 })
 
 export const strategySellConditionsSchema = z.object({
-  deathCross: z.boolean().optional(),
-  bearishTrend: z.boolean().optional(),
-  overbought: z.boolean().optional(),
-  stronglyOverbought: z.boolean().optional(),
-  extremelyOverbought: z.boolean().optional(),
+  MovingAverageCrossoverDeathCross: z.boolean().optional(),
+  MovingAverageCrossoverBearishTrend: z.boolean().optional(),
+  MomentumOscillatorOverbought: z.boolean().optional(),
+  MomentumOscillatorStronglyOverbought: z.boolean().optional(),
+  MomentumOscillatorExtremelyOverbought: z.boolean().optional(),
+  BollingerBandDoubleBollingerBandSell: z.boolean().optional(),
+  BollingerBandMomentumSell: z.boolean().optional(),
+  BollingerBandSqueezeSell: z.boolean().optional(),
 })
 
 export const strategyConditionsSchema = z.object({

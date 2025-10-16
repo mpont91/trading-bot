@@ -79,11 +79,11 @@ export class StrategyBTCUSDC implements Strategy {
   }
 
   evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.deathCross
+    return !!sellConditions.MovingAverageCrossoverDeathCross
   }
 
   evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.goldenCross
+    return !!buyConditions.MovingAverageCrossoverGoldenCross
   }
 
   calculateStops(price: number): StrategyStops {

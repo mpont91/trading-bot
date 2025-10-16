@@ -32,12 +32,12 @@ export class MovingAverageCrossoverStrategy {
     )
     return {
       buy: {
-        goldenCross: smaShort.sma > smaLong.sma,
-        bullishTrend: smaShort.price > smaShort.sma,
+        MovingAverageCrossoverGoldenCross: smaShort.sma > smaLong.sma,
+        MovingAverageCrossoverBullishTrend: smaShort.price > smaShort.sma,
       },
       sell: {
-        deathCross: smaShort.sma < smaLong.sma,
-        bearishTrend: smaShort.price < smaShort.sma,
+        MovingAverageCrossoverDeathCross: smaShort.sma < smaLong.sma,
+        MovingAverageCrossoverBearishTrend: smaShort.price < smaShort.sma,
       },
     }
   }
