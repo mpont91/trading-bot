@@ -2,13 +2,14 @@ import { IndicatorService } from '../services/indicator-service'
 import { Candle } from '../types/candle'
 import { StrategyConditions } from '../types/strategy-conditions'
 import { SmaIndicatorResult } from '../indicators/sma-indicator'
+import { Strategy } from './strategy'
 
 export interface MovingAverageCrossoverStrategySettings {
   periodShort: number
   periodLong: number
 }
 
-export class MovingAverageCrossoverStrategy {
+export class MovingAverageCrossoverStrategy implements Strategy {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly symbol: string,

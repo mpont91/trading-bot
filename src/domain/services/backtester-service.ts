@@ -6,12 +6,11 @@ import {
   BacktestingSettings,
   BacktestingSummary,
 } from '../types/backtesting'
-import { IndicatorService } from './indicator-service'
 import { InvestmentService } from './investment-service'
 import { Balance } from '../types/balance'
 import { StrategyReportService } from './strategy-report-service'
 import { StrategyActionCreate } from '../models/strategy-action'
-import { StrategyBTCUSDC } from '../strategies/strategy-btcusdc'
+import { Plan } from '../plans/plan'
 
 export class BacktesterService {
   summary: BacktestingSummary
@@ -21,9 +20,8 @@ export class BacktesterService {
   cash: number
 
   constructor(
-    private readonly indicatorService: IndicatorService,
+    private readonly plan: Plan,
     private readonly strategyReportService: StrategyReportService,
-    private readonly strategyBTCUSDC: StrategyBTCUSDC,
     private readonly investmentService: InvestmentService,
     private readonly backtestingSettings: BacktestingSettings,
   ) {
@@ -47,7 +45,7 @@ export class BacktesterService {
     }
     this.position = null
     this.commissionRate = this.backtestingSettings.commissionRate
-    this.candles = this.strategyBTCUSDC.getCandles()
+    this.candles = this.plan.getCandles()
     this.cash = this.backtestingSettings.initialEquity
   }
 
@@ -55,7 +53,7 @@ export class BacktesterService {
     for (let i: number = this.candles; i < candles.length; i++) {
       const currentCandles: Candle[] = candles.slice(i - this.candles, i + 1)
       const strategyReport: StrategyReportCreate =
-        this.strategyBTCUSDC.calculate(currentCandles)
+        this.plan.calculate(currentCandles)
 
       this.countConditions(strategyReport)
 

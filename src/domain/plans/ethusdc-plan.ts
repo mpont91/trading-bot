@@ -7,12 +7,12 @@ import {
   StrategySellConditions,
 } from '../types/strategy-conditions'
 import { IndicatorService } from '../services/indicator-service'
-import { MovingAverageCrossoverStrategy } from './moving-average-crossover-strategy'
+import { MovingAverageCrossoverStrategy } from '../strategies/moving-average-crossover-strategy'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { MomentumOscillatorStrategy } from './momentum-oscillator-strategy'
-import { Strategy } from './strategy'
+import { MomentumOscillatorStrategy } from '../strategies/momentum-oscillator-strategy'
+import { Plan } from './plan'
 
-export class StrategyETHUSDC implements Strategy {
+export class EthusdcPlan implements Plan {
   private readonly symbol: string = 'ETHUSDC'
 
   constructor(private readonly indicatorService: IndicatorService) {}
@@ -91,11 +91,11 @@ export class StrategyETHUSDC implements Strategy {
   }
 
   evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
-    return !!sellConditions.deathCross
+    return !!sellConditions.MovingAverageCrossoverDeathCross
   }
 
   evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
-    return !!buyConditions.goldenCross
+    return !!buyConditions.MovingAverageCrossoverGoldenCross
   }
 
   calculateStops(price: number): StrategyStops {

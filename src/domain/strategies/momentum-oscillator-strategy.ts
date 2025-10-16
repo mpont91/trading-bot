@@ -2,6 +2,7 @@ import { IndicatorService } from '../services/indicator-service'
 import { Candle } from '../types/candle'
 import { StrategyConditions } from '../types/strategy-conditions'
 import { RsiIndicatorResult } from '../indicators/rsi-indicator'
+import { Strategy } from './strategy'
 
 export interface MomentumOscillatorStrategySettings {
   period: number
@@ -13,7 +14,7 @@ export interface MomentumOscillatorStrategySettings {
   extremelyOverboughtThreshold: number
 }
 
-export class MomentumOscillatorStrategy {
+export class MomentumOscillatorStrategy implements Strategy {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly symbol: string,

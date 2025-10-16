@@ -37,8 +37,10 @@ import { StrategyReportService } from './domain/services/strategy-report-service
 import { ExecutionService } from './domain/services/execution-service'
 import { StrategyReportRepository } from './domain/repositories/strategy-report-repository'
 import { PrismaStrategyReportRepository } from './infrastructure/repositories/prisma-strategy-report-repository'
-import { StrategyBTCUSDC } from './domain/strategies/strategy-btcusdc'
+import { BtcusdcPlan } from './domain/plans/btcusdc-plan'
+import { EthusdcPlan } from './domain/plans/ethusdc-plan'
 import { MarketService } from './domain/services/market-service'
+import { Plan } from './domain/plans/plan'
 
 class Container {
   private static launcherMarket: Launcher
@@ -58,7 +60,8 @@ class Container {
   private static strategyReportService: StrategyReportService
   private static executionService: ExecutionService
   private static marketService: MarketService
-  private static strategyBTCUSDC: StrategyBTCUSDC
+  private static btcusdcPlan: BtcusdcPlan
+  private static ethusdcPlan: EthusdcPlan
 
   static initialize(): void {
     const spot: BinanceSpotApi = new BinanceSpotApi(settings.binance)
@@ -124,12 +127,13 @@ class Container {
       this.strategyActionService,
       this.tradeService,
     )
-    this.strategyBTCUSDC = new StrategyBTCUSDC(this.indicatorService)
+    this.btcusdcPlan = new BtcusdcPlan(this.indicatorService)
+    this.ethusdcPlan = new EthusdcPlan(this.indicatorService)
     this.marketService = new MarketService(
       this.strategyActionService,
       this.strategyReportService,
       this.apiService,
-      [this.strategyBTCUSDC],
+      [this.btcusdcPlan, this.ethusdcPlan],
     )
 
     const accountManager: ManagerInterface = new AccountManager(
@@ -203,8 +207,11 @@ class Container {
   static getMarketService(): MarketService {
     return this.marketService
   }
-  static getStrategyBTCUSDC(): StrategyBTCUSDC {
-    return this.strategyBTCUSDC
+  static getBtcusdcPlan(): Plan {
+    return this.btcusdcPlan
+  }
+  static getEthusdcPlan(): Plan {
+    return this.ethusdcPlan
   }
 }
 

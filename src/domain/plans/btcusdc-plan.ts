@@ -7,11 +7,11 @@ import {
   StrategySellConditions,
 } from '../types/strategy-conditions'
 import { IndicatorService } from '../services/indicator-service'
-import { MovingAverageCrossoverStrategy } from './moving-average-crossover-strategy'
+import { MovingAverageCrossoverStrategy } from '../strategies/moving-average-crossover-strategy'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { Strategy } from './strategy'
+import { Plan } from './plan'
 
-export class StrategyBTCUSDC implements Strategy {
+export class BtcusdcPlan implements Plan {
   private readonly symbol: string = 'BTCUSDC'
 
   constructor(private readonly indicatorService: IndicatorService) {}

@@ -2,6 +2,7 @@ import { IndicatorService } from '../services/indicator-service'
 import { Candle } from '../types/candle'
 import { StrategyConditions } from '../types/strategy-conditions'
 import { BbIndicatorResult } from '../indicators/bb-indicator'
+import { Strategy } from './strategy'
 
 export interface BollingerBandStrategySettings {
   period: number
@@ -13,7 +14,7 @@ export interface BollingerBandStrategySettings {
   squeezeWidthThreshold: number
 }
 
-export class BollingerBandStrategy {
+export class BollingerBandStrategy implements Strategy {
   constructor(
     private readonly indicatorService: IndicatorService,
     private readonly symbol: string,

@@ -1,7 +1,6 @@
 import fs from 'fs'
 import { Container } from '../../di'
 import { Candle } from '../../domain/types/candle'
-import { IndicatorService } from '../../domain/services/indicator-service'
 import { BacktesterService } from '../../domain/services/backtester-service'
 import {
   BacktestingSettings,
@@ -9,8 +8,8 @@ import {
 } from '../../domain/types/backtesting'
 import { InvestmentService } from '../../domain/services/investment-service'
 import { StrategyReportService } from '../../domain/services/strategy-report-service'
-import { StrategyBTCUSDC } from '../../domain/strategies/strategy-btcusdc'
 import { z } from 'zod'
+import { Plan } from '../../domain/plans/plan'
 
 function settings(): BacktestingSettings {
   return {
@@ -21,16 +20,14 @@ function settings(): BacktestingSettings {
 
 function initializeBacktesterService(): BacktesterService {
   const backtestingSettings: BacktestingSettings = settings()
-  const indicatorService: IndicatorService = Container.getIndicatorService()
   const strategyReportService: StrategyReportService =
     Container.getStrategyReportService()
   const investmentService: InvestmentService = Container.getInvestmentService()
-  const strategy: StrategyBTCUSDC = Container.getStrategyBTCUSDC()
+  const plan: Plan = Container.getBtcusdcPlan()
 
   return new BacktesterService(
-    indicatorService,
+    plan,
     strategyReportService,
-    strategy,
     investmentService,
     backtestingSettings,
   )
