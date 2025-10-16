@@ -96,7 +96,17 @@ class Container {
       trailingRepository,
       this.apiService,
     )
+    this.investmentService = new InvestmentService(
+      settings.safetyCapitalMargin,
+      settings.maxPositionsOpened,
+      this.apiService,
+    )
     this.orderService = new OrderService(this.apiService, orderRepository)
+    this.positionService = new PositionService(
+      positionRepository,
+      this.investmentService,
+      this.orderService,
+    )
     this.tradeService = new TradeService(
       settings.maxPositionsOpened,
       tradeRepository,
@@ -105,16 +115,7 @@ class Container {
       this.trailingService,
     )
     this.performanceService = new PerformanceService(tradeRepository)
-    this.investmentService = new InvestmentService(
-      settings.safetyCapitalMargin,
-      settings.maxPositionsOpened,
-      this.apiService,
-    )
-    this.positionService = new PositionService(
-      positionRepository,
-      this.investmentService,
-      this.orderService,
-    )
+
     this.indicatorService = new IndicatorService(this.apiService)
     this.strategyReportService = new StrategyReportService(
       strategyReportRepository,
