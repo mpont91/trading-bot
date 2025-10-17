@@ -22,6 +22,7 @@ router.get('/uptime', (req: Request, res: Response): void => {
 router.get('/graph/equity', getEquityGraph)
 router.get('/commission-equity', getCommissionEquity)
 router.get('/performance', getPerformance)
+router.get('/performance/:symbol', getPerformance)
 router.get('/last-trades', getLastTrades)
 router.get('/last-trades/:symbol', getLastTrades)
 router.get('/market/last-strategies', getLastStrategies)

@@ -40,8 +40,18 @@ export class PrismaTradeRepository implements TradeRepository {
     return this.toDomainList(trades)
   }
 
-  async getPerformance(): Promise<Performance> {
-    const trades = await this.prisma.trade.findMany()
+  async getPerformance(symbol?: string): Promise<Performance> {
+    const queryOptions = {
+      where: {},
+    }
+
+    if (symbol) {
+      queryOptions.where = {
+        symbol: symbol,
+      }
+    }
+
+    const trades = await this.prisma.trade.findMany(queryOptions)
 
     const totalTrades: number = trades.length
     const successTrades: number = trades.filter((t) => t.pnl.gt(0)).length
