@@ -46,68 +46,6 @@ export class PrismaStrategyActionRepository
     return this.toDomain(strategyAction)
   }
 
-  async list(symbol?: string): Promise<StrategyAction[]> {
-    let queryOptions = {}
-
-    if (symbol) {
-      const limit: number = 10
-      queryOptions = {
-        take: limit,
-        where: {
-          symbol: symbol,
-        },
-        orderBy: {
-          created_at: Prisma.SortOrder.desc,
-        },
-      }
-    } else {
-      queryOptions = {
-        distinct: ['symbol'],
-        orderBy: [
-          { symbol: Prisma.SortOrder.asc },
-          { created_at: Prisma.SortOrder.desc },
-        ],
-      }
-    }
-
-    const StrategyActionList =
-      await this.prisma.strategyAction.findMany(queryOptions)
-
-    return this.toDomainList(StrategyActionList)
-  }
-
-  async listOpportunities(symbol?: string): Promise<StrategyAction[]> {
-    let queryOptions = {}
-
-    if (symbol) {
-      const limit: number = 10
-      queryOptions = {
-        take: limit,
-        where: {
-          symbol: symbol,
-          signal: { not: Signal.HOLD },
-        },
-        orderBy: {
-          created_at: Prisma.SortOrder.desc,
-        },
-      }
-    } else {
-      queryOptions = {
-        where: { signal: { not: Signal.HOLD } },
-        distinct: ['symbol'],
-        orderBy: [
-          { symbol: Prisma.SortOrder.asc },
-          { created_at: Prisma.SortOrder.desc },
-        ],
-      }
-    }
-
-    const opportunities =
-      await this.prisma.strategyAction.findMany(queryOptions)
-
-    return this.toDomainList(opportunities)
-  }
-
   async getPriceGraph(
     symbol: string,
     interval: TimeInterval,

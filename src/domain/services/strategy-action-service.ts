@@ -17,14 +17,6 @@ export class StrategyActionService {
     return await this.strategyActionRepository.last(symbol)
   }
 
-  async list(symbol?: string): Promise<StrategyAction[]> {
-    return this.strategyActionRepository.list(symbol)
-  }
-
-  async listOpportunities(symbol?: string): Promise<StrategyAction[]> {
-    return this.strategyActionRepository.listOpportunities(symbol)
-  }
-
   async getStrategyAnalysis(
     symbol: string,
     interval: TimeInterval,

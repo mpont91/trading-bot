@@ -3,11 +3,7 @@ import { getEquityGraph } from './controllers/equity-controller'
 import { getCommissionEquity } from './controllers/commission-equity-controller'
 import { getPerformance } from './controllers/performance-controller'
 import { getLastTrades } from './controllers/trade-controller'
-import {
-  getLastOpportunities,
-  getLastStrategies,
-  getStrategyAnalysis,
-} from './controllers/strategy-controller'
+import { getStrategyAnalysis } from './controllers/strategy-controller'
 
 const router: Router = Router()
 
@@ -25,10 +21,6 @@ router.get('/performance', getPerformance)
 router.get('/performance/:symbol', getPerformance)
 router.get('/last-trades', getLastTrades)
 router.get('/last-trades/:symbol', getLastTrades)
-router.get('/market/last-strategies', getLastStrategies)
-router.get('/market/last-strategies/:symbol', getLastStrategies)
-router.get('/market/last-opportunities', getLastOpportunities)
-router.get('/market/last-opportunities/:symbol', getLastOpportunities)
 router.get('/market/graph/strategy-analysis/:symbol', getStrategyAnalysis)
 
 export default router
