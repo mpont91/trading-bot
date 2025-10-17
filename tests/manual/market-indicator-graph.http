@@ -1,2 +1,0 @@
-GET http://localhost:3000/market/graph/indicator/smacross/btcusdc?interval=all
-Accept: application/json
