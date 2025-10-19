@@ -4,6 +4,8 @@ import { getCommissionEquity } from './controllers/commission-equity-controller'
 import { getPerformance } from './controllers/performance-controller'
 import { getLastTrades } from './controllers/trade-controller'
 import { getStrategyAnalysis } from './controllers/strategy-controller'
+import { getPositions } from './controllers/position-controller'
+import { getTrailing } from './controllers/trailing-controller'
 
 const router: Router = Router()
 
@@ -22,5 +24,7 @@ router.get('/performance/:symbol', getPerformance)
 router.get('/last-trades', getLastTrades)
 router.get('/last-trades/:symbol', getLastTrades)
 router.get('/strategy-analysis/:symbol', getStrategyAnalysis)
+router.get('/positions', getPositions)
+router.get('/trailing', getTrailing)
 
 export default router
