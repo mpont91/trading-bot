@@ -101,7 +101,7 @@ export class EthusdcPlan implements Plan {
   calculateStops(price: number): StrategyStops {
     const tp: number = 0.09
     const sl: number = 0.09
-    const ts: number = 0
+    const ts: number = 0.001
 
     const tpPrice: number = calculateTP(price, tp)
     const slPrice: number = calculateSL(price, sl)
