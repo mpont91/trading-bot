@@ -1,4 +1,3 @@
-import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
 import { Candle, TimeFrame } from '../types/candle'
 import { StrategyStops } from '../types/strategy-stops'
 import {
@@ -8,97 +7,62 @@ import {
 } from '../types/strategy-conditions'
 import { IndicatorService } from '../services/indicator-service'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { Plan } from './plan'
 import { BollingerBandStrategy } from '../strategies/bollinger-band-strategy'
 import { MovingAverageCrossoverStrategy } from '../strategies/moving-average-crossover-strategy'
+import { BasePlan } from './base-plan'
 
-export class EthusdcPlan implements Plan {
-  private readonly symbol: string = 'ETHUSDC'
+export class EthusdcPlan extends BasePlan {
+  protected readonly symbol: string = 'ETHUSDC'
+  protected readonly timeFrame: TimeFrame = TimeFrame['30m']
+  protected readonly candles: number = 500
 
-  constructor(private readonly indicatorService: IndicatorService) {}
-
-  getSymbol(): string {
-    return this.symbol
+  constructor(indicatorService: IndicatorService) {
+    super(indicatorService)
   }
 
-  getTimeFrame(): TimeFrame {
-    return TimeFrame['30m']
-  }
-
-  getCandles(): number {
-    return 500
-  }
-
-  calculate(candles: Candle[]): StrategyReport | StrategyReportCreate {
-    const price: number = candles[candles.length - 1].closePrice
-
-    const bollingerBandStrategy: BollingerBandStrategy =
-      new BollingerBandStrategy(this.indicatorService, this.symbol, candles)
-
-    const bollingerBandStrategyConditions: StrategyConditions =
+  protected getStrategyConditions(candles: Candle[]): StrategyConditions {
+    const bollingerBandStrategy = new BollingerBandStrategy(
+      this.indicatorService,
+      this.symbol,
+      candles,
+    )
+    const bollingerConditions =
       bollingerBandStrategy.evaluateStrategyConditions()
 
-    const movingAverageCrossoverStrategy: MovingAverageCrossoverStrategy =
-      new MovingAverageCrossoverStrategy(
-        this.indicatorService,
-        this.symbol,
-        candles,
-      )
-
-    const movingAverageCrossoverStrategyConditions: StrategyConditions =
+    const movingAverageCrossoverStrategy = new MovingAverageCrossoverStrategy(
+      this.indicatorService,
+      this.symbol,
+      candles,
+    )
+    const movingAverageConditions =
       movingAverageCrossoverStrategy.evaluateStrategyConditions()
 
-    const strategyConditions: StrategyConditions = {
+    return {
       buy: {
-        ...bollingerBandStrategyConditions.buy,
-        ...movingAverageCrossoverStrategyConditions.buy,
+        ...bollingerConditions.buy,
+        ...movingAverageConditions.buy,
       },
       sell: {
-        ...bollingerBandStrategyConditions.sell,
-        ...movingAverageCrossoverStrategyConditions.sell,
+        ...bollingerConditions.sell,
+        ...movingAverageConditions.sell,
       },
-    }
-
-    const shouldBuy: boolean = this.evaluateShouldBuy(strategyConditions.buy)
-    const shouldSell: boolean = this.evaluateShouldSell(strategyConditions.sell)
-
-    let stops: StrategyStops = {
-      sl: null,
-      tp: null,
-      ts: null,
-      tpPrice: null,
-      slPrice: null,
-    }
-
-    if (shouldBuy) {
-      stops = this.calculateStops(price)
-    }
-
-    return {
-      symbol: this.symbol,
-      price,
-      conditions: {
-        buy: strategyConditions.buy,
-        sell: strategyConditions.sell,
-      },
-      ...stops,
-      shouldBuy,
-      shouldSell,
     }
   }
 
-  evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
+  protected evaluateShouldSell(
+    sellConditions: StrategySellConditions,
+  ): boolean {
     return (
       !!sellConditions.bollingerBandLowerSell &&
       !!sellConditions.movingAverageCrossoverDeathCross
     )
   }
 
-  evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
+  protected evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
     return !!buyConditions.bollingerBandMomentumBuy
   }
 
-  calculateStops(price: number): StrategyStops {
+  protected calculateStops(price: number): StrategyStops {
     const tp: number = 0.09
     const sl: number = 0.09
     const ts: number = 0.001

@@ -1,4 +1,3 @@
-import { StrategyReport, StrategyReportCreate } from '../models/strategy-report'
 import { Candle, TimeFrame } from '../types/candle'
 import { StrategyStops } from '../types/strategy-stops'
 import {
@@ -9,84 +8,43 @@ import {
 import { IndicatorService } from '../services/indicator-service'
 import { MovingAverageCrossoverStrategy } from '../strategies/moving-average-crossover-strategy'
 import { calculateSL, calculateTP } from '../helpers/stops-helper'
-import { Plan } from './plan'
+import { BasePlan } from './base-plan'
 
-export class BtcusdcPlan implements Plan {
-  private readonly symbol: string = 'BTCUSDC'
+export class BtcusdcPlan extends BasePlan {
+  protected readonly symbol: string = 'BTCUSDC'
+  protected readonly timeFrame: TimeFrame = TimeFrame['30m']
+  protected readonly candles: number = 500
 
-  constructor(private readonly indicatorService: IndicatorService) {}
-
-  getSymbol(): string {
-    return this.symbol
+  constructor(indicatorService: IndicatorService) {
+    super(indicatorService)
   }
 
-  getTimeFrame(): TimeFrame {
-    return TimeFrame['30m']
-  }
-
-  getCandles(): number {
-    return 500
-  }
-
-  calculate(candles: Candle[]): StrategyReport | StrategyReportCreate {
-    const price: number = candles[candles.length - 1].closePrice
-
-    const movingAverageCrossoverStrategy: MovingAverageCrossoverStrategy =
-      new MovingAverageCrossoverStrategy(
-        this.indicatorService,
-        this.symbol,
-        candles,
-      )
-
-    const movingAverageCrossoverStrategyConditions: StrategyConditions =
+  protected getStrategyConditions(candles: Candle[]): StrategyConditions {
+    const movingAverageCrossoverStrategy = new MovingAverageCrossoverStrategy(
+      this.indicatorService,
+      this.symbol,
+      candles,
+    )
+    const conditions =
       movingAverageCrossoverStrategy.evaluateStrategyConditions()
 
-    const strategyConditions: StrategyConditions = {
-      buy: {
-        ...movingAverageCrossoverStrategyConditions.buy,
-      },
-      sell: {
-        ...movingAverageCrossoverStrategyConditions.sell,
-      },
-    }
-
-    const shouldBuy: boolean = this.evaluateShouldBuy(strategyConditions.buy)
-    const shouldSell: boolean = this.evaluateShouldSell(strategyConditions.sell)
-
-    let stops: StrategyStops = {
-      sl: null,
-      tp: null,
-      ts: null,
-      tpPrice: null,
-      slPrice: null,
-    }
-
-    if (shouldBuy) {
-      stops = this.calculateStops(price)
-    }
-
     return {
-      symbol: this.symbol,
-      price,
-      conditions: {
-        buy: strategyConditions.buy,
-        sell: strategyConditions.sell,
-      },
-      ...stops,
-      shouldBuy,
-      shouldSell,
+      buy: { ...conditions.buy },
+      sell: { ...conditions.sell },
     }
   }
 
-  evaluateShouldSell(sellConditions: StrategySellConditions): boolean {
+  protected evaluateShouldSell(
+    sellConditions: StrategySellConditions,
+  ): boolean {
     return !!sellConditions.movingAverageCrossoverDeathCross
   }
 
-  evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
+  protected evaluateShouldBuy(buyConditions: StrategyBuyConditions): boolean {
     return !!buyConditions.movingAverageCrossoverGoldenCross
   }
 
-  calculateStops(price: number): StrategyStops {
+  protected calculateStops(price: number): StrategyStops {
     const tp: number = 0.095
     const sl: number = 0.11
     const ts: number = 0.001
